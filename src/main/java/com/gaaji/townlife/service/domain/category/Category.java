@@ -18,8 +18,8 @@ import java.util.List;
 @ToString
 public class Category {
     @Id
-    @GenericGenerator()
-    @GeneratedValue
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GeneratedValue(generator = "ulidGenerator")
     private String id;
 
     private String name;

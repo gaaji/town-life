@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -16,6 +17,7 @@ import javax.persistence.ManyToOne;
 @Builder(access = AccessLevel.PRIVATE)
 @ToString
 @OnDelete(action = OnDeleteAction.CASCADE)
+@DiscriminatorValue("child")
 public class ChildComment extends Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private ParentComment parent;

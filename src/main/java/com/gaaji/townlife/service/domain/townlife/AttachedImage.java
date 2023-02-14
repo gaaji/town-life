@@ -13,8 +13,8 @@ import javax.persistence.*;
 @ToString
 public class AttachedImage {
     @Id
-    @GenericGenerator()
-    @GeneratedValue
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GeneratedValue(generator = "ulidGenerator")
     private String id;
     private int orderIndex;
     private String src;

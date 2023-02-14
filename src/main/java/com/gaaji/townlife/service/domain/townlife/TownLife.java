@@ -13,15 +13,14 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
 @ToString
 @SQLDelete(sql = "update town_life set deleted_at = current_timestamp where id = ?")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn
 public abstract class TownLife extends BaseEntity {
     @Id
-    @GenericGenerator()
-    @GeneratedValue
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GeneratedValue(generator = "ulidGenerator")
     private String id;
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
