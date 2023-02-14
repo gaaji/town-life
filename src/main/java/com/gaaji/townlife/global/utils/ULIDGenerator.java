@@ -12,6 +12,6 @@ public class ULIDGenerator implements IdentifierGenerator {
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
-        return ulid.nextValue();
+        return ulid.nextULID();
     }
 }

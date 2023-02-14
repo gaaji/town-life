@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -21,7 +22,6 @@ public class Category {
     @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
     private String id;
-
     private String name;
     private boolean isDefault;
     private String description;
@@ -29,4 +29,14 @@ public class Category {
     private List<CategorySubscription> subscriptions;
     @OneToMany(mappedBy = "category")
     private List<TownLife> townLives;
+
+    public static Category create(String name, boolean isDefault, String description) {
+        return Category.builder()
+                .name(name)
+                .isDefault(isDefault)
+                .description(description)
+                .subscriptions(new ArrayList<>())
+                .townLives(new ArrayList<>())
+                .build();
+    }
 }

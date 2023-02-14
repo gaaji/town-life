@@ -9,6 +9,7 @@ import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +27,7 @@ public abstract class TownLife extends BaseEntity {
     private Category category;
     private String authorId;
     @OneToMany(mappedBy = "townLife")
-    private List<ParentComment> comments;
+    private List<ParentComment> comments = new ArrayList<>();
     @Embedded
     private TownLifeContent content;
     private LocalDateTime deletedAt;

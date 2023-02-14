@@ -8,6 +8,7 @@ import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -26,7 +27,7 @@ public abstract class Comment extends BaseEntity {
     private CommentContent content;
     private LocalDateTime deletedAt;
     @OneToMany(mappedBy = "comment")
-    private List<CommentLike> likes;
+    private List<CommentLike> likes = new ArrayList<>();
 
     public abstract TownLife getTownLife();
 }

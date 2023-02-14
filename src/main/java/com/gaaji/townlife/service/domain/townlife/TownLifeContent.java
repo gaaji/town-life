@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Embeddable
@@ -18,5 +19,5 @@ public class TownLifeContent {
     private String title;
     private String text;
     @OneToMany(mappedBy = "townLife", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<AttachedImage> attachedImages;
+    private List<AttachedImage> attachedImages = new ArrayList<>();
 }

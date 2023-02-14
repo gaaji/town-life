@@ -8,6 +8,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -20,5 +21,5 @@ import java.util.List;
 @DiscriminatorValue("question")
 public class QuestionTownLife extends TownLife {
     @OneToMany(mappedBy = "townLife")
-    private List<Reaction> reactions;
+    private List<Reaction> reactions = new ArrayList<>();
 }
