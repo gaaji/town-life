@@ -12,10 +12,12 @@ import javax.persistence.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
 @ToString
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn
 public class Reaction {
     @Id
-    @GenericGenerator()
-    @GeneratedValue
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GeneratedValue(generator = "ulidGenerator")
     private String id;
     @ManyToOne(fetch = FetchType.LAZY)
     protected TownLife townLife;

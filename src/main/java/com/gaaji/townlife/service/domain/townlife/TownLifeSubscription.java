@@ -13,8 +13,8 @@ import javax.persistence.*;
 @ToString
 public class TownLifeSubscription {
     @Id
-    @GenericGenerator()
-    @GeneratedValue
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GeneratedValue(generator = "ulidGenerator")
     private String id;
     @ManyToOne(fetch = FetchType.LAZY)
     private TownLife townLife;

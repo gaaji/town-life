@@ -13,8 +13,8 @@ import javax.persistence.*;
 @ToString
 public class CommentLike {
     @Id
-    @GenericGenerator()
-    @GeneratedValue
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GeneratedValue(generator = "ulidGenerator")
     private String id;
     private String userId;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -8,26 +8,26 @@ import org.hibernate.annotations.SQLDelete;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
 @ToString
 @SQLDelete(sql = "update comment set deleted_at = current_timestamp where id = ?")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn
 public abstract class Comment extends BaseEntity {
     @Id
-    @GenericGenerator()
-    @GeneratedValue
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GeneratedValue(generator = "ulidGenerator")
     private String id;
     private String userId;
     @Embedded
     private CommentContent content;
     private LocalDateTime deletedAt;
     @OneToMany(mappedBy = "comment")
-    private List<CommentLike> likes;
+    private List<CommentLike> likes = new ArrayList<>();
 
     public abstract TownLife getTownLife();
 }
