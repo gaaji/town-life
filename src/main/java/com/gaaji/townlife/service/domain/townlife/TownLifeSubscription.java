@@ -22,4 +22,16 @@ public class TownLifeSubscription {
     @ManyToOne(fetch = FetchType.LAZY)
     private TownLife townLife;
     private String userId;
+
+    public static TownLifeSubscription of(String userId) {
+        return TownLifeSubscription.builder()
+                .userId(userId)
+                .build();
+    }
+
+    public TownLifeSubscription associateTownLife(TownLife townLife) {
+        this.townLife = townLife;
+        this.townLife.addSubscription(this);
+        return this;
+    }
 }
