@@ -1,10 +1,13 @@
 package com.gaaji.townlife.service.domain.reaction;
 
-import com.gaaji.townlife.service.domain.townlife.PostTownLife;
+import com.gaaji.townlife.service.domain.townlife.QuestionTownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import lombok.*;
 
-import javax.persistence.*;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -12,16 +15,14 @@ import javax.persistence.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
 @ToString
-@DiscriminatorValue("post")
-public class PostReaction extends Reaction {
-    @Enumerated(EnumType.STRING)
-    private Emoji emoji;
+@DiscriminatorValue("question")
+public class QuestionReaction extends Reaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private PostTownLife postTownLife;
+    private QuestionTownLife questionTownLife;
 
     @Override
     public TownLife getTownLife() {
-        return this.postTownLife;
+        return this.questionTownLife;
     }
 }

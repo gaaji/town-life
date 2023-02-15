@@ -1,6 +1,6 @@
 package com.gaaji.townlife.service.domain.townlife;
 
-import com.gaaji.townlife.service.domain.reaction.Reaction;
+import com.gaaji.townlife.service.domain.reaction.QuestionReaction;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -20,6 +20,6 @@ import java.util.List;
 @ToString
 @DiscriminatorValue("question")
 public class QuestionTownLife extends TownLife {
-    @OneToMany(mappedBy = "townLife")
-    private List<Reaction> reactions = new ArrayList<>();
+    @OneToMany(mappedBy = "questionTownLife")
+    private List<QuestionReaction> reactions = new ArrayList<>();
 }

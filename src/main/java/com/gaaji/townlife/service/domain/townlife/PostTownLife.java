@@ -20,6 +20,6 @@ import java.util.List;
 @ToString
 @DiscriminatorValue("post")
 public class PostTownLife extends TownLife {
-    @OneToMany(mappedBy = "townLife")
+    @OneToMany(mappedBy = "postTownLife")
     private List<PostReaction> reactions = new ArrayList<>();
 }

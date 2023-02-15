@@ -11,6 +11,9 @@ import javax.persistence.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
 @ToString
+@Table(indexes = {
+        @Index(name = "idx__comment_like__user_id", columnList = "userId"),
+})
 public class CommentLike {
     @Id
     @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
