@@ -40,4 +40,24 @@ class TownLifeSaveServiceImplTest {
         Assertions.assertEquals(dto.getLocation(), saveDto.getLocation());
     }
 
+    @Test
+    void create_new_question_town_life() {
+        Category category = categoryRepository.save(Category.create("테스트_카테고리", true, "테스트_카테고리입니다."));
+
+        TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
+                .categoryId(category.getId()).authorId("1").townId("1").title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
+
+        TownLifeDetailDto saveDto = townLifeSaveService.save(TownLifeType.QUESTION, dto);
+
+        System.out.println("Save: " + saveDto);
+
+        Assertions.assertNotNull(saveDto);
+        Assertions.assertNotNull(saveDto.getCategory());
+        Assertions.assertEquals(saveDto.getCreatedAt(), saveDto.getUpdatedAt());
+        Assertions.assertEquals(dto.getAuthorId(), saveDto.getAuthorId());
+        Assertions.assertEquals(dto.getTitle(), saveDto.getTitle());
+        Assertions.assertEquals(dto.getText(), saveDto.getText());
+        Assertions.assertEquals(dto.getLocation(), saveDto.getLocation());
+    }
+
 }
