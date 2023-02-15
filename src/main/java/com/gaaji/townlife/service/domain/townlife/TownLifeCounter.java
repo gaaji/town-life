@@ -17,7 +17,7 @@ public class TownLifeCounter {
     @GeneratedValue(generator = "ulidGenerator")
     private String id;
     @Embedded
-    @AttributeOverride(name = "value", column = @Column(name = "commnet_count"))
+    @AttributeOverride(name = "value", column = @Column(name = "comment_count"))
     private Counter commentCount;
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "interest_count"))
@@ -30,4 +30,10 @@ public class TownLifeCounter {
     private Counter viewCount;
     @OneToOne(fetch = FetchType.LAZY)
     private TownLife townLife;
+
+    public TownLifeCounter view() {
+        this.viewCount = this.viewCount.increase();
+        return this;
+    }
+
 }
