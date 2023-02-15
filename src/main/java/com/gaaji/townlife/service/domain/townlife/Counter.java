@@ -13,13 +13,13 @@ import javax.persistence.Embeddable;
 public class Counter {
     private int value;
 
-    public void increase() {
-        if(this.value+1 > Integer.MAX_VALUE) return;
-        this.value++;
+    public Counter increase() {
+        if(this.value + 1 == Integer.MAX_VALUE) return null;
+        return new Counter(this.value+1);
     }
 
-    public void decrease() {
-        if(this.value-1 < 0) return;
-        this.value--;
+    public Counter decrease() {
+        if(this.value-1 < 0) return null;
+        return new Counter(this.value-1);
     }
 }
