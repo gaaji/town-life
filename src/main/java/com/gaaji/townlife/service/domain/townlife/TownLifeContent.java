@@ -20,4 +20,8 @@ public class TownLifeContent {
     private String text;
     @OneToMany(mappedBy = "townLife", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<AttachedImage> attachedImages = new ArrayList<>();
+
+    public static TownLifeContent of(String title, String text, String location, List<AttachedImage> attachedImages) {
+        return TownLifeContent.builder().title(title).text(text).location(location).attachedImages(attachedImages).build();
+    }
 }

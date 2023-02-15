@@ -17,6 +17,9 @@ import java.util.List;
 @SQLDelete(sql = "update comment set deleted_at = current_timestamp where id = ?")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
+@Table(indexes = {
+        @Index(name = "idx__comment__user_id", columnList = "userId"),
+})
 public abstract class Comment extends BaseEntity {
     @Id
     @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
