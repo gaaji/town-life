@@ -22,7 +22,7 @@ public class ApplicationEventHandler {
 
     @Async
     @EventListener
-    public void handleToKafkaEvent(KafkaEvent event) {
+    public void handleToKafkaEvent(KafkaEvent<?> event) {
         kafkaProducer.produceEvent(event);
     }
 
