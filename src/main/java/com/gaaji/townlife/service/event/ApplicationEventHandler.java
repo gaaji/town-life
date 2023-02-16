@@ -29,6 +29,6 @@ public class ApplicationEventHandler {
     @Async
     @EventListener
     public void handlePostEdited(PostEditedEvent event) {
-        kafkaProducer.produceEvent(new NotificationEvent(this, NotificationEventBody.of("게시글 변경됐네요~ 확인해봐요", "id1", "id2", "id3")));
+        kafkaProducer.produceEvent(new NotificationEvent(this, NotificationEventBody.of(event)));
     }
 }

@@ -15,6 +15,6 @@ public class ApplicationEventPublishingServiceExample {
 
     public void test() {
         log.info("ApplicationEventPublishingServiceExample.test()");
-        eventPublisher.publishEvent(new PostEditedEvent(this, PostEditedEventBody.of("메뉴 추천좀")));
+        eventPublisher.publishEvent(new PostEditedEvent(this, PostEditedEventBody.of("메뉴 추천좀", "저녁 메뉴 추천점 ㅋ")));
     }
 }
