@@ -20,26 +20,33 @@ public class Category {
     @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
     private String id;
+    @Column(unique = true)
     private String name;
-    private boolean isDefault;
+    private boolean defaultCategory;
     private String description;
     @OneToMany(mappedBy = "category")
     private List<CategorySubscription> subscriptions = new ArrayList<>();
     @OneToMany(mappedBy = "category")
     private List<TownLife> townLives = new ArrayList<>();
 
-    private Category(String name, boolean isDefault, String description) {
+    private Category(String name, boolean defaultCategory, String description) {
         this.name = name;
-        this.isDefault = isDefault;
+        this.defaultCategory = defaultCategory;
         this.description = description;
     }
 
-    public static Category create(String name, boolean isDefault, String description) {
-        return new Category(name, isDefault, description);
+    public static Category create(String name, boolean defaultCategory, String description) {
+        return new Category(name, defaultCategory, description);
     }
 
     public Category addTownLife(TownLife townLife) {
         this.townLives.add(townLife);
         return this;
+    }
+
+    public void modify(String name, String description, boolean defaultCategory) {
+        this.name = name;
+        this.defaultCategory = defaultCategory;
+        this.description = description;
     }
 }

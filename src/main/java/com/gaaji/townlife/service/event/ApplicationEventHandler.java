@@ -27,4 +27,10 @@ public class ApplicationEventHandler {
         kafkaProducer.produceEvent(event);
         kafkaProducer.produceEvent(new NotificationEvent(this, NotificationEventBody.of("게시글 변경됐네요~ 확인해봐요", "id1", "id2", "id3")));
     }
+
+    @Async
+    @EventListener
+    public void handleCategoryCreated(CategoryCreatedEvent event) {
+        kafkaProducer.produceEvent(event);
+    }
 }
