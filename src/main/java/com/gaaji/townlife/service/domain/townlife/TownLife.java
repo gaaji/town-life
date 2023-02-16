@@ -21,7 +21,7 @@ import java.util.List;
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
 @Table(indexes = {
-        @Index(name = "idx__town_life__author_id", columnList = "authorId"),
+        @Index(name = "idx__town_life__author_id__id_desc", columnList = "authorId, id DESC"),
         @Index(name = "idx__town_life__town_id__id_desc", columnList = "townId, id DESC"),
 })
 public abstract class TownLife extends BaseEntity {
