@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
 @ToString
 public class TownLifeCounter {
     @Id
@@ -30,6 +29,22 @@ public class TownLifeCounter {
     private Counter viewCount;
     @OneToOne(fetch = FetchType.LAZY)
     private TownLife townLife;
+
+    public static TownLifeCounter create() {
+        return new TownLifeCounter().initCounter();
+    }
+
+    private TownLifeCounter initCounter() {
+        commentCount = Counter.create();
+        interestCount = Counter.create();
+        reactionCount = Counter.create();
+        viewCount = Counter.create();
+        return this;
+    }
+
+    public void associateTownLife(TownLife townLife) {
+        this.townLife = townLife;
+    }
 
     public TownLifeCounter view() {
         this.viewCount = this.viewCount.increase();
