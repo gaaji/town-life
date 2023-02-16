@@ -15,6 +15,8 @@ import java.util.List;
 @Entity
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "update town_life set deleted_at = current_timestamp where id = ?")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
@@ -23,23 +25,49 @@ import java.util.List;
         @Index(name = "idx__town_life__town_id", columnList = "townId"),
 })
 public abstract class TownLife extends BaseEntity {
+
     @Id
     @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
-    private String id;
+    protected String id;
     @ManyToOne(fetch = FetchType.LAZY)
-    private Category category;
-    private String authorId;
+    protected Category category;
+    protected String authorId;
     @OneToMany(mappedBy = "townLife")
-    private List<ParentComment> comments = new ArrayList<>();
+    protected List<ParentComment> comments = new ArrayList<>();
     @Embedded
-    private TownLifeContent content;
-    private LocalDateTime deletedAt;
-    private String townId;
+    protected TownLifeContent content;
+    protected LocalDateTime deletedAt;
+    protected String townId;
     @OneToMany(mappedBy = "townLife")
-    private List<TownLifeSubscription> subscriptions;
+    protected List<TownLifeSubscription> subscriptions = new ArrayList<>();
+    @OneToMany(mappedBy = "townLife", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<AttachedImage> attachedImages = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY)
+    private TownLifeCounter townLifeCounter;
 
-    public void updateContent(String title, String text, String location, List<AttachedImage> attachedImages) {
-        this.content = TownLifeContent.of(title, text, location, attachedImages);
+    protected TownLife(String authorId, String townId, TownLifeContent content) {
+        this.authorId = authorId;
+        this.townId = townId;
+        this.content = content;
     }
+
+    public void updateContent(String title, String text, String location) {
+        this.content = TownLifeContent.of(title, text, location);
+    }
+
+    public TownLife associateCategory(Category category) {
+        this.category = category.addTownLife(this);;
+        return this;
+    }
+
+    public void addSubscription(TownLifeSubscription townLifeSubscription) {
+        this.subscriptions.add(townLifeSubscription);
+    }
+
+    public void associateCounter(TownLifeCounter townLifeCounter) {
+        this.townLifeCounter = townLifeCounter;
+        this.townLifeCounter.associateTownLife(this);
+    }
+
 }
