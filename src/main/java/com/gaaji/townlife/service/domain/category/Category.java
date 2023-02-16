@@ -43,4 +43,10 @@ public class Category {
         this.townLives.add(townLife);
         return this;
     }
+
+    public void modify(String name, String description, boolean defaultCategory) {
+        this.name = name;
+        this.defaultCategory = defaultCategory;
+        this.description = description;
+    }
 }

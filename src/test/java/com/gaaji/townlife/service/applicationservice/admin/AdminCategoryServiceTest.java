@@ -1,6 +1,7 @@
 package com.gaaji.townlife.service.applicationservice.admin;
 
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategoryListDto;
+import com.gaaji.townlife.service.controller.admin.dto.AdminCategoryModifyDto;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveResponseDto;
 import com.gaaji.townlife.service.domain.category.Category;
@@ -9,18 +10,23 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SpringBootTest
+@Transactional
 class AdminCategoryServiceTest {
     @Autowired
     AdminCategorySaveService adminCategorySaveService;
     @Autowired
     AdminCategoryFindService adminCategoryFindService;
+    @Autowired
+    AdminCategoryModifyService adminCategoryModifyService;
     @Autowired
     CategoryRepository categoryRepository;
 
@@ -60,6 +66,25 @@ class AdminCategoryServiceTest {
                 dto.isDefaultCategory() == saved.isDefaultCategory()
             )
         ));
+    }
+
+    @Test
+    void 카테고리_수정() {
+        // given
+        final int categoryCount = 10;
+        List<Category> savedCategories = IntStream.range(0, categoryCount).mapToObj(i -> randomCategory()).collect(Collectors.toList());
+        Random random = new Random();
+
+        savedCategories.forEach(category -> {
+            String randomName = UUID.randomUUID().toString();
+            String randomDescription = UUID.randomUUID().toString();
+            boolean randomBoolean = random.nextBoolean();
+            adminCategoryModifyService.modify(category.getId(), new AdminCategoryModifyDto(randomName, randomDescription, randomBoolean));
+            Category modified = categoryRepository.findById(category.getId()).get();
+            Assertions.assertEquals(randomName, modified.getName());
+            Assertions.assertEquals(randomDescription, modified.getDescription());
+            Assertions.assertEquals(randomBoolean, modified.isDefaultCategory());
+        });
     }
 
     Category randomCategory() {
