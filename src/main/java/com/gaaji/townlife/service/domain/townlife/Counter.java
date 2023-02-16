@@ -8,18 +8,21 @@ import javax.persistence.Embeddable;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
 @ToString
 public class Counter {
     private int value;
 
-    public void increase() {
-        if(this.value+1 > Integer.MAX_VALUE) return;
-        this.value++;
+    public static Counter create() {
+        return new Counter(0);
     }
 
-    public void decrease() {
-        if(this.value-1 < 0) return;
-        this.value--;
+    public Counter increase() {
+        if(this.value + 1 == Integer.MAX_VALUE) return null;
+        return new Counter(this.value+1);
+    }
+
+    public Counter decrease() {
+        if(this.value-1 < 0) return null;
+        return new Counter(this.value-1);
     }
 }

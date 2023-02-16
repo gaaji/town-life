@@ -8,6 +8,7 @@ import java.util.List;
 public interface TownLifeFindService {
 
     TownLifeDetailDto findById(String id);
+    TownLifeDetailDto visit(String id);
     List<TownLifeListDto> findListByTownId(String townId, String lastTownLifeId, int size);
     List<TownLifeListDto> findListByUserId(String userId);
 
