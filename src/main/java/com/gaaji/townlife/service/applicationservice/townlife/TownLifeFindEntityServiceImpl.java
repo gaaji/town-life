@@ -31,19 +31,47 @@ public class TownLifeFindEntityServiceImpl implements TownLifeFindEntityService 
         PageRequest page = PageRequest.ofSize(size);
         List<TownLife> townLives = townLifeRepository.findByTownId(townId, page);
 
-        if(townLives == null || townLives.size() == 0) throw new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND);
+        validateExistTownLives(townLives);
 
         return townLives;
     }
 
     @Override
-    public List<TownLife> findListByTownIdAndIdLessThan(String townId, String lastTownLifeId, int size) {
+    public List<TownLife> findMoreListByTownIdAndIdLessThan(String townId, String lastTownLifeId, int size) {
 
         PageRequest page = PageRequest.ofSize(size);
         List<TownLife> townLives = townLifeRepository.findByTownIdAndIdLessThan(townId, lastTownLifeId, page);
 
-        if(townLives == null || townLives.size() == 0) throw new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND);
+        validateExistTownLives(townLives);
 
         return townLives;
+    }
+
+    @Override
+    public List<TownLife> findListByAuthorId(String authorId, int size) {
+
+        PageRequest page = PageRequest.ofSize(size);
+        List<TownLife> townLives = townLifeRepository.findByAuthorId(authorId, page);
+
+        validateExistTownLives(townLives);
+
+        return townLives;
+    }
+
+    @Override
+    public List<TownLife> findMoreListByAuthorIdAndIdLessThan(String authorId, String lastTownLifeId, int size) {
+
+        PageRequest page = PageRequest.ofSize(size);
+        List<TownLife> townLives = townLifeRepository.findByAuthorIdAndIdLessThan(authorId, lastTownLifeId, page);
+
+        validateExistTownLives(townLives);
+
+        return townLives;
+    }
+
+    private void validateExistTownLives(List<TownLife> townLives) {
+        if(townLives == null || townLives.size() == 0) {
+            throw new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND);
+        }
     }
 }

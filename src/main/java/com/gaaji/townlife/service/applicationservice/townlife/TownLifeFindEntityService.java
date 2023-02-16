@@ -10,6 +10,10 @@ public interface TownLifeFindEntityService {
 
     List<TownLife> findListByTownId(String townId, int size);
 
-    List<TownLife> findListByTownIdAndIdLessThan(String townId, String lastTownLifeId, int size);
+    List<TownLife> findMoreListByTownIdAndIdLessThan(String townId, String lastTownLifeId, int size);
+
+    List<TownLife> findListByAuthorId(String authorId, int size);
+
+    List<TownLife> findMoreListByAuthorIdAndIdLessThan(String authorId, String lastTownLifeId, int size);
 
 }

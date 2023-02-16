@@ -10,6 +10,11 @@ public interface TownLifeRepository extends JpaRepository<TownLife, String> {
 
 
     List<TownLife> findByTownId(String townId, Pageable pageable);
+
     List<TownLife> findByTownIdAndIdLessThan(String townId, String id, Pageable pageable);
+
+    List<TownLife> findByAuthorId(String authorId, Pageable pageable);
+
+    List<TownLife> findByAuthorIdAndIdLessThan(String authorId, String id, Pageable pageable);
 
 }
