@@ -23,7 +23,7 @@ public class QuestionTownLife extends TownLife {
     @OneToMany(mappedBy = "questionTownLife")
     private List<QuestionReaction> reactions = new ArrayList<>();
 
-    private QuestionTownLife(String authorId, String townId, TownLifeContent content) {
+    public QuestionTownLife(String authorId, String townId, TownLifeContent content) {
         super(authorId, townId, content);
     }
 
