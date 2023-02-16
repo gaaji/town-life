@@ -43,6 +43,8 @@ public abstract class TownLife extends BaseEntity {
     protected List<TownLifeSubscription> subscriptions = new ArrayList<>();
     @OneToMany(mappedBy = "townLife", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<AttachedImage> attachedImages = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY)
+    private TownLifeCounter townLifeCounter;
 
     protected TownLife(String authorId, String townId, TownLifeContent content) {
         this.authorId = authorId;
@@ -61,6 +63,11 @@ public abstract class TownLife extends BaseEntity {
 
     public void addSubscription(TownLifeSubscription townLifeSubscription) {
         this.subscriptions.add(townLifeSubscription);
+    }
+
+    public void associateCounter(TownLifeCounter townLifeCounter) {
+        this.townLifeCounter = townLifeCounter;
+        this.townLifeCounter.associateTownLife(this);
     }
 
 }
