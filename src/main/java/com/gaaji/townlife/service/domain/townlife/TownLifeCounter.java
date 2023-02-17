@@ -26,8 +26,6 @@ public class TownLifeCounter {
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "view_count"))
     private Counter viewCount;
-    @OneToOne(fetch = FetchType.LAZY)
-    private TownLife townLife;
 
     public static TownLifeCounter create() {
         return new TownLifeCounter().initCounter();
@@ -41,9 +39,10 @@ public class TownLifeCounter {
         return this;
     }
 
-    public void associateTownLife(TownLife townLife) {
-        this.townLife = townLife;
-    }
+    public int getCommentCount() { return commentCount.getValue(); }
+    public int getInterestCount() { return interestCount.getValue(); }
+    public int getReactionCount() { return reactionCount.getValue(); }
+    public int getViewCount() { return viewCount.getValue(); }
 
     public TownLifeCounter view() {
         this.viewCount = this.viewCount.increase();
