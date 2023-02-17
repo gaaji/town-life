@@ -12,9 +12,11 @@ import com.gaaji.townlife.service.repository.TownLifeCounterRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
 import com.gaaji.townlife.service.repository.TownLifeSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TownLifeSaveServiceImpl implements TownLifeSaveService {
@@ -26,34 +28,30 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
 
     @Override
     @Transactional
-    public TownLifeDetailDto save(TownLifeType type, TownLifeSaveRequestDto dto) {
+    public TownLifeDetailDto save(TownLifeSaveRequestDto dto) {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.CATEGORY_NOT_FOUND));
 
-        TownLifeDetailDto responseDto = null;
-        switch (type) {
-            case POST:
-                PostTownLife postTownLife = saveTownLife(PostTownLife.class, dto, category);
-                responseDto = TownLifeDetailDto.of(postTownLife);
-                break;
-            case QUESTION:
-                QuestionTownLife questionTownLife = saveTownLife(QuestionTownLife.class, dto, category);
-                responseDto = TownLifeDetailDto.of(questionTownLife);
-                break;
-        }
+        Class<? extends TownLife> townLifeClazz =
+                category.getTownLifeType() == TownLifeType.POST ? PostTownLife.class : QuestionTownLife.class;
+
+        TownLife townLife = saveTownLife(townLifeClazz, dto, category);
+        TownLifeDetailDto responseDto = TownLifeDetailDto.of(townLife);
         if(responseDto == null) throw new ResourceSaveException(ApiErrorCode.TOWN_LIFE_SAVE_ERROR);
 
         return responseDto;
     }
 
-    private <T extends TownLife> T saveTownLife(Class<T> townLifeClass, TownLifeSaveRequestDto dto, Category category) {
+
+    private <T extends TownLife> T saveTownLife(Class<T> clazz, TownLifeSaveRequestDto dto, Category category) {
         try {
             T townLife = townLifeRepository.save(
-                    townLifeClass.getConstructor(String.class, String.class, TownLifeContent.class)
-                            .newInstance(dto.getAuthorId(), dto.getTownId(), TownLifeContent.of(dto.getTitle(), dto.getText(), dto.getLocation())));
+                    clazz.getConstructor(String.class, String.class, String.class, String.class, String.class)
+                            .newInstance(dto.getAuthorId(), dto.getTownId(), dto.getTitle(), dto.getText(), dto.getLocation()));
             townLife.associateCategory(category);
             saveSubscription(townLife, dto.getAuthorId());
             saveCounter(townLife);
+
             return townLife;
 
         } catch (Exception e) {
