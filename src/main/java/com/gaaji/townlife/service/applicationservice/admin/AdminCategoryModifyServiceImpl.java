@@ -27,12 +27,12 @@ public class AdminCategoryModifyServiceImpl implements AdminCategoryModifyServic
         Category before = Category.create(category.getName(), category.isDefaultCategory(), category.getDescription());
         category.modify(dto.getName(), dto.getDescription(), dto.isDefaultCategory());
 
-        Function<Category, CategoryUpdatedEventBody.CategoryDto> createEventDto = c ->
+        Function<Category, CategoryUpdatedEventBody.CategoryDto> createEventDtoFunc = c ->
                 new CategoryUpdatedEventBody.CategoryDto(c.getName(), c.getDescription(), c.isDefaultCategory());
         eventPublisher.publishEvent(new CategoryUpdatedEvent(this, new CategoryUpdatedEventBody(
                 category.getId(),
-                createEventDto.apply(before),
-                createEventDto.apply(category)
+                createEventDtoFunc.apply(before),
+                createEventDtoFunc.apply(category)
         )));
     }
 
