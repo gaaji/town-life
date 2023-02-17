@@ -1,6 +1,7 @@
 package com.gaaji.townlife.service.domain.category;
 
 import com.gaaji.townlife.service.domain.townlife.TownLife;
+import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @ToString
+@Getter @ToString(exclude = {"subscriptions", "townLives"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(indexes = {
@@ -27,15 +28,18 @@ public class Category {
     private List<CategorySubscription> subscriptions = new ArrayList<>();
     @OneToMany(mappedBy = "category")
     private List<TownLife> townLives = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private TownLifeType townLifeType;
 
-    private Category(String name, boolean isDefault, String description) {
+    private Category(String name, boolean isDefault, String description, TownLifeType townLifeType) {
         this.name = name;
         this.isDefault = isDefault;
         this.description = description;
+        this.townLifeType = townLifeType;
     }
 
-    public static Category create(String name, boolean isDefault, String description) {
-        return new Category(name, isDefault, description);
+    public static Category create(String name, boolean isDefault, String description, TownLifeType townLifeType) {
+        return new Category(name, isDefault, description, townLifeType);
     }
 
     public Category addTownLife(TownLife townLife) {

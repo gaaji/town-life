@@ -1,7 +1,7 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
-import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListDto;
+import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListResponseDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
@@ -12,7 +12,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 @SpringBootTest
 class TownLifeFindServiceImplTest {
@@ -28,7 +28,8 @@ class TownLifeFindServiceImplTest {
     private Category category;
 
     void init_category() {
-        category = categoryRepository.save(Category.create("테스트_카테고리", true, "테스트_카테고리입니다."));
+        category = categoryRepository.save(
+                Category.create("테스트_카테고리", true, "테스트_카테고리입니다.", TownLifeType.POST));
     }
 
     @Nested
@@ -49,7 +50,7 @@ class TownLifeFindServiceImplTest {
             TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                     .categoryId(category.getId()).authorId(authorId).townId(townId)
                     .title(title).text(text).location(location).build();
-            townLifeId = townLifeSaveService.save(TownLifeType.POST, dto).getId();
+            townLifeId = townLifeSaveService.save(dto).getId();
         }
 
         @Test
@@ -93,32 +94,27 @@ class TownLifeFindServiceImplTest {
                 TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                         .categoryId(category.getId()).authorId(String.valueOf(i)).townId(townId)
                         .title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
-                townLifeSaveService.save(TownLifeType.POST, dto);
+                townLifeSaveService.save(dto);
             }
         }
 
-        private final String defaultLastTownLifeId = "-1";
-        private final int size = 10;
-
         @Test
         @Order(100)
-        @DisplayName("메인 페이지 리스트 조회 - 메인, 더보기")
-        void find_list_by_town_id() {
+        @DisplayName("메인 페이지 리스트 조회 - 페이징 3회")
+        void find_list_by_town_id_for_three_time() {
+            int page = 0, size = 10;
+
             init_post_town_lives_for_find_by_town_id();
+            LocalDateTime now = LocalDateTime.now();
 
-            List<TownLifeListDto> firstView = townLifeFindService.findListByTownId(townId, defaultLastTownLifeId, size);
-            Assertions.assertNotNull(firstView);
-            Assertions.assertNotEquals(0, firstView.size());
-            Assertions.assertEquals(size, firstView.size());
-
-            TownLifeListDto lastTownLifeOfFirstView = firstView.get(firstView.size() - 1);
-            List<TownLifeListDto> moreView = townLifeFindService.findListByTownId(townId, lastTownLifeOfFirstView.getId(), size);
-            Assertions.assertNotNull(moreView);
-            Assertions.assertNotEquals(0, moreView.size());
-            Assertions.assertEquals(size, firstView.size());
-
-            TownLifeListDto lastTownLifeOfSecondView = moreView.get(moreView.size() - 1);
-            Assertions.assertTrue(lastTownLifeOfFirstView.getCreatedAt().isAfter(lastTownLifeOfSecondView.getCreatedAt()));
+            for(; page < 3; page++) {
+                TownLifeListResponseDto townLives = townLifeFindService.findListByTownId(townId, now, page, size);
+                Assertions.assertNotNull(townLives);
+                Assertions.assertNotNull(townLives.getContent());
+                Assertions.assertNotEquals(0, townLives.getContent().size());
+                Assertions.assertTrue(now.isAfter(townLives.getContent().get(0).getCreatedAt()));
+                Assertions.assertTrue(townLives.getHasNext());
+            }
         }
 
     }
@@ -140,33 +136,27 @@ class TownLifeFindServiceImplTest {
                         .categoryId(category.getId()).authorId(authorId).townId(townId)
                         .title("테스트 게시글 "+ i).text("테스트 게시글 내용입니다.").location("테스트 장소").build();
                 testerId = (testerId+1) % 4;
-                townLifeSaveService.save(TownLifeType.POST, dto);
+                townLifeSaveService.save(dto);
             }
         }
 
-        private final String defaultLastTownLifeId = "-1";
-        private final String userId = "tester2";
-        private final int size = 10;
-
         @Test
         @Order(100)
-        @DisplayName("내 게시글 리스트 조회 - 메인, 더보기")
-        void find_list_by_user_id() {
+        @DisplayName("내 게시글 리스트 조회 - 페이징 3회")
+        void find_list_by_town_id_for_three_time() {
+            final String userId = "tester2";
+            int page = 0, size = 10;
+
             init_post_town_lives_for_find_by_user_id();
+            LocalDateTime now = LocalDateTime.now();
 
-            List<TownLifeListDto> firstView = townLifeFindService.findListByUserId(userId, defaultLastTownLifeId, size);
-            Assertions.assertNotNull(firstView);
-            Assertions.assertNotEquals(0, firstView.size());
-            Assertions.assertEquals(size, firstView.size());
-
-            TownLifeListDto lastTownLifeOfFirstView = firstView.get(firstView.size() - 1);
-            List<TownLifeListDto> moreView = townLifeFindService.findListByUserId(userId, lastTownLifeOfFirstView.getId(), size);
-            Assertions.assertNotNull(moreView);
-            Assertions.assertNotEquals(0, moreView.size());
-            Assertions.assertEquals(size, firstView.size());
-
-            TownLifeListDto lastTownLifeOfSecondView = moreView.get(moreView.size() - 1);
-            Assertions.assertTrue(lastTownLifeOfFirstView.getCreatedAt().isAfter(lastTownLifeOfSecondView.getCreatedAt()));
+            for(; page < 3; page++) {
+                TownLifeListResponseDto townLives = townLifeFindService.findListByUserId(userId, now, page, size);
+                Assertions.assertNotNull(townLives);
+                Assertions.assertNotNull(townLives.getContent());
+                Assertions.assertNotEquals(0, townLives.getContent().size());
+                Assertions.assertTrue(now.isAfter(townLives.getContent().get(0).getCreatedAt()));
+            }
         }
 
     }
