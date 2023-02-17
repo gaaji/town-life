@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @ToString
+@Getter @ToString(callSuper = true)
 @OnDelete(action = OnDeleteAction.CASCADE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,15 +22,22 @@ public class PostTownLife extends TownLife {
     @OneToMany(mappedBy = "postTownLife")
     private List<PostReaction> reactions = new ArrayList<>();
 
-    public PostTownLife(String authorId, String townId, TownLifeContent content) {
-        super(authorId, townId, content);
+    public PostTownLife(String authorId, String townId, String title, String text, String location) {
+        super(authorId, townId, title, text, location);
     }
 
     public static PostTownLife create(TownLifeSaveRequestDto dto) {
         return new PostTownLife(
                 dto.getAuthorId(),
                 dto.getTownId(),
-                TownLifeContent.of(dto.getTitle(), dto.getText(), dto.getLocation())
+                dto.getTitle(), dto.getText(), dto.getLocation()
         );
+    }
+
+    public static PostTownLife newInstance(TownLife origin) {
+        PostTownLife newInstance = new PostTownLife();
+        newInstance(origin, newInstance);
+        newInstance.reactions = ((PostTownLife)origin).reactions;
+        return newInstance;
     }
 }

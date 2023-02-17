@@ -13,8 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter
-@ToString
+@Getter @ToString(exclude = { "category", "townLifeCounter", "subscriptions", "comments", "attachedImages" })
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "update town_life set deleted_at = current_timestamp where id = ?")
@@ -33,23 +32,36 @@ public abstract class TownLife extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     protected Category category;
     protected String authorId;
-    @OneToMany(mappedBy = "townLife")
-    protected List<ParentComment> comments = new ArrayList<>();
+    protected String townId;
+    protected LocalDateTime deletedAt;
     @Embedded
     protected TownLifeContent content;
-    protected LocalDateTime deletedAt;
-    protected String townId;
+    @OneToMany(mappedBy = "townLife")
+    protected List<ParentComment> comments = new ArrayList<>();
     @OneToMany(mappedBy = "townLife")
     protected List<TownLifeSubscription> subscriptions = new ArrayList<>();
     @OneToMany(mappedBy = "townLife", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<AttachedImage> attachedImages = new ArrayList<>();
+    protected List<AttachedImage> attachedImages = new ArrayList<>();
     @OneToOne(fetch = FetchType.LAZY)
-    private TownLifeCounter townLifeCounter;
+    protected TownLifeCounter townLifeCounter;
 
-    protected TownLife(String authorId, String townId, TownLifeContent content) {
+    protected TownLife(String authorId, String townId, String title, String text, String location) {
         this.authorId = authorId;
         this.townId = townId;
-        this.content = content;
+        this.content = TownLifeContent.of(title, text, location);
+    }
+
+    protected static <S extends TownLife> S newInstance(TownLife origin, S newInstance) {
+        newInstance.id = origin.id;
+        newInstance.category = origin.category;
+        newInstance.authorId = origin.authorId;
+        newInstance.comments = origin.comments;
+        newInstance.content = origin.content;
+        newInstance.townId = origin.townId;
+        newInstance.subscriptions = origin.subscriptions;
+        newInstance.attachedImages = origin.attachedImages;
+        newInstance.townLifeCounter = origin.townLifeCounter;
+        return newInstance;
     }
 
     public void updateContent(String title, String text, String location) {

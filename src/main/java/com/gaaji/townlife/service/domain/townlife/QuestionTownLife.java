@@ -13,25 +13,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Getter @ToString(callSuper = true)
 @OnDelete(action = OnDeleteAction.CASCADE)
-@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@ToString
 @DiscriminatorValue("question")
 public class QuestionTownLife extends TownLife {
     @OneToMany(mappedBy = "questionTownLife")
     private List<QuestionReaction> reactions = new ArrayList<>();
 
-    public QuestionTownLife(String authorId, String townId, TownLifeContent content) {
-        super(authorId, townId, content);
+    public QuestionTownLife(String authorId, String townId, String title, String text, String location) {
+        super(authorId, townId, title, text, location);
     }
 
     public static QuestionTownLife create(TownLifeSaveRequestDto dto) {
         return new QuestionTownLife(
                 dto.getAuthorId(),
                 dto.getTownId(),
-                TownLifeContent.of(dto.getTitle(), dto.getText(), dto.getLocation())
+                dto.getTitle(), dto.getText(), dto.getLocation()
         );
     }
+
+    public static QuestionTownLife newInstance(TownLife origin) {
+        QuestionTownLife newInstance = new QuestionTownLife();
+        newInstance(origin, newInstance);
+        newInstance.reactions = ((QuestionTownLife)origin).reactions;
+        return newInstance;
+    }
+
+
 }
