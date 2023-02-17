@@ -1,6 +1,7 @@
 package com.gaaji.townlife.service.repository;
 
 import com.gaaji.townlife.service.domain.category.Category;
+import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ class CategoryRepositoryTest {
 
     @Test
     void 카테고리_저장() {
-        Category category = Category.create("테스트 카테고리", true, "테스트 카테고리입니다.");
+        Category category = Category.create("테스트 카테고리", true, "테스트 카테고리입니다.", TownLifeType.POST);
         Category created = categoryRepository.save(category);
 
         Assertions.assertNotNull(created);
