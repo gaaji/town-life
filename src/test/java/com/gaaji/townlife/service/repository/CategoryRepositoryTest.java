@@ -26,6 +26,6 @@ class CategoryRepositoryTest {
         Assertions.assertEquals(0, created.getSubscriptions().size());
         Assertions.assertEquals(0, created.getTownLives().size());
         Assertions.assertEquals(category.getName(), created.getName());
-        Assertions.assertTrue(created.isDefault());
+        Assertions.assertTrue(created.isDefaultCategory());
     }
 }
