@@ -4,11 +4,13 @@ import lombok.Getter;
 
 @Getter
 public class PostEditedEventBody {
-    private String title;
+    private String before;
+    private String after;
 
-    public static PostEditedEventBody of(String title) {
+    public static PostEditedEventBody of(String before, String after) {
         PostEditedEventBody postEditedEventBody = new PostEditedEventBody();
-        postEditedEventBody.title = title;
+        postEditedEventBody.before = before;
+        postEditedEventBody.after = after;
         return postEditedEventBody;
     }
 }

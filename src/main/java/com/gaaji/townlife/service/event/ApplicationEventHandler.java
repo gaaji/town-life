@@ -22,15 +22,13 @@ public class ApplicationEventHandler {
 
     @Async
     @EventListener
-    public void handlePostEdited(PostEditedEvent event) {
-        // 게시글이 수정되면 그 게시글을 구독중인 사용자에게 알림이 가야 한다.
+    public void handleToKafkaEvent(KafkaEvent<?> event) {
         kafkaProducer.produceEvent(event);
-        kafkaProducer.produceEvent(new NotificationEvent(this, NotificationEventBody.of("게시글 변경됐네요~ 확인해봐요", "id1", "id2", "id3")));
     }
 
     @Async
     @EventListener
-    public void handleCategoryCreated(CategoryCreatedEvent event) {
-        kafkaProducer.produceEvent(event);
+    public void handlePostEdited(PostEditedEvent event) {
+        kafkaProducer.produceEvent(new NotificationEvent(this, NotificationEventBody.of(event)));
     }
 }
