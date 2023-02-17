@@ -14,6 +14,7 @@ public class TownLifeListDto {
 
     private String id;
     private String categoryId;
+    private String authorId;
     private String categoryName;
     private String townId;
     private String title;
@@ -27,6 +28,7 @@ public class TownLifeListDto {
                 .id(entity.getId())
                 .categoryId(entity.getCategory().getId())
                 .categoryName(entity.getCategory().getName())
+                .authorId(entity.getAuthorId())
                 .townId(entity.getTownId())
                 .title(entity.getContent().getTitle())
                 .createdAt(entity.getCreatedAt())
