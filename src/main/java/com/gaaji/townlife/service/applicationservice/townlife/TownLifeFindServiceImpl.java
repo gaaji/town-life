@@ -33,10 +33,11 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
     @Override
     @Transactional
     public TownLifeDetailDto visit(String id) {
-        TownLife townLife = entityService.findById(id);
-        TownLifeCounter townLifeCounter = countService.increaseViewCount(townLife);
 
-        return TownLifeDetailDto.of(townLife, townLifeCounter);
+        TownLife townLife = entityService.findById(id);
+        TownLifeCounter counter = countService.increaseViewCount(townLife.getTownLifeCounter().getId());
+
+        return TownLifeDetailDto.of(townLife, counter);
     }
 
     @Override
