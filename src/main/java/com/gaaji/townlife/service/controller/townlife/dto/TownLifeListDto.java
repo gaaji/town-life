@@ -32,8 +32,8 @@ public class TownLifeListDto {
                 .townId(entity.getTownId())
                 .title(entity.getContent().getTitle())
                 .createdAt(entity.getCreatedAt())
-                .commentCount(counter.getCommentCount().getValue())
-                .reactionCount(counter.getReactionCount().getValue())
+                .commentCount(counter.getCommentCount())
+                .reactionCount(counter.getReactionCount())
                 .thumbnailSrc(entity.getThumbnailSrc())
                 .build();
     }

@@ -26,19 +26,14 @@ public class TownLifeDetailDto {
     private int interestCount;
 
     public static TownLifeDetailDto of(TownLife entity) {
-        return TownLifeDetailDto.builder()
-                .id(entity.getId())
-                .authorId(entity.getAuthorId())
-                .category(TownLifeDetailCategoryDto.of(entity.getCategory()))
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .title(entity.getContent().getTitle())
-                .text(entity.getContent().getText())
-                .location(entity.getContent().getLocation())
-                .build();
+        return newInstance(entity, entity.getViewCount(), entity.getReactionCount(), entity.getCommentCount(), entity.getInterestCount());
     }
 
     public static TownLifeDetailDto of(TownLife entity, TownLifeCounter counter) {
+        return newInstance(entity, counter.getViewCount(), counter.getReactionCount(), counter.getCommentCount(), counter.getInterestCount());
+    }
+
+    private static TownLifeDetailDto newInstance(TownLife entity, int viewCount, int reactionCount, int commentCount, int interestCount) {
         return TownLifeDetailDto.builder()
                 .id(entity.getId())
                 .authorId(entity.getAuthorId())
@@ -48,11 +43,11 @@ public class TownLifeDetailDto {
                 .title(entity.getContent().getTitle())
                 .text(entity.getContent().getText())
                 .location(entity.getContent().getLocation())
-                .viewCount(counter.getViewCount().getValue())
-                .reactionCount(counter.getReactionCount().getValue())
-                .commentCount(counter.getCommentCount().getValue())
-                .interestCount(counter.getInterestCount().getValue())
+                .viewCount(viewCount)
+                .reactionCount(reactionCount)
+                .commentCount(commentCount)
+                .interestCount(interestCount)
                 .build();
     }
-    
+
 }
