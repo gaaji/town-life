@@ -2,6 +2,7 @@ package com.gaaji.townlife.service.controller.admin;
 
 import com.gaaji.townlife.service.applicationservice.admin.AdminCategoryFindService;
 import com.gaaji.townlife.service.applicationservice.admin.AdminCategoryModifyService;
+import com.gaaji.townlife.service.applicationservice.admin.AdminCategoryRemoveService;
 import com.gaaji.townlife.service.applicationservice.admin.AdminCategorySaveService;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategoryListDto;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategoryModifyDto;
@@ -20,6 +21,7 @@ public class AdminController {
     private final AdminCategorySaveService saveService;
     private final AdminCategoryFindService findService;
     private final AdminCategoryModifyService modifyService;
+    private final AdminCategoryRemoveService removeService;
 
     @PostMapping("/categories")
     @ResponseStatus(HttpStatus.CREATED)
@@ -37,5 +39,10 @@ public class AdminController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void categoryModify(@PathVariable String categoryId, @RequestBody AdminCategoryModifyDto dto) {
         modifyService.modify(categoryId, dto);
+    }
+
+    @DeleteMapping("/categories/{categoryId}")
+    public void categoryRemove(@PathVariable String categoryId) {
+        removeService.remove(categoryId);
     }
 }

@@ -34,6 +34,8 @@ class AdminCategoryServiceTest {
     @Autowired
     AdminCategoryModifyService adminCategoryModifyService;
     @Autowired
+    AdminCategoryRemoveService adminCategoryRemoveService;
+    @Autowired
     CategoryRepository categoryRepository;
 
     @Test
@@ -91,6 +93,20 @@ class AdminCategoryServiceTest {
             Assertions.assertEquals(randomDescription, modified.getDescription());
             Assertions.assertEquals(randomBoolean, modified.isDefaultCategory());
         });
+    }
+
+    @Test
+    void 카테고리_삭제() {
+        // given
+        final int categoryCount = 10;
+        List<Category> savedCategories = IntStream.range(0, categoryCount).mapToObj(i -> randomCategory()).collect(Collectors.toList());
+
+        // when
+        savedCategories.forEach(category -> adminCategoryRemoveService.remove(category.getId()));
+
+        // then
+        List<AdminCategoryListDto> list = adminCategoryFindService.findList();
+        Assertions.assertTrue(list.isEmpty());
     }
 
     Category randomCategory() {
