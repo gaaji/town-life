@@ -7,6 +7,7 @@ import com.gaaji.townlife.service.repository.TownLifeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,51 +21,28 @@ public class TownLifeFindEntityServiceImpl implements TownLifeFindEntityService 
 
     @Override
     public TownLife findById(String id) {
-
         return townLifeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND));
     }
 
     @Override
-    public List<TownLife> findListByTownId(String townId, int size) {
+    public Slice<TownLife> findListByTownIdAndIdLessThan(String townId, String offsetTownLifeId, int page, int size) {
 
-        PageRequest page = PageRequest.ofSize(size);
-        List<TownLife> townLives = townLifeRepository.findByTownId(townId, page);
+        PageRequest paging = PageRequest.of(page, size);
+        Slice<TownLife> townLives = townLifeRepository.findByTownIdAndIdLessThan(townId, offsetTownLifeId, paging);
 
-        validateExistTownLives(townLives);
-
-        return townLives;
-    }
-
-    @Override
-    public List<TownLife> findMoreListByTownIdAndIdLessThan(String townId, String lastTownLifeId, int size) {
-
-        PageRequest page = PageRequest.ofSize(size);
-        List<TownLife> townLives = townLifeRepository.findByTownIdAndIdLessThan(townId, lastTownLifeId, page);
-
-        validateExistTownLives(townLives);
+        validateExistTownLives(townLives.getContent());
 
         return townLives;
     }
 
     @Override
-    public List<TownLife> findListByAuthorId(String authorId, int size) {
+    public Slice<TownLife> findListByUserIdAndIdLessThan(String userId, String offsetTownLifeId, int page, int size) {
 
-        PageRequest page = PageRequest.ofSize(size);
-        List<TownLife> townLives = townLifeRepository.findByAuthorId(authorId, page);
+        PageRequest paging = PageRequest.of(page, size);
+        Slice<TownLife> townLives = townLifeRepository.findByAuthorIdAndIdLessThan(userId, offsetTownLifeId, paging);
 
-        validateExistTownLives(townLives);
-
-        return townLives;
-    }
-
-    @Override
-    public List<TownLife> findMoreListByAuthorIdAndIdLessThan(String authorId, String lastTownLifeId, int size) {
-
-        PageRequest page = PageRequest.ofSize(size);
-        List<TownLife> townLives = townLifeRepository.findByAuthorIdAndIdLessThan(authorId, lastTownLifeId, page);
-
-        validateExistTownLives(townLives);
+        validateExistTownLives(townLives.getContent());
 
         return townLives;
     }

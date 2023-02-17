@@ -1,19 +1,12 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
 import com.gaaji.townlife.service.domain.townlife.TownLife;
-
-import java.util.List;
+import org.springframework.data.domain.Slice;
 
 public interface TownLifeFindEntityService {
 
     TownLife findById(String id);
-
-    List<TownLife> findListByTownId(String townId, int size);
-
-    List<TownLife> findMoreListByTownIdAndIdLessThan(String townId, String lastTownLifeId, int size);
-
-    List<TownLife> findListByAuthorId(String authorId, int size);
-
-    List<TownLife> findMoreListByAuthorIdAndIdLessThan(String authorId, String lastTownLifeId, int size);
+    Slice<TownLife> findListByTownIdAndIdLessThan(String townId, String offsetTownLifeId, int page, int size);
+    Slice<TownLife> findListByUserIdAndIdLessThan(String userId, String offsetTownLifeId, int page, int size);
 
 }

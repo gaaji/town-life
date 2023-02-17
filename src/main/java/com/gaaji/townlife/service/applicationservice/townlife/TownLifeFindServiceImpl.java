@@ -1,17 +1,20 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
-import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListDto;
+import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListResponseDto;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeCounter;
+import de.huxhorn.sulky.ulid.ULID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TownLifeFindServiceImpl implements TownLifeFindService {
@@ -20,6 +23,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
     private final TownLifeFindCountService countService;
 
     @Override
+    @Transactional
     public TownLifeDetailDto findById(String id) {
         TownLife townLife = entityService.findById(id);
 
@@ -37,35 +41,22 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
 
     @Override
     @Transactional
-    public List<TownLifeListDto> findListByTownId(String townId, String lastTownLifeId, int size) {
-        List<TownLife> townLives;
+    public TownLifeListResponseDto findListByTownId(String townId, LocalDateTime requestTime, int page, int size) {
 
-        if(Objects.equals("-1", lastTownLifeId)) {
-            townLives = entityService.findListByTownId(townId, size);
-        } else {
-            townLives = entityService.findMoreListByTownIdAndIdLessThan(townId, lastTownLifeId, size);
-        }
+        String offsetId = new ULID().nextULID(requestTime.toInstant(ZoneOffset.UTC).toEpochMilli());
+        Slice<TownLife> townLives = entityService.findListByTownIdAndIdLessThan(townId, offsetId, page, size);
 
-        return convertDtoListFromEntityList(townLives);
+        return TownLifeListResponseDto.of(townLives);
     }
 
     @Override
     @Transactional
-    public List<TownLifeListDto> findListByUserId(String userId, String lastTownLifeId, int size) {
-        List<TownLife> townLives;
+    public TownLifeListResponseDto findListByUserId(String userId, LocalDateTime requestTime, int page, int size) {
 
-        if(Objects.equals("-1", lastTownLifeId)) {
-            townLives = entityService.findListByAuthorId(userId, size);
-        } else {
-            townLives = entityService.findMoreListByAuthorIdAndIdLessThan(userId, lastTownLifeId, size);
-        }
+        String offsetId = new ULID().nextULID(requestTime.toInstant(ZoneOffset.UTC).toEpochMilli());
+        Slice<TownLife> townLives = entityService.findListByUserIdAndIdLessThan(userId, offsetId, page, size);
 
-        return convertDtoListFromEntityList(townLives);
+        return TownLifeListResponseDto.of(townLives);
     }
 
-    private List<TownLifeListDto> convertDtoListFromEntityList(List<TownLife> townLives) {
-        return townLives.stream()
-                .map(townLife -> TownLifeListDto.of(townLife, townLife.getTownLifeCounter()))
-                .collect(Collectors.toList());
-    }
 }
