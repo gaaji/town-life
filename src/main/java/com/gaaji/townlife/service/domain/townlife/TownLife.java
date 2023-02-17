@@ -66,12 +66,16 @@ public abstract class TownLife extends BaseEntity {
 
     public void associateCounter(TownLifeCounter townLifeCounter) {
         this.townLifeCounter = townLifeCounter;
-        this.townLifeCounter.associateTownLife(this);
     }
 
     public String getThumbnailSrc() {
         if(this.attachedImages.size() == 0) return null;
         return this.attachedImages.get(0).getSrc();
     }
+
+    public int getCommentCount() { return townLifeCounter.getCommentCount(); }
+    public int getInterestCount() { return townLifeCounter.getInterestCount(); }
+    public int getReactionCount() { return townLifeCounter.getReactionCount(); }
+    public int getViewCount() { return townLifeCounter.getViewCount(); }
 
 }
