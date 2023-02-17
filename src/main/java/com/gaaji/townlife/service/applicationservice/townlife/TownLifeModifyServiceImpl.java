@@ -1,7 +1,6 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
 import com.gaaji.townlife.global.exception.api.ApiErrorCode;
-import com.gaaji.townlife.global.exception.api.ResourceAuthorizationException;
 import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeModifyRequestDto;
@@ -12,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import static com.gaaji.townlife.global.utils.validation.ValidateResourceAccess.validateAuthorizationModifying;
 
 @Slf4j
 @Service
@@ -27,7 +26,7 @@ public class TownLifeModifyServiceImpl implements TownLifeModifyService {
         TownLife townLife = townLifeRepository.findById(townLifeId)
                 .orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND));
 
-        validateAuthorizationModifying(townLife.getAuthorId(), authorId);
+        validateAuthorizationModifying(authorId, townLife.getAuthorId());
 
         townLife.updateContent(dto.getTitle(), dto.getText(), dto.getLocation());
 
@@ -36,9 +35,4 @@ public class TownLifeModifyServiceImpl implements TownLifeModifyService {
         return TownLifeDetailDto.of(townLife, townLife.getTownLifeCounter());
     }
 
-    private void validateAuthorizationModifying(String authorId, String requestAuthorId) {
-        if( !Objects.equals(authorId, requestAuthorId) ) {
-            throw new ResourceAuthorizationException(ApiErrorCode.AUTHORIZATION_MODIFY_ERROR);
-        }
-    }
 }
