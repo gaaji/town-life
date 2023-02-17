@@ -24,7 +24,7 @@ public class AdminCategoryModifyServiceImpl implements AdminCategoryModifyServic
     @Override
     public void modify(String categoryId, AdminCategoryModifyDto dto) {
         Category category = categoryRepository.findById(categoryId).orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.CATEGORY_NOT_FOUND));
-        Category before = Category.create(category.getName(), category.isDefaultCategory(), category.getDescription());
+        Category before = Category.create(category.getName(), category.isDefaultCategory(), category.getDescription(), category.getTownLifeType());
         category.modify(dto.getName(), dto.getDescription(), dto.isDefaultCategory());
 
         Function<Category, CategoryUpdatedEventBody.CategoryDto> createEventDtoFunc = c ->

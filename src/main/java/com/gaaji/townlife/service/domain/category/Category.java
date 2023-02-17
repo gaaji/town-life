@@ -2,7 +2,6 @@ package com.gaaji.townlife.service.domain.category;
 
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
-import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,7 +29,7 @@ public class Category {
     private List<CategorySubscription> subscriptions = new ArrayList<>();
     @OneToMany(mappedBy = "category")
     private List<TownLife> townLives = new ArrayList<>();
-    @Enumerated(EnumType.STRING)
+    @Enumerated(value = EnumType.STRING)
     private TownLifeType townLifeType;
 
     private Category(String name, boolean defaultCategory, String description, TownLifeType townLifeType) {
@@ -49,6 +48,7 @@ public class Category {
         return this;
     }
 
+    // TownLifeType도 수정할 수 있게 하지 않을까
     public void modify(String name, String description, boolean defaultCategory) {
         this.name = name;
         this.defaultCategory = defaultCategory;

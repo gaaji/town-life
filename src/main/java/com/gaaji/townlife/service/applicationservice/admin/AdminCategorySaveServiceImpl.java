@@ -22,7 +22,7 @@ public class AdminCategorySaveServiceImpl implements AdminCategorySaveService {
     @Transactional
     public AdminCategorySaveResponseDto save(AdminCategorySaveRequestDto dto) {
         if(categoryRepository.existsByName(dto.getName())) throw new CategoryNameUniqueConstraintException(dto.getName());
-        Category savedCategory = categoryRepository.save(Category.create(dto.getName(), dto.isDefaultCategory(), dto.getDescription()));
+        Category savedCategory = categoryRepository.save(Category.create(dto.getName(), dto.isDefaultCategory(), dto.getDescription(), dto.getTownLifeType()));
 
         eventPublisher.publishEvent(new CategoryCreatedEvent(this, savedCategory));
 
