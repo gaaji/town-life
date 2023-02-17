@@ -5,8 +5,6 @@ import com.gaaji.townlife.global.exception.api.ResourceAuthorizationException;
 import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeModifyRequestDto;
-import com.gaaji.townlife.service.domain.townlife.PostTownLife;
-import com.gaaji.townlife.service.domain.townlife.QuestionTownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,17 +29,7 @@ public class TownLifeModifyServiceImpl implements TownLifeModifyService {
 
         validateAuthorizationModifying(townLife.getAuthorId(), authorId);
 
-        TownLife before = null;
-        if( townLife instanceof PostTownLife ) {
-            before = PostTownLife.newInstance(townLife);
-        } else if ( townLife instanceof QuestionTownLife ){
-            before = QuestionTownLife.newInstance(townLife);
-        }
-
         townLife.updateContent(dto.getTitle(), dto.getText(), dto.getLocation());
-
-        log.info("MODIFY :: before: {}", before);
-        log.info("MODIFY :: after: {}", townLife);
 
         // 게시글 수정 되었다는 알림 이벤트 발행
 

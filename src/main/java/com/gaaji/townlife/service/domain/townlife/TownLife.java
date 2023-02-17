@@ -51,19 +51,6 @@ public abstract class TownLife extends BaseEntity {
         this.content = TownLifeContent.of(title, text, location);
     }
 
-    protected static <S extends TownLife> S newInstance(TownLife origin, S newInstance) {
-        newInstance.id = origin.id;
-        newInstance.category = origin.category;
-        newInstance.authorId = origin.authorId;
-        newInstance.comments = origin.comments;
-        newInstance.content = origin.content;
-        newInstance.townId = origin.townId;
-        newInstance.subscriptions = origin.subscriptions;
-        newInstance.attachedImages = origin.attachedImages;
-        newInstance.townLifeCounter = origin.townLifeCounter;
-        return newInstance;
-    }
-
     public void updateContent(String title, String text, String location) {
         this.content = TownLifeContent.of(title, text, location);
     }

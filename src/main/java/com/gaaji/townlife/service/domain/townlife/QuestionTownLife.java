@@ -34,12 +34,4 @@ public class QuestionTownLife extends TownLife {
         );
     }
 
-    public static QuestionTownLife newInstance(TownLife origin) {
-        QuestionTownLife newInstance = new QuestionTownLife();
-        newInstance(origin, newInstance);
-        newInstance.reactions = ((QuestionTownLife)origin).reactions;
-        return newInstance;
-    }
-
-
 }

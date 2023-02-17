@@ -34,10 +34,4 @@ public class PostTownLife extends TownLife {
         );
     }
 
-    public static PostTownLife newInstance(TownLife origin) {
-        PostTownLife newInstance = new PostTownLife();
-        newInstance(origin, newInstance);
-        newInstance.reactions = ((PostTownLife)origin).reactions;
-        return newInstance;
-    }
 }
