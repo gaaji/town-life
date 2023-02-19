@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @ToString(exclude = {"subscriptions", "townLives"})
+@Getter @ToString(exclude = {"unsubscriptions", "townLives"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(indexes = {
@@ -26,7 +26,7 @@ public class Category {
     private boolean defaultCategory;
     private String description;
     @OneToMany(mappedBy = "category")
-    private List<CategorySubscription> subscriptions = new ArrayList<>();
+    private List<CategoryUnsubscription> unsubscriptions = new ArrayList<>();
     @OneToMany(mappedBy = "category")
     private List<TownLife> townLives = new ArrayList<>();
     @Enumerated(value = EnumType.STRING)
@@ -54,4 +54,10 @@ public class Category {
         this.defaultCategory = defaultCategory;
         this.description = description;
     }
+
+    public Category addUnsubscription(CategoryUnsubscription categoryUnsubscription) {
+        this.unsubscriptions.add(categoryUnsubscription);
+        return this;
+    }
+
 }
