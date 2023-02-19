@@ -7,11 +7,13 @@ import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import com.gaaji.townlife.service.repository.CategoryRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
+@DisplayName("동네생활 수정 서비스 테스트")
 class TownLifeModifyServiceImplTest {
 
     @Autowired private CategoryRepository categoryRepository;
@@ -22,7 +24,7 @@ class TownLifeModifyServiceImplTest {
     private Category category;
     void init_category() {
         category = categoryRepository.save(
-                Category.create("테스트_카테고리", true, "테스트_카테고리입니다.", TownLifeType.POST));
+                Category.create("테스트_카테고리_POST_수정", true, "테스트_카테고리입니다.", TownLifeType.POST));
     }
 
     private final String authorId = "user01";
@@ -42,6 +44,7 @@ class TownLifeModifyServiceImplTest {
     }
 
     @Test
+    @DisplayName("POST 동네생활 수정")
     void test_for_modify_post_town_life() {
         init_post_town_life();
         TownLifeModifyRequestDto dto = new TownLifeModifyRequestDto("수정 게시글", "수정 게시글 내용입니다.", "");

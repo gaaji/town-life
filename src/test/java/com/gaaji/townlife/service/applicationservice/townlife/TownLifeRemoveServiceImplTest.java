@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
+@DisplayName("동네생활 삭제 서비스 테스트")
 class TownLifeRemoveServiceImplTest {
 
     @Autowired
@@ -28,12 +29,12 @@ class TownLifeRemoveServiceImplTest {
     private TownLifeSaveServiceImpl townLifeSaveService;
 
     private static Category category;
-    private static int i = 1;
 
     void init_category() {
         category = categoryRepository.save(
-                Category.create("테스트_카테고리"+ i++, true, "테스트_카테고리입니다.", TownLifeType.POST));
+                Category.create("테스트_카테고리_POST_삭제", true, "테스트_카테고리입니다.", TownLifeType.POST));
     }
+
     private final String authorId = "user01";
     private final String townId = "town01";
     private final String title = "테스트 게시글";
