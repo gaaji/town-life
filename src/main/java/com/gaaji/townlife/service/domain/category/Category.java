@@ -43,6 +43,10 @@ public class Category {
         return new Category(name, defaultCategory, description, townLifeType);
     }
 
+    public boolean isDefault() {
+        return defaultCategory;
+    }
+
     public Category addTownLife(TownLife townLife) {
         this.townLives.add(townLife);
         return this;
