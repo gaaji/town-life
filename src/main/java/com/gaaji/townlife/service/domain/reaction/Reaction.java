@@ -16,11 +16,13 @@ import javax.persistence.*;
         @Index(name = "idx__reaction__user_id", columnList = "userId"),
 })
 public abstract class Reaction {
+
     @Id
     @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
-    private String id;
-    private String userId;
+    protected String id;
+    protected String userId;
 
     public abstract TownLife getTownLife();
+    public abstract <T extends TownLife> void associateTownLife(T townLife);
 }

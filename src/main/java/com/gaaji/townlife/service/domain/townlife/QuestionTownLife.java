@@ -2,6 +2,7 @@ package com.gaaji.townlife.service.domain.townlife;
 
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.reaction.QuestionReaction;
+import com.gaaji.townlife.service.domain.reaction.Reaction;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -11,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter @ToString(callSuper = true)
@@ -19,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @DiscriminatorValue("question")
 public class QuestionTownLife extends TownLife {
-    @OneToMany(mappedBy = "questionTownLife")
+    @OneToMany(mappedBy = "questionTownLife", orphanRemoval = true)
     private List<QuestionReaction> reactions = new ArrayList<>();
 
     public QuestionTownLife(String authorId, String townId, String title, String text, String location) {
@@ -32,6 +34,26 @@ public class QuestionTownLife extends TownLife {
                 dto.getTownId(),
                 dto.getTitle(), dto.getText(), dto.getLocation()
         );
+    }
+
+    @Override
+    public <T extends Reaction> T addReaction(T reaction) {
+        this.reactions.add((QuestionReaction) reaction);
+        reaction.associateTownLife(this);
+
+        this.townLifeCounter.doReaction();
+        return reaction;
+    }
+
+    @Override
+    public void removeReactionByUserId(String userId) {
+        reactions.forEach(reaction -> {
+            if (Objects.equals(reaction.getUserId(), userId)) {
+                reactions.remove(reaction);
+                reaction.associateTownLife(null);
+            }
+        });
+        this.townLifeCounter.cancelReaction();
     }
 
 }

@@ -3,6 +3,7 @@ package com.gaaji.townlife.service.domain.townlife;
 import com.gaaji.townlife.service.domain.BaseEntity;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.comment.ParentComment;
+import com.gaaji.townlife.service.domain.reaction.Reaction;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.SQLDelete;
@@ -77,5 +78,8 @@ public abstract class TownLife extends BaseEntity {
     public int getInterestCount() { return townLifeCounter.getInterestCount(); }
     public int getReactionCount() { return townLifeCounter.getReactionCount(); }
     public int getViewCount() { return townLifeCounter.getViewCount(); }
+
+    public abstract <T extends Reaction> T addReaction(T reaction);
+    public abstract void removeReactionByUserId(String userId);
 
 }
