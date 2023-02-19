@@ -9,7 +9,7 @@ public interface TownLifeFindService {
 
     TownLifeDetailDto findById(String id);
     TownLifeDetailDto visit(String id);
-    TownLifeListResponseDto findListByTownId(String townId, LocalDateTime requestTime, int page, int size);
+    TownLifeListResponseDto findListByTownId(String userId, String townId, LocalDateTime requestTime, int page, int size);
     TownLifeListResponseDto findListByUserId(String userId, LocalDateTime requestTime, int page, int size);
 
 }
