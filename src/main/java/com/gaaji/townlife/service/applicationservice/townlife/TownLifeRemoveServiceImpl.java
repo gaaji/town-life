@@ -28,7 +28,7 @@ public class TownLifeRemoveServiceImpl implements TownLifeRemoveService {
         townLifeRepository.delete(townLife);
     }
 
-    // @Query로 한다고 하지 않았나???
+    //TODO @Query 로 한다고 하지 않았나???
     private void validateAlreadyRemoved(TownLife townLife) {
         if( townLife.getDeletedAt() != null ) {
             throw new ResourceRemoveException(ApiErrorCode.TOWN_LIFE_REMOVE_ERROR);
