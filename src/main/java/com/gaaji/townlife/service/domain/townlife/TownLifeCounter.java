@@ -49,4 +49,13 @@ public class TownLifeCounter {
         return this;
     }
 
+    public TownLifeCounter doReaction() {
+        this.reactionCount = this.reactionCount.increase();
+        return this;
+    }
+
+    public TownLifeCounter cancelReaction() {
+        this.reactionCount = this.reactionCount.decrease();
+        return this;
+    }
 }
