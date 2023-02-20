@@ -33,7 +33,7 @@ class TownLifeFindServiceImplTest {
 
     void init_category() {
         category = categoryRepository.save(
-                Category.create("테스트_카테고리"+ i++, true, "테스트_카테고리입니다.", TownLifeType.POST));
+                Category.create("테스트_카테고리_조회"+ i++, true, "테스트_카테고리입니다.", TownLifeType.POST));
     }
 
     @Nested
