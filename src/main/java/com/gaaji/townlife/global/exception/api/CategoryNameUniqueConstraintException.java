@@ -1,4 +1,4 @@
-package com.gaaji.townlife.global.exception;
+package com.gaaji.townlife.global.exception.api;
 
 public class CategoryNameUniqueConstraintException extends RuntimeException {
     public CategoryNameUniqueConstraintException(String name) {

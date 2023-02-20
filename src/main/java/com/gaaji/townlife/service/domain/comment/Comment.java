@@ -14,6 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "update comment set deleted_at = current_timestamp where id = ?")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
@@ -25,12 +26,12 @@ public abstract class Comment extends BaseEntity {
     @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
     private String id;
-    private String userId;
+    protected String userId;
     @Embedded
-    private CommentContent content;
-    private LocalDateTime deletedAt;
+    protected CommentContent content;
+    protected LocalDateTime deletedAt;
     @OneToMany(mappedBy = "comment")
-    private List<CommentLike> likes = new ArrayList<>();
+    protected List<CommentLike> likes = new ArrayList<>();
 
     public abstract TownLife getTownLife();
 }

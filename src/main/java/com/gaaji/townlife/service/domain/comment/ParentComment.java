@@ -10,10 +10,9 @@ import java.util.List;
 
 @Entity
 @Getter
+@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
-@ToString
 @OnDelete(action = OnDeleteAction.CASCADE)
 @DiscriminatorValue("parent")
 public class ParentComment extends Comment {
@@ -21,4 +20,19 @@ public class ParentComment extends Comment {
     private TownLife townLife;
     @OneToMany(mappedBy = "parent")
     private List<ChildComment> children;
+
+    public ParentComment(TownLife townLife, CommentContent content, String userId) {
+        this.townLife = townLife;
+        this.content = content;
+        this.userId = userId;
+    }
+
+
+    public static ParentComment create(TownLife townLife, CommentContent commentContent, String authId) {
+        ParentComment parentComment = new ParentComment();
+        parentComment.townLife = townLife;
+        parentComment.content = commentContent;
+        parentComment.userId = authId;
+        return parentComment;
+    }
 }

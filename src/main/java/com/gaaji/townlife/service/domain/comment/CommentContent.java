@@ -3,6 +3,7 @@ package com.gaaji.townlife.service.domain.comment;
 import lombok.*;
 
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotBlank;
 
 @Embeddable
 @Getter
@@ -14,4 +15,11 @@ public class CommentContent {
     private String imageSrc;
     private String location;
     private String text;
+
+    public static CommentContent create(String text, String location) {
+        CommentContent commentContent = new CommentContent();
+        commentContent.text = text;
+        commentContent.location = location;
+        return commentContent;
+    }
 }

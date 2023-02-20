@@ -5,7 +5,7 @@ import com.gaaji.townlife.service.controller.comment.dto.CommentSaveResponseDto;
 
 public interface CommentSaveService {
 
-    CommentSaveResponseDto saveParent(String townLifeId, CommentSaveRequestDto dto);
+    CommentSaveResponseDto saveParent(String authId, String townLifeId, CommentSaveRequestDto dto);
     CommentSaveResponseDto saveChild(String townLifeId, String parentCommentId, CommentSaveRequestDto dto);
 
 }
