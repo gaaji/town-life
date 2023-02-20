@@ -1,5 +1,8 @@
 package com.gaaji.townlife.service.domain.townlife;
 
+import com.gaaji.townlife.global.exception.api.ApiErrorCode;
+import com.gaaji.townlife.global.exception.api.ResourceAlreadyExistException;
+import com.gaaji.townlife.global.exception.api.ResourceRemoveException;
 import com.gaaji.townlife.service.domain.BaseEntity;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.comment.ParentComment;
@@ -12,6 +15,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Getter @ToString(exclude = { "category", "townLifeCounter", "subscriptions", "comments", "attachedImages" })
@@ -39,7 +44,7 @@ public abstract class TownLife extends BaseEntity {
     protected TownLifeContent content;
     @OneToMany(mappedBy = "townLife")
     protected List<ParentComment> comments = new ArrayList<>();
-    @OneToMany(mappedBy = "townLife")
+    @OneToMany(mappedBy = "townLife", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<TownLifeSubscription> subscriptions = new ArrayList<>();
     @OneToMany(mappedBy = "townLife", cascade = CascadeType.PERSIST, orphanRemoval = true)
     protected List<AttachedImage> attachedImages = new ArrayList<>();
@@ -62,7 +67,36 @@ public abstract class TownLife extends BaseEntity {
     }
 
     public void addSubscription(TownLifeSubscription townLifeSubscription) {
+        validateExistsSubscriptionByUserId(townLifeSubscription.getUserId());
+
         this.subscriptions.add(townLifeSubscription);
+        townLifeSubscription.associateTownLife(this);
+    }
+
+    private void validateExistsSubscriptionByUserId(String userId) {
+        Optional<TownLifeSubscription> subscriptionOptional = this.subscriptions.stream()
+                .filter(s -> Objects.equals(s.getUserId(), userId))
+                .findFirst();
+
+        if (subscriptionOptional.isPresent()) {
+            throw new ResourceAlreadyExistException(ApiErrorCode.TOWN_LIFE_SUBSCRIPTION_ALREADY_EXIST_ERROR);
+        }
+    }
+
+    public void removeSubscriptionByUserId(String userId) {
+        Optional<TownLifeSubscription> subscriptionOpt = this.subscriptions.stream()
+                .filter(s -> Objects.equals(s.getUserId(), userId))
+                .findFirst();
+
+        if (subscriptionOpt.isPresent()) {
+
+            TownLifeSubscription subscription = subscriptionOpt.get();
+            this.subscriptions.remove(subscription);
+            subscription.associateTownLife(null);
+
+        } else {
+            throw new ResourceRemoveException(ApiErrorCode.TOWN_LIFE_SUBSCRIPTION_NOT_FOUND);
+        }
     }
 
     public void associateCounter(TownLifeCounter townLifeCounter) {
