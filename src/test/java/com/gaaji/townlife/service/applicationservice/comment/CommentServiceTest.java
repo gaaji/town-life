@@ -12,9 +12,11 @@ import com.gaaji.townlife.service.controller.comment.dto.CommentSaveResponseDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
+import com.gaaji.townlife.service.domain.comment.ParentComment;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import com.gaaji.townlife.service.repository.CategoryRepository;
+import com.gaaji.townlife.service.repository.CommentRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -49,32 +51,58 @@ public class CommentServiceTest {
     CategoryRepository categoryRepository;
     @Autowired
     private TownLifeRepository townLifeRepository;
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Test
     void 댓글_추가() {
-        String userId = "user1";
+        String commenterId = "user1";
         Category category = randomCategory();
         TownLife townLife = randomTownLife(category);
 
         String text = "댓글입니다.";
         String location = townLife.getContent().getLocation();
-        CommentSaveResponseDto dto = commentSaveService.saveParent(userId, townLife.getId(), CommentSaveRequestDto.create(userId, location, text));
+        CommentSaveResponseDto dto = commentSaveService.saveParent(commenterId, townLife.getId(), CommentSaveRequestDto.create(commenterId, location, text));
 
-        Assertions.assertEquals(userId, dto.getCommenterId());
+        Assertions.assertEquals(commenterId, dto.getCommenterId());
         Assertions.assertEquals(text, dto.getText());
         Assertions.assertEquals(townLife.getId(), dto.getTownLifeId());
         Assertions.assertEquals(location, dto.getLocation());
         Assertions.assertNotNull(dto.getCreatedAt());
     }
 
+    @Test
+    void 대댓글_추가() {
+        Category category = randomCategory();
+        TownLife townLife = randomTownLife(category);
+        ParentComment parentComment = randomParentComment(townLife);
+
+        String commenterId = randomString();
+        String text = randomString();
+        String location = randomString();
+        CommentSaveResponseDto dto = commentSaveService.saveChild(commenterId, townLife.getId(), parentComment.getId(), CommentSaveRequestDto.create(commenterId, location, text));
+
+        Assertions.assertEquals(commenterId, dto.getCommenterId());
+        Assertions.assertEquals(text, dto.getText());
+        Assertions.assertEquals(townLife.getId(), dto.getTownLifeId());
+        Assertions.assertEquals(location, dto.getLocation());
+        Assertions.assertNotNull(dto.getCreatedAt());
+    }
+
+    private ParentComment randomParentComment(TownLife townLife) {
+        String commenterId = randomString();
+        CommentSaveResponseDto dto = commentSaveService.saveParent(commenterId, townLife.getId(), CommentSaveRequestDto.create(commenterId, randomString(), randomString()));
+        return (ParentComment) commentRepository.findById(dto.getId()).get();
+    }
+
     TownLife randomTownLife(Category category) {
         return createTownLife(
                 category.getId(),
-                UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(),
-                UUID.randomUUID().toString(),
-                UUID.randomUUID().toString()
+                randomString(),
+                randomString(),
+                randomString(),
+                randomString(),
+                randomString()
         );
     }
 
@@ -95,11 +123,15 @@ public class CommentServiceTest {
     }
 
     Category randomCategory() {
-        return createCategory(UUID.randomUUID().toString(), true, UUID.randomUUID().toString());
+        return createCategory(randomString(), true, randomString());
     }
 
     Category createCategory(String name, boolean defaultCategory, String description) {
         AdminCategorySaveResponseDto dto = adminCategorySaveService.save(new AdminCategorySaveRequestDto(name, defaultCategory, description));
         return categoryRepository.findById(dto.getId()).get();
+    }
+
+    private static String randomString() {
+        return UUID.randomUUID().toString();
     }
 }

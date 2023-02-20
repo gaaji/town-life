@@ -5,6 +5,8 @@ import com.gaaji.townlife.global.exception.api.BadRequestException;
 import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
 import com.gaaji.townlife.service.controller.comment.dto.CommentSaveRequestDto;
 import com.gaaji.townlife.service.controller.comment.dto.CommentSaveResponseDto;
+import com.gaaji.townlife.service.domain.comment.ChildComment;
+import com.gaaji.townlife.service.domain.comment.Comment;
 import com.gaaji.townlife.service.domain.comment.CommentContent;
 import com.gaaji.townlife.service.domain.comment.ParentComment;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
@@ -27,9 +29,8 @@ public class CommentSaveServiceImpl implements CommentSaveService {
 
     @Override
     public CommentSaveResponseDto saveParent(String authId, String townLifeId, CommentSaveRequestDto dto) {
-        if(!authId.equals(dto.getCommenterId()))
-            throw new BadRequestException("Header.Authorization 과 body.commentId 가 일치해가 일치하지 않습니다.");
-        TownLife townLife = townLifeRepository.findById(townLifeId).orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND));
+        checkAuth(authId, dto.getCommenterId());
+        TownLife townLife = getTownLifeOrThrow(townLifeId);
         ParentComment savedComment = commentRepository.save(ParentComment.create(townLife, CommentContent.create(dto.getText(), dto.getLocation()), authId));
         CommentContent content = savedComment.getContent();
 
@@ -46,7 +47,32 @@ public class CommentSaveServiceImpl implements CommentSaveService {
     }
 
     @Override
-    public CommentSaveResponseDto saveChild(String townLifeId, String parentCommentId, CommentSaveRequestDto dto) {
-        return null;
+    public CommentSaveResponseDto saveChild(String authId, String townLifeId, String parentCommentId, CommentSaveRequestDto dto) {
+        checkAuth(authId, dto.getCommenterId());
+        getTownLifeOrThrow(townLifeId);
+        Comment parentComment = commentRepository.findById(parentCommentId).orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.COMMENT_NOT_FOUND));
+        if(!(parentComment instanceof ParentComment))
+            throw new BadRequestException("required: id of ParentComment | found: id of Comment(abstract type)");
+        ChildComment savedComment = commentRepository.save(ChildComment.create((ParentComment) parentComment, CommentContent.create(dto.getText(), dto.getLocation()), authId));
+
+        eventPublisher.publishEvent(new CommentCreatedEvent(this, CommentCreatedEventBody.of(savedComment)));
+
+        return CommentSaveResponseDto.create(
+                savedComment.getId(),
+                savedComment.getTownLife().getId(),
+                savedComment.getContent().getText(),
+                savedComment.getContent().getLocation(),
+                savedComment.getUserId(),
+                savedComment.getCreatedAt()
+        );
+    }
+
+    private static void checkAuth(String authId, String otherId) {
+        if(!authId.equals(otherId))
+            throw new BadRequestException("Header.Authorization 과 body.commentId 가 일치해가 일치하지 않습니다.");
+    }
+
+    private TownLife getTownLifeOrThrow(String townLifeId) {
+        return townLifeRepository.findById(townLifeId).orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND));
     }
 }

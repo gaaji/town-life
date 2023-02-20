@@ -21,6 +21,15 @@ import javax.persistence.ManyToOne;
 public class ChildComment extends Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private ParentComment parent;
+
+    public static ChildComment create(ParentComment parentComment, CommentContent commentContent, String commenterId) {
+        ChildComment childComment = new ChildComment();
+        childComment.parent = parentComment;
+        childComment.content = commentContent;
+        childComment.userId = commenterId;
+        return childComment;
+    }
+
     @Override
     public TownLife getTownLife() {
         return parent.getTownLife();

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CommentController {
     private final CommentSaveService commentSaveService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CommentSaveResponseDto saveParent(
@@ -21,6 +22,17 @@ public class CommentController {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authId
     ) {
         return commentSaveService.saveParent(authId, postId, dto);
+    }
+
+    @PostMapping("/{parentCommentId}/children")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentSaveResponseDto saveChild(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authId,
+            @PathVariable String postId,
+            @PathVariable String parentCommentId,
+            @RequestBody CommentSaveRequestDto dto
+    ) {
+        return commentSaveService.saveChild(authId, postId, parentCommentId, dto);
     }
 }
 

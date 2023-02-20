@@ -1,6 +1,6 @@
 package com.gaaji.townlife.service.event.dto;
 
-import com.gaaji.townlife.service.domain.comment.ParentComment;
+import com.gaaji.townlife.service.domain.comment.Comment;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -25,11 +25,11 @@ public class CommentCreatedEventBody {
         this.createdAt = createdAt;
     }
 
-    public static CommentCreatedEventBody of(ParentComment savedComment) {
+    public static CommentCreatedEventBody of(Comment savedComment) {
         return builder()
                 .id(savedComment.getId())
                 .commenterId(savedComment.getUserId())
-                .townLifeId(savedComment.getTownLife().getTownId())
+                .townLifeId(savedComment.getTownLife().getId())
                 .text(savedComment.getContent().getText())
                 .location(savedComment.getContent().getLocation())
                 .createdAt(savedComment.getCreatedAt())
