@@ -38,9 +38,9 @@ public class TownLifeFindEntityServiceImpl implements TownLifeFindEntityService 
         PageRequest paging = PageRequest.of(page, size);
         Slice<TownLife> townLives = excludedCategories == null ?
                 // 구독 취소한 카테고리가 없는 경우
-                townLifeRepository.findByTownIdAndIdLessThan(townId, offsetTownLifeId, paging) :
+                townLifeRepository.findByTownIdAndIdLessThanAndDeletedAtIsNull(townId, offsetTownLifeId, paging) :
                 // 구독 취소한 카테고리가 있는 경우
-                townLifeRepository.findByTownIdAndIdLessThanAndCategoryNotIn(townId, offsetTownLifeId, excludedCategories, paging);
+                townLifeRepository.findByTownIdAndIdLessThanAndCategoryNotInAndDeletedAtIsNull(townId, offsetTownLifeId, excludedCategories, paging);
 
         validateExistTownLives(townLives.getContent());
 
@@ -51,7 +51,7 @@ public class TownLifeFindEntityServiceImpl implements TownLifeFindEntityService 
     public Slice<TownLife> findListByUserIdAndIdLessThan(String userId, String offsetTownLifeId, int page, int size) {
 
         PageRequest paging = PageRequest.of(page, size);
-        Slice<TownLife> townLives = townLifeRepository.findByAuthorIdAndIdLessThan(userId, offsetTownLifeId, paging);
+        Slice<TownLife> townLives = townLifeRepository.findByAuthorIdAndIdLessThanAndDeletedAtIsNull(userId, offsetTownLifeId, paging);
 
         validateExistTownLives(townLives.getContent());
 
