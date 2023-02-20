@@ -32,6 +32,7 @@ public class CommentSaveServiceImpl implements CommentSaveService {
         checkAuth(authId, dto.getCommenterId());
         TownLife townLife = getTownLifeOrThrow(townLifeId);
         ParentComment savedComment = commentRepository.save(ParentComment.create(townLife, CommentContent.create(dto.getText(), dto.getLocation()), authId));
+        savedComment.associate(townLife);
         CommentContent content = savedComment.getContent();
 
         eventPublisher.publishEvent(new CommentCreatedEvent(this, CommentCreatedEventBody.of(savedComment)));
@@ -53,8 +54,9 @@ public class CommentSaveServiceImpl implements CommentSaveService {
         Comment parentComment = commentRepository.findById(parentCommentId).orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.COMMENT_NOT_FOUND));
         if(!(parentComment instanceof ParentComment))
             throw new BadRequestException("required: id of ParentComment | found: id of Comment(abstract type)");
-        ChildComment savedComment = commentRepository.save(ChildComment.create((ParentComment) parentComment, CommentContent.create(dto.getText(), dto.getLocation()), authId));
-
+        ParentComment parent = (ParentComment) parentComment;
+        ChildComment savedComment = commentRepository.save(ChildComment.create(parent, CommentContent.create(dto.getText(), dto.getLocation()), authId));
+        savedComment.associate(parent);
         eventPublisher.publishEvent(new CommentCreatedEvent(this, CommentCreatedEventBody.of(savedComment)));
 
         return CommentSaveResponseDto.create(

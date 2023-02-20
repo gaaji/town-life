@@ -34,4 +34,9 @@ public class ChildComment extends Comment {
     public TownLife getTownLife() {
         return parent.getTownLife();
     }
+
+    public void associate(ParentComment parent) {
+        this.parent = parent;
+        parent.addChild(this);
+    }
 }
