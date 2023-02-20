@@ -16,6 +16,7 @@ public enum ApiErrorCode implements ErrorCode {
     REACTION_SAVE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "TL-0007", "게시글의 공감해요 및 궁금해요 요청에 실패하였습니다."),
     CATEGORY_SUBSCRIPTION_UNMODIFIABLE_ERROR(HttpStatus.BAD_REQUEST, "TL-0008", "해당 카테고리는 구독 취소할 수 없습니다."),
     CATEGORY_UNSUBSCRIPTION_ALREADY_EXIST_ERROR(HttpStatus.BAD_REQUEST, "TL-0009", "해당 카테고리는 이미 구독 취소하였습니다."),
+    REACTION_BY_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0010", "유저님은 해당 게시글에 아직 공감하지 않았습니다."),
 
     ;
     private final HttpStatus httpStatus;

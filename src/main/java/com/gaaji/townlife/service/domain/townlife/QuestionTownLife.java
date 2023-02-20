@@ -1,5 +1,7 @@
 package com.gaaji.townlife.service.domain.townlife;
 
+import com.gaaji.townlife.global.exception.api.ApiErrorCode;
+import com.gaaji.townlife.global.exception.api.ResourceRemoveException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.reaction.QuestionReaction;
 import com.gaaji.townlife.service.domain.reaction.Reaction;
@@ -13,6 +15,7 @@ import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Getter @ToString(callSuper = true)
@@ -47,13 +50,21 @@ public class QuestionTownLife extends TownLife {
 
     @Override
     public void removeReactionByUserId(String userId) {
-        reactions.forEach(reaction -> {
-            if (Objects.equals(reaction.getUserId(), userId)) {
-                reactions.remove(reaction);
-                reaction.associateTownLife(null);
-            }
-        });
-        this.townLifeCounter.cancelReaction();
+        Optional<QuestionReaction> reactionOpt = this.reactions.stream()
+                .filter(r -> Objects.equals(r.getUserId(), userId))
+                .findFirst();
+
+        if (reactionOpt.isPresent()) {
+
+            QuestionReaction reaction = reactionOpt.get();
+            this.reactions.remove(reaction);
+            reaction.associateTownLife(null);
+
+            this.townLifeCounter.cancelReaction();
+
+        } else {
+            throw new ResourceRemoveException(ApiErrorCode.REACTION_BY_USER_NOT_FOUND);
+        }
     }
 
 }
