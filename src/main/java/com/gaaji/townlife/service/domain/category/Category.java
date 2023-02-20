@@ -1,5 +1,8 @@
 package com.gaaji.townlife.service.domain.category;
 
+import com.gaaji.townlife.global.exception.api.ApiErrorCode;
+import com.gaaji.townlife.global.exception.api.ResourceAlreadyExistException;
+import com.gaaji.townlife.global.exception.api.ResourceUnmodifiableException;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import lombok.*;
@@ -8,6 +11,8 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Getter @ToString(exclude = {"unsubscriptions", "townLives"})
@@ -25,7 +30,7 @@ public class Category {
     private String name;
     private boolean defaultCategory;
     private String description;
-    @OneToMany(mappedBy = "category")
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryUnsubscription> unsubscriptions = new ArrayList<>();
     @OneToMany(mappedBy = "category")
     private List<TownLife> townLives = new ArrayList<>();
@@ -43,10 +48,6 @@ public class Category {
         return new Category(name, defaultCategory, description, townLifeType);
     }
 
-    public boolean isDefault() {
-        return defaultCategory;
-    }
-
     public Category addTownLife(TownLife townLife) {
         this.townLives.add(townLife);
         return this;
@@ -60,8 +61,28 @@ public class Category {
     }
 
     public void addUnsubscription(CategoryUnsubscription unsubscription) {
+        validateCategoryIsDefault();
+
+        validateExistsUnsubscriptionByUserId(unsubscription.getUserId());
+
         this.unsubscriptions.add(unsubscription);
         unsubscription.associateCategory(this);
+    }
+
+    private void validateCategoryIsDefault() {
+        if (this.defaultCategory) {
+            throw new ResourceUnmodifiableException(ApiErrorCode.CATEGORY_SUBSCRIPTION_UNMODIFIABLE_ERROR);
+        }
+    }
+
+    private void validateExistsUnsubscriptionByUserId(String userId) {
+        Optional<CategoryUnsubscription> unsubscriptionOpt = this.unsubscriptions.stream()
+                .filter(s -> Objects.equals(s.getUserId(), userId))
+                .findFirst();
+
+        if (unsubscriptionOpt.isPresent()) {
+            throw new ResourceAlreadyExistException(ApiErrorCode.CATEGORY_UNSUBSCRIPTION_ALREADY_EXIST_ERROR);
+        }
     }
 
 }
