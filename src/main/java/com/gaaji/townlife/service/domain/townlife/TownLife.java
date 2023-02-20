@@ -70,4 +70,7 @@ public abstract class TownLife extends BaseEntity {
         this.townLifeCounter.associateTownLife(this);
     }
 
+    public void addComment(ParentComment parentComment) {
+        this.comments.add(parentComment);
+    }
 }
