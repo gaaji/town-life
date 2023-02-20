@@ -5,9 +5,12 @@ import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeModifyRequestDto;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
+import com.gaaji.townlife.service.event.nonkafka.dto.TownLifeUpdatedEventBody;
+import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeUpdatedEvent;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +22,7 @@ import static com.gaaji.townlife.global.utils.validation.ValidateResourceAccess.
 public class TownLifeModifyServiceImpl implements TownLifeModifyService {
 
     private final TownLifeRepository townLifeRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -30,7 +34,13 @@ public class TownLifeModifyServiceImpl implements TownLifeModifyService {
 
         townLife.updateContent(dto.getTitle(), dto.getText(), dto.getLocation());
 
-        // 게시글 수정 되었다는 알림 이벤트 발행
+        eventPublisher.publishEvent(
+                new TownLifeUpdatedEvent(this, new TownLifeUpdatedEventBody(
+                        townLife.getId(),
+                        townLife.getAuthorId(),
+                        townLife.getSubscriptions()
+                ))
+        );
 
         return TownLifeDetailDto.of(townLife, townLife.getTownLifeCounter());
     }

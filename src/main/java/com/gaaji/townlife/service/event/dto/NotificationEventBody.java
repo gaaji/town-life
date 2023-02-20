@@ -2,11 +2,12 @@ package com.gaaji.townlife.service.event.dto;
 
 import com.gaaji.townlife.service.event.PostEditedEvent;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Getter @ToString
 public class NotificationEventBody {
     private List<String> users = new ArrayList<>();
     private String message = "";
@@ -14,6 +15,13 @@ public class NotificationEventBody {
     public static NotificationEventBody of(String message, String... users) {
         NotificationEventBody body = new NotificationEventBody();
         body.users.addAll(List.of(users));
+        return body;
+    }
+
+    public static NotificationEventBody of(String message, List<String> users) {
+        NotificationEventBody body = new NotificationEventBody();
+        body.message = message;
+        body.users = List.copyOf(users);
         return body;
     }
 

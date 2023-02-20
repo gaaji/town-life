@@ -1,12 +1,18 @@
 package com.gaaji.townlife.service.event;
 
 import com.gaaji.townlife.service.adapter.kafka.KafkaProducer;
+import com.gaaji.townlife.service.domain.townlife.TownLifeSubscription;
 import com.gaaji.townlife.service.event.dto.NotificationEventBody;
+import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -30,5 +36,20 @@ public class ApplicationEventHandler {
     @EventListener
     public void handlePostEdited(PostEditedEvent event) {
         kafkaProducer.produceEvent(new NotificationEvent(this, NotificationEventBody.of(event)));
+    }
+
+    @Async
+    @EventListener
+    public void handleTownLifeUpdated(TownLifeUpdatedEvent event) {
+
+        List<String> subscribedUserIds = event.getBody().getSubscriptions().stream()
+                .map(TownLifeSubscription::getUserId)
+                .filter(userId -> !Objects.equals(event.getBody().getAuthorId(), userId))
+                .collect(Collectors.toList());
+
+        kafkaProducer.produceEvent(
+                new NotificationEvent(event.getSource(), NotificationEventBody.of("관심 가진 동네생활 게시글이 수정되었어요!", subscribedUserIds))
+        );
+
     }
 }

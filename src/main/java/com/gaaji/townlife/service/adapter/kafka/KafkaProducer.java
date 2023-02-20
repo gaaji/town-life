@@ -9,6 +9,8 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -24,7 +26,7 @@ public class KafkaProducer {
         try {
             return new ObjectMapper().writeValueAsString(body);
         } catch (JsonProcessingException e) {
-            log.error("JsonProcessingException from KafkaProducer.writeAsString(MyEvent)" + System.lineSeparator() + "{}", e.getStackTrace());
+            log.error("JsonProcessingException from KafkaProducer.writeAsString(MyEvent)" + System.lineSeparator() + "{}", Arrays.toString(e.getStackTrace()));
             throw new RuntimeException(e);
         }
     }
