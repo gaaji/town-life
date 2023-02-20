@@ -10,7 +10,6 @@ import com.gaaji.townlife.service.domain.townlife.*;
 import com.gaaji.townlife.service.repository.CategoryRepository;
 import com.gaaji.townlife.service.repository.TownLifeCounterRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
-import com.gaaji.townlife.service.repository.TownLifeSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,6 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
     private final CategoryRepository categoryRepository;
     private final TownLifeRepository townLifeRepository;
     private final TownLifeCounterRepository townLifeCounterRepository;
-    private final TownLifeSubscriptionRepository townLifeSubscriptionRepository;
 
     @Override
     @Transactional
@@ -41,7 +39,6 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
 
         return responseDto;
     }
-
 
     private <T extends TownLife> T saveTownLife(Class<T> clazz, TownLifeSaveRequestDto dto, Category category) {
         try {
@@ -60,10 +57,8 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
         }
     }
 
-
     private <T extends TownLife> void saveCounter(T townLife) {
-        TownLifeCounter counter = TownLifeCounter.create();
-        townLifeCounterRepository.save(counter);
+        TownLifeCounter counter = townLifeCounterRepository.save(TownLifeCounter.create());
         townLife.associateCounter(counter);
     }
 
