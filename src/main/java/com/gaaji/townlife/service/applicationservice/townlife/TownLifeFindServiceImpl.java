@@ -25,6 +25,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
     @Transactional
     public TownLifeDetailDto findById(String id) {
         TownLife townLife = entityService.findById(id);
+        //TODO get auth profile
 
         return TownLifeDetailDto.of(townLife);
     }
@@ -34,6 +35,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
     public TownLifeDetailDto visit(String id) {
 
         TownLife townLife = entityService.findById(id);
+        //TODO get auth profile
         TownLifeCounter counter = countService.increaseViewCount(townLife.getTownLifeCounter().getId());
 
         return TownLifeDetailDto.of(townLife, counter);
