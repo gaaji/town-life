@@ -6,9 +6,11 @@ import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestD
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveResponseDto;
 import com.gaaji.townlife.service.controller.comment.dto.CommentSaveRequestDto;
 import com.gaaji.townlife.service.controller.comment.dto.CommentSaveResponseDto;
+import com.gaaji.townlife.service.controller.comment.dto.ParentCommentListDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
+import com.gaaji.townlife.service.domain.comment.Comment;
 import com.gaaji.townlife.service.domain.comment.ParentComment;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
@@ -22,7 +24,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @SpringBootTest
 @Transactional
@@ -38,8 +44,8 @@ public class CommentServiceTest {
     TownLifeSaveService townLifeSaveService;
     @Autowired
     CommentSaveService commentSaveService;
-//    @Autowired
-//    CommentFindService commentFindService;
+    @Autowired
+    CommentFindService commentFindService;
     @Autowired
     CategoryRepository categoryRepository;
     @Autowired
@@ -84,29 +90,29 @@ public class CommentServiceTest {
         Assertions.assertNotNull(dto.getCreatedAt());
     }
 
-//    @Test
-//    void 댓글_조회() {
-//        TownLife townLife = randomTownLife(randomCategory());
-//        final int commentsCount = 10;
-//        List<ParentComment> parents = IntStream.range(0, commentsCount)
-//                .mapToObj(i -> randomParentComment(townLife))
-//                .sorted(Comparator.comparing(Comment::getId))
-//                .collect(Collectors.toList());
-//        List<ParentCommentListDto> dtos = commentFindService.findParentCommentListByTownLifeId(townLife.getId()).stream()
-//                .sorted(Comparator.comparing(ParentCommentListDto::getId))
-//                .collect(Collectors.toList());
-//        Assertions.assertEquals(commentsCount, dtos.size());
-//        IntStream.range(0, commentsCount).forEach(i -> {
-//            ParentComment expected = parents.get(i);
-//            ParentCommentListDto actual = dtos.get(i);
-//            Assertions.assertEquals(expected.getId(), actual.getId());
-//            Assertions.assertEquals(expected.getUserId(), actual.getCommenterId());
-//            Assertions.assertEquals(expected.getContent().getText(), actual.getText());
-//            Assertions.assertEquals(expected.getContent().getLocation(), actual.getLocation());
-//            Assertions.assertEquals(expected.getContent().getImageSrc(), actual.getImageSrc());
-//        });
-//
-//    }
+    @Test
+    void 댓글_조회() {
+        TownLife townLife = randomTownLife(randomCategory());
+        final int commentsCount = 10;
+        List<ParentComment> parents = IntStream.range(0, commentsCount)
+                .mapToObj(i -> randomParentComment(townLife))
+                .sorted(Comparator.comparing(Comment::getId))
+                .collect(Collectors.toList());
+        List<ParentCommentListDto> dtos = commentFindService.findParentCommentListByTownLifeId(townLife.getId()).stream()
+                .sorted(Comparator.comparing(ParentCommentListDto::getId))
+                .collect(Collectors.toList());
+        Assertions.assertEquals(commentsCount, dtos.size());
+        IntStream.range(0, commentsCount).forEach(i -> {
+            ParentComment expected = parents.get(i);
+            ParentCommentListDto actual = dtos.get(i);
+            Assertions.assertEquals(expected.getId(), actual.getId());
+            Assertions.assertEquals(expected.getUserId(), actual.getCommenterId());
+            Assertions.assertEquals(expected.getContent().getText(), actual.getText());
+            Assertions.assertEquals(expected.getContent().getLocation(), actual.getLocation());
+            Assertions.assertEquals(expected.getContent().getImageSrc(), actual.getImageSrc());
+        });
+
+    }
 
     private ParentComment randomParentComment(TownLife townLife) {
         String commenterId = randomString();
