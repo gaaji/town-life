@@ -48,8 +48,9 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
             T townLife = townLifeRepository.save(
                     clazz.getConstructor(String.class, String.class, String.class, String.class, String.class)
                             .newInstance(dto.getAuthorId(), dto.getTownId(), dto.getTitle(), dto.getText(), dto.getLocation()));
+
             townLife.associateCategory(category);
-            saveSubscription(townLife, dto.getAuthorId());
+            townLife.addSubscription(TownLifeSubscription.of(dto.getAuthorId()));
             saveCounter(townLife);
 
             return townLife;
@@ -59,10 +60,6 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
         }
     }
 
-    private <T extends TownLife> void saveSubscription(T townLife, String authorId) {
-        TownLifeSubscription subscription = townLifeSubscriptionRepository.save(TownLifeSubscription.of(authorId));
-        subscription.associateTownLife(townLife);
-    }
 
     private <T extends TownLife> void saveCounter(T townLife) {
         TownLifeCounter counter = TownLifeCounter.create();
