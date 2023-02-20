@@ -32,7 +32,7 @@ import java.util.Optional;
 public abstract class TownLife extends BaseEntity {
 
     @Id
-    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ulid.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
     protected String id;
     @ManyToOne(fetch = FetchType.LAZY)

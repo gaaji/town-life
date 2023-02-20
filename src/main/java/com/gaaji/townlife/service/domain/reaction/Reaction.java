@@ -18,7 +18,7 @@ import javax.persistence.*;
 public abstract class Reaction {
 
     @Id
-    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ulid.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
     protected String id;
     protected String userId;

@@ -1,6 +1,6 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
-import com.gaaji.townlife.global.utils.ULIDGenerator;
+import com.gaaji.townlife.global.utils.ulid.ULIDGenerator;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListResponseDto;
 import com.gaaji.townlife.service.domain.townlife.TownLife;

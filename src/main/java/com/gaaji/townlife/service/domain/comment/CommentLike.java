@@ -16,7 +16,7 @@ import javax.persistence.*;
 })
 public class CommentLike {
     @Id
-    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ulid.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
     private String id;
     private String userId;

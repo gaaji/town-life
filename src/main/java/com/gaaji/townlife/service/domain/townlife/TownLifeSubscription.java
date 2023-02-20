@@ -14,7 +14,7 @@ import javax.persistence.*;
 })
 public class TownLifeSubscription {
     @Id
-    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ulid.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
     private String id;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -1,4 +1,4 @@
-package com.gaaji.townlife.global.utils;
+package com.gaaji.townlife.global.utils.ulid;
 
 import de.huxhorn.sulky.ulid.ULID;
 import org.hibernate.HibernateException;
