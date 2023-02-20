@@ -5,7 +5,7 @@ import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeModifyRequestDto;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
-import com.gaaji.townlife.service.event.nonkafka.dto.TownLifeUpdatedEventBody;
+import com.gaaji.townlife.service.event.nonkafka.dto.TownLifeEventBody;
 import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeUpdatedEvent;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,13 +34,10 @@ public class TownLifeModifyServiceImpl implements TownLifeModifyService {
 
         townLife.updateContent(dto.getTitle(), dto.getText(), dto.getLocation());
 
-        eventPublisher.publishEvent(
-                new TownLifeUpdatedEvent(this, new TownLifeUpdatedEventBody(
-                        townLife.getId(),
-                        townLife.getAuthorId(),
-                        townLife.getSubscriptions()
-                ))
-        );
+        eventPublisher.publishEvent(new TownLifeUpdatedEvent(
+                TownLifeModifyService.class,
+                TownLifeEventBody.of(townLife.getAuthorId(), townLife.getSubscriptions())
+        ));
 
         return TownLifeDetailDto.of(townLife, townLife.getTownLifeCounter());
     }

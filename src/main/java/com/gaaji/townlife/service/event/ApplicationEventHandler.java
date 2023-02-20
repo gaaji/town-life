@@ -3,7 +3,7 @@ package com.gaaji.townlife.service.event;
 import com.gaaji.townlife.service.adapter.kafka.KafkaProducer;
 import com.gaaji.townlife.service.domain.townlife.TownLifeSubscription;
 import com.gaaji.townlife.service.event.dto.NotificationEventBody;
-import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeUpdatedEvent;
+import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeInternalEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -40,16 +40,32 @@ public class ApplicationEventHandler {
 
     @Async
     @EventListener
-    public void handleTownLifeUpdated(TownLifeUpdatedEvent event) {
+    public <T extends TownLifeInternalEvent> void handleTownLifeUpdated(T event) {
+        List<String> subscribedUserIds = getSubscribedUserIds(event);
 
-        List<String> subscribedUserIds = event.getBody().getSubscriptions().stream()
-                .map(TownLifeSubscription::getUserId)
-                .filter(userId -> !Objects.equals(event.getBody().getAuthorId(), userId))
-                .collect(Collectors.toList());
-
-        kafkaProducer.produceEvent(
-                new NotificationEvent(event.getSource(), NotificationEventBody.of("관심 가진 동네생활 게시글이 수정되었어요!", subscribedUserIds))
-        );
-
+        kafkaProducer.produceEvent(new NotificationEvent(
+                event.getSource(),
+                NotificationEventBody.of("관심 가진 동네생활 게시글이 수정되었어요!", subscribedUserIds)
+        ));
     }
+
+    @Async
+    @EventListener
+    public <T extends TownLifeInternalEvent> void handleTownLifeReactionAdded(T event) {
+        List<String> subscribedUserIds = getSubscribedUserIds(event);
+
+        kafkaProducer.produceEvent(new NotificationEvent(
+                event.getSource(),
+                NotificationEventBody.of("관심 가진 동네생활에 누군가 반응을 했어요!", subscribedUserIds)
+        ));
+    }
+
+    private <T extends TownLifeInternalEvent> List<String> getSubscribedUserIds(T event) {
+        return event.getBody().getSubscriptions().stream()
+                .map(TownLifeSubscription::getUserId)
+                .filter(subscribedUserId -> !Objects.equals(event.getBody().getIssuedUserId(), subscribedUserId))
+                .collect(Collectors.toList());
+    }
+
+
 }
