@@ -46,7 +46,7 @@ public abstract class TownLife extends BaseEntity {
     protected List<ParentComment> comments = new ArrayList<>();
     @OneToMany(mappedBy = "townLife", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<TownLifeSubscription> subscriptions = new ArrayList<>();
-    @OneToMany(mappedBy = "townLife", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @OneToMany(mappedBy = "townLife", cascade = CascadeType.ALL, orphanRemoval = true)
     protected List<AttachedImage> attachedImages = new ArrayList<>();
     @OneToOne(fetch = FetchType.LAZY)
     protected TownLifeCounter townLifeCounter;
