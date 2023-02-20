@@ -17,6 +17,8 @@ public enum ApiErrorCode implements ErrorCode {
     CATEGORY_SUBSCRIPTION_UNMODIFIABLE_ERROR(HttpStatus.BAD_REQUEST, "TL-0008", "해당 카테고리는 구독 취소할 수 없습니다."),
     CATEGORY_UNSUBSCRIPTION_ALREADY_EXIST_ERROR(HttpStatus.BAD_REQUEST, "TL-0009", "해당 카테고리는 이미 구독 취소하였습니다."),
     REACTION_BY_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0010", "유저님은 해당 게시글에 아직 공감하지 않았습니다."),
+    TOWN_LIFE_SUBSCRIPTION_ALREADY_EXIST_ERROR(HttpStatus.BAD_REQUEST, "TL-0011", "해당 게시글을 이미 알림 요청하셨습니다."),
+    TOWN_LIFE_SUBSCRIPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0012", "해당 게시글을 아직 알림 요청하지 않았습니다."),
 
     ;
     private final HttpStatus httpStatus;
