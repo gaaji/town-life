@@ -36,8 +36,8 @@ public class CategorySubscriptionServiceImpl implements CategorySubscriptionServ
 
         validateUserIsAlreadyUnsubscribedCategory(dto.getUserId(), category);
 
-        CategoryUnsubscription categoryUnsubscription = categoryUnsubscriptionRepository.save(CategoryUnsubscription.of(dto.getUserId()));
-        categoryUnsubscription.associateCategory(category);
+        CategoryUnsubscription unsubscription = categoryUnsubscriptionRepository.save(CategoryUnsubscription.of(dto.getUserId()));
+        category.addUnsubscription(unsubscription);
     }
 
     private void validateCategoryIsDefault(Category category) {

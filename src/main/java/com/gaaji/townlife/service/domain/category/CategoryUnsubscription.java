@@ -32,6 +32,6 @@ public class CategoryUnsubscription {
     }
 
     public void associateCategory(Category category) {
-        this.category = category.addUnsubscription(this);
+        this.category = category;
     }
 }

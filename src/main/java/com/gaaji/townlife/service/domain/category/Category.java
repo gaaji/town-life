@@ -59,9 +59,9 @@ public class Category {
         this.description = description;
     }
 
-    public Category addUnsubscription(CategoryUnsubscription categoryUnsubscription) {
-        this.unsubscriptions.add(categoryUnsubscription);
-        return this;
+    public void addUnsubscription(CategoryUnsubscription unsubscription) {
+        this.unsubscriptions.add(unsubscription);
+        unsubscription.associateCategory(this);
     }
 
 }
