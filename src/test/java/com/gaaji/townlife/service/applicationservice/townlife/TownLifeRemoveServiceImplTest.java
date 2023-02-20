@@ -1,11 +1,12 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
 import com.gaaji.townlife.global.exception.api.ResourceAuthorizationException;
-import com.gaaji.townlife.global.exception.api.ResourceRemoveException;
+import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import com.gaaji.townlife.service.repository.CategoryRepository;
+import com.gaaji.townlife.service.repository.TownLifeCounterRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +23,7 @@ class TownLifeRemoveServiceImplTest {
     @Autowired
     private TownLifeRepository townLifeRepository;
     @Autowired
-    private TownLifeFindServiceImpl townLifeFindService;
+    private TownLifeCounterRepository townLifeCounterRepository;
     @Autowired
     private TownLifeRemoveServiceImpl townLifeRemoveService;
     @Autowired
@@ -58,7 +59,7 @@ class TownLifeRemoveServiceImplTest {
         Assertions.assertAll(
                 () -> Assertions.assertThrows(ResourceAuthorizationException.class, () -> townLifeRemoveService.remove(townLifeId, "mock_author")),
                 () -> townLifeRemoveService.remove(townLifeId, authorId),
-                () -> Assertions.assertThrows(ResourceRemoveException.class, () -> townLifeRemoveService.remove(townLifeId, authorId))
+                () -> Assertions.assertThrows(ResourceNotFoundException.class, () -> townLifeRemoveService.remove(townLifeId, authorId))
         );
     }
 
