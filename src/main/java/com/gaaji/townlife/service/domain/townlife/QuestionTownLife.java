@@ -9,6 +9,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -24,7 +25,7 @@ import java.util.Optional;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @DiscriminatorValue("question")
 public class QuestionTownLife extends TownLife {
-    @OneToMany(mappedBy = "questionTownLife", orphanRemoval = true)
+    @OneToMany(mappedBy = "questionTownLife", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionReaction> reactions = new ArrayList<>();
 
     public QuestionTownLife(String authorId, String townId, String title, String text, String location) {

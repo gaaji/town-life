@@ -9,6 +9,7 @@ import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @DiscriminatorValue("post")
 public class PostTownLife extends TownLife {
 
-    @OneToMany(mappedBy = "postTownLife", orphanRemoval = true)
+    @OneToMany(mappedBy = "postTownLife", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostReaction> reactions = new ArrayList<>();
 
     public PostTownLife(String authorId, String townId, String title, String text, String location) {
