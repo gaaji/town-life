@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Getter
 public class CommentSaveResponseDto {
     private String id;
-    private String townLifeId;
+    private String postId;
     private String text;
     private String location;
     private String commenterId;
@@ -17,7 +17,7 @@ public class CommentSaveResponseDto {
         CommentSaveResponseDto dto = new CommentSaveResponseDto();
         dto.commenterId = userId;
         dto.id = id;
-        dto.townLifeId = townLifeId;
+        dto.postId = townLifeId;
         dto.text = text;
         dto.location = location;
         dto.createdAt = createdAt;

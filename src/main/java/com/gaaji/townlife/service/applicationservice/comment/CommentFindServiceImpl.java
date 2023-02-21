@@ -59,7 +59,9 @@ public class CommentFindServiceImpl implements CommentFindService {
 
     @Override
     public List<CommentListDto> findListByUserId(String userId) {
-        return null;
+        try (Stream<Comment> commentStream = commentRepository.findByUserIdOrderByIdDesc(userId)) {
+            return commentStream.map(CommentListDto::of).collect(Collectors.toList());
+        }
     }
 
     @Override

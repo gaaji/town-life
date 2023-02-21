@@ -10,6 +10,7 @@ public class ParentCommentListDto {
     private String imageSrc;
     private String location;
     private String text;
+    private String postId;
 
     public static ParentCommentListDto create(ParentComment entity) {
         ParentCommentListDto dto = new ParentCommentListDto();
@@ -18,6 +19,7 @@ public class ParentCommentListDto {
         dto.imageSrc = entity.getContent().getImageSrc();
         dto.location = entity.getContent().getLocation();
         dto.text = entity.getContent().getText();
+        dto.postId = entity.getTownLife().getId();
         return dto;
     }
 }
