@@ -116,4 +116,25 @@ public abstract class TownLife extends BaseEntity {
     public abstract <T extends Reaction> T addReaction(T reaction);
     public abstract void removeReactionByUserId(String userId);
 
+    public void addAttachedImage(AttachedImage attachedImage) {
+        this.attachedImages.add(attachedImage);
+        attachedImage.associateTownLife(this);
+    }
+
+    public String[] removeAllAttachedImages() {
+        if(this.attachedImages.size()==0) throw new ResourceRemoveException(ApiErrorCode.IMAGE_NOT_FOUND);
+
+        String[] srcs = this.attachedImages.stream()
+                .filter(i -> {
+                    i.associateTownLife(null);
+                    return true;
+                })
+                .map(AttachedImage::getSrc)
+                .toArray(String[]::new);
+
+        this.attachedImages.clear();
+
+        return srcs;
+    }
+
 }
