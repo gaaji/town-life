@@ -9,7 +9,6 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
 @ToString
 public class AttachedImage {
     @Id
@@ -20,4 +19,18 @@ public class AttachedImage {
     private String src;
     @ManyToOne(fetch = FetchType.LAZY)
     private TownLife townLife;
+
+    private AttachedImage(int orderIndex, String src) {
+        this.orderIndex = orderIndex;
+        this.src = src;
+    }
+
+    public static AttachedImage of(int orderIndex, String src) {
+        return new AttachedImage(orderIndex, src);
+    }
+
+    public void associateTownLife(TownLife townLife) {
+        this.townLife = townLife;
+    }
+
 }
