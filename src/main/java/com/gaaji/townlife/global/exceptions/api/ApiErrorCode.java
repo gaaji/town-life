@@ -19,6 +19,12 @@ public enum ApiErrorCode implements ErrorCode {
     REACTION_BY_USER_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0010", "유저님은 해당 게시글에 아직 공감하지 않았습니다."),
     TOWN_LIFE_SUBSCRIPTION_ALREADY_EXIST_ERROR(HttpStatus.BAD_REQUEST, "TL-0011", "해당 게시글을 이미 알림 요청하셨습니다."),
     TOWN_LIFE_SUBSCRIPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0012", "해당 게시글을 아직 알림 요청하지 않았습니다."),
+    IMAGE_UPLOAD_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "TL-0013", "이미지 업로드 과정에서 오류가 발생하였습니다."),
+    IMAGE_DELETE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "TL-0014", "이미지 수정/삭제 과정에서 오류가 발생하였습니다."),
+    IMAGE_REQUIRE_VALUE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "TL-0015", "이미지 업로드/수정/삭제에 요구되는 데이터가 불충분합니다."),
+    IMAGE_CONTENT_TYPE_ERROR(HttpStatus.BAD_REQUEST, "TL-0016", "업로드하실 파일은 이미지 파일만 가능합니다."),
+    IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "TL-0017", "업로드한 이미지가 없습니다."),
+
 
     ;
     private final HttpStatus httpStatus;
