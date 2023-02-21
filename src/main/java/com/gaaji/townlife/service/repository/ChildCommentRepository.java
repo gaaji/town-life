@@ -11,5 +11,4 @@ import java.util.stream.Stream;
 
 public interface ChildCommentRepository extends JpaRepository<ChildComment, String> {
     Stream<ChildComment> findByParentAndIdGreaterThanOrderByIdAsc(@NonNull ParentComment parent, @NonNull String id, @NonNull Pageable pageable);
-    List<ChildComment> findByParentOrderByIdAsc(@NonNull ParentComment parent, @NonNull Pageable pageable);
 }
