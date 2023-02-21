@@ -13,7 +13,6 @@ import java.util.List;
 
 @Entity
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "update comment set deleted_at = current_timestamp where id = ?")
 @Inheritance(strategy = InheritanceType.JOINED)

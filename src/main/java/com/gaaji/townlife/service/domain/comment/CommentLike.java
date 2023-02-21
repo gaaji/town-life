@@ -10,7 +10,6 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-@ToString
 @Table(indexes = {
         @Index(name = "idx__comment_like__user_id", columnList = "userId"),
 })

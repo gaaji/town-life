@@ -2,6 +2,7 @@ package com.gaaji.townlife.service.controller.comment;
 
 import com.gaaji.townlife.service.applicationservice.comment.CommentFindService;
 import com.gaaji.townlife.service.applicationservice.comment.CommentSaveService;
+import com.gaaji.townlife.service.controller.comment.dto.ChildCommentListDto;
 import com.gaaji.townlife.service.controller.comment.dto.CommentSaveRequestDto;
 import com.gaaji.townlife.service.controller.comment.dto.CommentSaveResponseDto;
 import com.gaaji.townlife.service.controller.comment.dto.ParentCommentListDto;
@@ -44,6 +45,17 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     public List<ParentCommentListDto> parentList(@PathVariable String postId) {
         return commentFindService.findParentCommentListByTownLifeId(postId);
+    }
+
+    @GetMapping("/{parentId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ChildCommentListDto> childList(
+            @PathVariable String postId,
+            @PathVariable String parentId,
+            @RequestParam(required = false) String lastCommentId,
+            @RequestParam(required = false) Integer size
+    ) {
+        return commentFindService.findChildCommentListByParentCommentId(postId, parentId, lastCommentId, size);
     }
 }
 
