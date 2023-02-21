@@ -1,4 +1,4 @@
-package com.gaaji.townlife.global.exception.api;
+package com.gaaji.townlife.global.exceptions.api;
 
 import org.springframework.http.HttpStatus;
 

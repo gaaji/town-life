@@ -1,7 +1,7 @@
 package com.gaaji.townlife.service.applicationservice.category;
 
-import com.gaaji.townlife.global.exception.api.ApiErrorCode;
-import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
+import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
 import com.gaaji.townlife.service.controller.category.dto.CategorySubscribeDto;
 import com.gaaji.townlife.service.controller.category.dto.CategoryUnsubscribeDto;
 import com.gaaji.townlife.service.domain.category.Category;

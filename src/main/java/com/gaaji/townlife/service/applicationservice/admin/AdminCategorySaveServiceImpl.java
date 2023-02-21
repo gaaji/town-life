@@ -1,6 +1,6 @@
 package com.gaaji.townlife.service.applicationservice.admin;
 
-import com.gaaji.townlife.global.exception.CategoryNameUniqueConstraintException;
+import com.gaaji.townlife.global.exceptions.CategoryNameUniqueConstraintException;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveResponseDto;
 import com.gaaji.townlife.service.domain.category.Category;

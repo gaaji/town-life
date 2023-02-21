@@ -1,7 +1,7 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
-import com.gaaji.townlife.global.exception.api.ResourceAlreadyExistException;
-import com.gaaji.townlife.global.exception.api.ResourceRemoveException;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceAlreadyExistException;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceRemoveException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;

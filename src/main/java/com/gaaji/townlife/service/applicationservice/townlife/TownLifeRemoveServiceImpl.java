@@ -1,7 +1,7 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
-import com.gaaji.townlife.global.exception.api.ApiErrorCode;
-import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
+import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.repository.TownLifeCounterRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;

@@ -1,8 +1,8 @@
 package com.gaaji.townlife.service.domain.category;
 
-import com.gaaji.townlife.global.exception.api.ApiErrorCode;
-import com.gaaji.townlife.global.exception.api.ResourceAlreadyExistException;
-import com.gaaji.townlife.global.exception.api.ResourceUnmodifiableException;
+import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceAlreadyExistException;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceUnmodifiableException;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import lombok.*;

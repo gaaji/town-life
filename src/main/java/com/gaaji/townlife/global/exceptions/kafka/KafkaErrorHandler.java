@@ -1,4 +1,4 @@
-package com.gaaji.townlife.global.exception.kafka;
+package com.gaaji.townlife.global.exceptions.kafka;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

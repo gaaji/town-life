@@ -1,7 +1,7 @@
 package com.gaaji.townlife.global.utils.validation;
 
-import com.gaaji.townlife.global.exception.api.ApiErrorCode;
-import com.gaaji.townlife.global.exception.api.ResourceAuthorizationException;
+import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceAuthorizationException;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;

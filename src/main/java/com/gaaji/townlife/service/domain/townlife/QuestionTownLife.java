@@ -1,7 +1,7 @@
 package com.gaaji.townlife.service.domain.townlife;
 
-import com.gaaji.townlife.global.exception.api.ApiErrorCode;
-import com.gaaji.townlife.global.exception.api.ResourceRemoveException;
+import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceRemoveException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.reaction.QuestionReaction;
 import com.gaaji.townlife.service.domain.reaction.Reaction;
