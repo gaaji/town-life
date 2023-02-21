@@ -2,8 +2,10 @@ package com.gaaji.townlife.service.controller.comment.dto;
 
 import com.gaaji.townlife.service.domain.comment.ChildComment;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class ChildCommentListDto {
     private String id;
     private String commenterId;

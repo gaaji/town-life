@@ -11,7 +11,6 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-@ToString
 @DiscriminatorValue("post")
 public class PostReaction extends Reaction {
     @Enumerated(EnumType.STRING)

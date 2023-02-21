@@ -15,7 +15,6 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-@ToString
 @OnDelete(action = OnDeleteAction.CASCADE)
 @DiscriminatorValue("child")
 public class ChildComment extends Comment {

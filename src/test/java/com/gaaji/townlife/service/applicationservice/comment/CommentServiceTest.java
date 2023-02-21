@@ -1,5 +1,6 @@
 package com.gaaji.townlife.service.applicationservice.comment;
 
+import com.gaaji.townlife.global.exception.api.BadRequestException;
 import com.gaaji.townlife.service.applicationservice.admin.AdminCategorySaveService;
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeSaveService;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
@@ -124,7 +125,7 @@ public class CommentServiceTest {
         IntStream.range(0, parentCommentsCount)
                 .mapToObj(i -> randomParentComment(townLife))
                 .sorted(Comparator.comparing(Comment::getId))
-                .forEach(parent -> {
+                .map(parent -> {
                     List<ChildComment> expectedList = IntStream.range(0, childCommentsCount)
                             .mapToObj(i -> randomChildComment(parent))
                             .sorted(Comparator.comparing(Comment::getId)).collect(Collectors.toList());
@@ -142,6 +143,34 @@ public class CommentServiceTest {
                                 Assertions.assertEquals(expected.getContent().getText(), actual.getText());
                                 Assertions.assertEquals(expected.getContent().getImageSrc(), actual.getImageSrc());
                             });
+                    return parent;
+                }).findFirst().map(parent -> {
+                    Assertions.assertThrows(BadRequestException.class, () -> commentFindService.findChildCommentListByParentCommentId(townLife.getId(), parent.getId(), null, 3));
+                    Assertions.assertThrows(BadRequestException.class, () -> commentFindService.findChildCommentListByParentCommentId(townLife.getId(), parent.getId(), "some", null));
+                    final int startInclusive = 10;
+                    final int endExclusive = 21;
+                    List<ChildComment> children = parent.getChildren().stream().sorted(Comparator.comparing(Comment::getId)).collect(Collectors.toList());
+                    List<ChildComment> expectedList = children.subList(startInclusive, endExclusive);
+
+                    List<ChildCommentListDto> actualList = commentFindService.findChildCommentListByParentCommentId(townLife.getId(), parent.getId(), children.get(startInclusive - 1).getId(), endExclusive - startInclusive);
+                    Assertions.assertEquals(endExclusive - startInclusive, actualList.size());
+                    Assertions.assertEquals(expectedList.size(), actualList.size());
+                    System.out.println("asdf" + expectedList);
+                    System.out.println("zxcv" + actualList);
+                    IntStream.range(0, endExclusive-startInclusive)
+                            .forEach(i -> {
+                                ChildComment expected = expectedList.get(i);
+                                ChildCommentListDto actual = actualList.get(i);
+                                System.out.println("asdf" + i + expected);
+                                System.out.println("zxcv" + i + actual);
+                                Assertions.assertEquals(expected.getId(), actual.getId());
+                                Assertions.assertEquals(expected.getParent().getId(), actual.getParentId());
+                                Assertions.assertEquals(expected.getUserId(), actual.getCommenterId());
+                                Assertions.assertEquals(expected.getContent().getLocation(), actual.getLocation());
+                                Assertions.assertEquals(expected.getContent().getText(), actual.getText());
+                                Assertions.assertEquals(expected.getContent().getImageSrc(), actual.getImageSrc());
+                            });
+                    return null;
                 });
     }
 
