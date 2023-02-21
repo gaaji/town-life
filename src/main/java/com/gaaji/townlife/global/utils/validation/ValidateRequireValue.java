@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class ValidateObjectValue {
+public class ValidateRequireValue {
 
     public static <T> void validateRequireNonNull(T obj) throws NullValueException {
         try {

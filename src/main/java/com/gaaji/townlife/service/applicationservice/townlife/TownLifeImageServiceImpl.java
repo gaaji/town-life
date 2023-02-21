@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.gaaji.townlife.global.utils.validation.ValidateObjectValue.validateRequireNonNull;
+import static com.gaaji.townlife.global.utils.validation.ValidateRequireValue.validateRequireNonNull;
 
 @Slf4j
 @Service

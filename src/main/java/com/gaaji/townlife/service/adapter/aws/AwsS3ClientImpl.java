@@ -19,7 +19,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-import static com.gaaji.townlife.global.utils.validation.ValidateObjectValue.validateRequireNonNull;
+import static com.gaaji.townlife.global.utils.validation.ValidateRequireValue.validateRequireNonNull;
 
 @Slf4j
 @Component
