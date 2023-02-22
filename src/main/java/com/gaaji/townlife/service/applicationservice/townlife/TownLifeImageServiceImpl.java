@@ -9,19 +9,22 @@ import com.gaaji.townlife.global.exceptions.internalServer.exception.IllegalValu
 import com.gaaji.townlife.global.exceptions.internalServer.exception.NullValueException;
 import com.gaaji.townlife.global.exceptions.internalServer.exception.TownLifeAwsS3Exception;
 import com.gaaji.townlife.service.adapter.aws.AwsS3Client;
+import com.gaaji.townlife.service.controller.townlife.dto.AttachedImageDto;
+import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
 import com.gaaji.townlife.service.domain.townlife.AttachedImage;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.repository.AttachedImageRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import static com.gaaji.townlife.global.utils.validation.ValidateRequireValue.validateRequireNonNull;
+import java.util.List;
 
-@Slf4j
+import static com.gaaji.townlife.global.utils.validation.ValidateRequireValue.validateRequireNonNull;
+import static com.gaaji.townlife.global.utils.validation.ValidateResourceAccess.validateAuthorizationModifying;
+
 @Service
 @RequiredArgsConstructor
 public class TownLifeImageServiceImpl implements TownLifeImageService {
@@ -32,12 +35,58 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
 
     @Override
     @Transactional
-    public void upload(String townLifeId, int[] orderIndexes, MultipartFile... multipartFiles) {
-        TownLife townLife = townLifeRepository.findById(townLifeId)
+    public List<AttachedImageDto> upload(String townLifeId, String authId, int[] orderIndexes, MultipartFile... multipartFiles) {
+        TownLife townLife = prepareUpload(townLifeId, authId, orderIndexes, multipartFiles);
+
+        upload(townLife, orderIndexes, multipartFiles);
+
+        return ResponseDtoBuilder.attachedImageDtoList(townLife);
+    }
+
+    @Override
+    @Transactional
+    public List<AttachedImageDto> update(String townLifeId, String authId, int[] orderIndexes, MultipartFile... multipartFiles) {
+        TownLife townLife = prepareUpload(townLifeId, authId, orderIndexes, multipartFiles);
+
+        deleteAll(townLife);
+
+        upload(townLife, orderIndexes, multipartFiles);
+
+        return ResponseDtoBuilder.attachedImageDtoList(townLife);
+    }
+
+    @Override
+    @Transactional
+    public List<AttachedImageDto> deleteAll(String townLifeId, String authId) {
+        TownLife townLife = prepare(townLifeId, authId);
+
+        deleteAll(townLife);
+
+        return ResponseDtoBuilder.attachedImageDtoList(townLife);
+    }
+
+    private TownLife getTownLifeById(String id) {
+        return townLifeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND));
+    }
+
+    private TownLife prepare(String townLifeId, String authId) {
+        TownLife townLife = getTownLifeById(townLifeId);
+
+        validateAuthorizationModifying(authId, townLife.getAuthorId());
+
+        return townLife;
+    }
+
+    private TownLife prepareUpload(String townLifeId, String authId, int[] orderIndexes, MultipartFile[] multipartFiles) {
+        TownLife townLife = prepare(townLifeId, authId);
 
         validateArraysLength(orderIndexes.length, multipartFiles.length, ApiErrorCode.IMAGE_REQUIRE_VALUE_BAD_REQUEST);
 
+        return townLife;
+    }
+
+    private void upload(TownLife townLife, int[] orderIndexes, MultipartFile[] multipartFiles) {
         try {
             validateContentType(multipartFiles);
 
@@ -50,7 +99,6 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
                 AttachedImage attachedImage = attachedImageRepository.save(AttachedImage.of(orderIndexes[i], srcs[i]));
                 townLife.addAttachedImage(attachedImage);
             }
-            log.info("Upload image files: {}", townLife.getAttachedImages());
 
         } catch (TownLifeAwsS3Exception e) {
             throw new ResourceSaveException(ApiErrorCode.IMAGE_UPLOAD_ERROR, e);
@@ -61,29 +109,16 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
         }
     }
 
-    @Override
-    public void update(String townLifeId, int[] orderIndex, MultipartFile... multipartFiles) {
-
-    }
-
-    @Override
-    @Transactional
-    public void deleteAll(String townLifeId) {
-        TownLife townLife = townLifeRepository.findById(townLifeId)
-                .orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND));
-
+    private void deleteAll(TownLife townLife) {
         try {
             String[] originFileSrcs = townLife.removeAllAttachedImages();
             awsS3Client.deleteFile(originFileSrcs);
-
-            log.info("Delete image files: {}", townLife.getAttachedImages());
 
         } catch (TownLifeAwsS3Exception e) {
             throw new ResourceRemoveException(ApiErrorCode.IMAGE_DELETE_ERROR, e);
         } catch (NullValueException e) {
             throw new ResourceRemoveException(ApiErrorCode.IMAGE_REQUIRE_VALUE_BAD_REQUEST, e);
         }
-
     }
 
     private void validateContentType(MultipartFile... multipartFiles) throws NullValueException, IllegalValueException {
