@@ -13,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DisplayName("동네생활 게시글 알림구독 서비스 테스트")
 class TownLifeSubscriptionServiceImplTest {
 
     @Autowired
