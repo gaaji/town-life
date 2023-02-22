@@ -6,7 +6,6 @@ import com.gaaji.townlife.service.event.KafkaEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
@@ -17,7 +16,7 @@ import java.util.Arrays;
 public class KafkaProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Async
+//    @Async
     public <T> void produceEvent(KafkaEvent<T> event) {
         kafkaTemplate.send(event.getTopic(), writeAsString(event.getBody()));
     }
