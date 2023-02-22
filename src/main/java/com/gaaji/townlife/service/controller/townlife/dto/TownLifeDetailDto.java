@@ -24,5 +24,7 @@ public class TownLifeDetailDto {
     private int commentCount;
     private int interestCount;
     private List<AttachedImageDto> attachedImages;
+    private List<PostReactionDto> postReactionDtos;
+    private List<QuestionReactionDto> questionReactionDtos;
 
 }
