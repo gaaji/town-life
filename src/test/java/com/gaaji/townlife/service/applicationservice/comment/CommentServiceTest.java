@@ -5,10 +5,7 @@ import com.gaaji.townlife.service.applicationservice.admin.AdminCategorySaveServ
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeSaveService;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveResponseDto;
-import com.gaaji.townlife.service.controller.comment.dto.ChildCommentListDto;
-import com.gaaji.townlife.service.controller.comment.dto.CommentSaveRequestDto;
-import com.gaaji.townlife.service.controller.comment.dto.CommentSaveResponseDto;
-import com.gaaji.townlife.service.controller.comment.dto.ParentCommentListDto;
+import com.gaaji.townlife.service.controller.comment.dto.*;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
@@ -27,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
@@ -69,7 +67,7 @@ public class CommentServiceTest {
         Assertions.assertTrue(townLife.getComments().size() > 0);
         Assertions.assertEquals(commenterId, dto.getCommenterId());
         Assertions.assertEquals(text, dto.getText());
-        Assertions.assertEquals(townLife.getId(), dto.getTownLifeId());
+        Assertions.assertEquals(townLife.getId(), dto.getPostId());
         Assertions.assertEquals(location, dto.getLocation());
         Assertions.assertNotNull(dto.getCreatedAt());
     }
@@ -88,7 +86,7 @@ public class CommentServiceTest {
         Assertions.assertTrue(parentComment.getChildren().size() > 0);
         Assertions.assertEquals(commenterId, dto.getCommenterId());
         Assertions.assertEquals(text, dto.getText());
-        Assertions.assertEquals(townLife.getId(), dto.getTownLifeId());
+        Assertions.assertEquals(townLife.getId(), dto.getPostId());
         Assertions.assertEquals(location, dto.getLocation());
         Assertions.assertNotNull(dto.getCreatedAt());
     }
@@ -155,14 +153,10 @@ public class CommentServiceTest {
                     List<ChildCommentListDto> actualList = commentFindService.findChildCommentListByParentCommentId(townLife.getId(), parent.getId(), children.get(startInclusive - 1).getId(), endExclusive - startInclusive);
                     Assertions.assertEquals(endExclusive - startInclusive, actualList.size());
                     Assertions.assertEquals(expectedList.size(), actualList.size());
-                    System.out.println("asdf" + expectedList);
-                    System.out.println("zxcv" + actualList);
                     IntStream.range(0, endExclusive-startInclusive)
                             .forEach(i -> {
                                 ChildComment expected = expectedList.get(i);
                                 ChildCommentListDto actual = actualList.get(i);
-                                System.out.println("asdf" + i + expected);
-                                System.out.println("zxcv" + i + actual);
                                 Assertions.assertEquals(expected.getId(), actual.getId());
                                 Assertions.assertEquals(expected.getParent().getId(), actual.getParentId());
                                 Assertions.assertEquals(expected.getUserId(), actual.getCommenterId());
@@ -174,16 +168,51 @@ public class CommentServiceTest {
                 });
     }
 
-    private ChildComment randomChildComment(ParentComment parentComment) {
-        String commenterId = randomString();
+    @Test
+    void 특정_유저의_댓글_조회() {
+        String myId = randomString();
+        Category category = randomCategory();
+        TownLife townLife = randomTownLife(category);
+        List<Comment> myComments = new ArrayList<>();
+        ParentComment someonesParentComment = randomParentComment(townLife);
+        ParentComment myParentComment = randomParentComment(townLife, myId);
+        myComments.add(myParentComment);
+        randomChildComment(myParentComment);
+        randomChildComment(someonesParentComment);
+        myComments.add(randomChildComment(myParentComment, myId));
+        myComments.add(randomChildComment(someonesParentComment, myId));
+
+
+        List<CommentListDto> dtos = commentFindService.findListByUserId(myId).stream().sorted(Comparator.comparing(CommentListDto::getId)).collect(Collectors.toList());
+        Assertions.assertEquals(3, dtos.size());
+        IntStream.range(0, 3).forEach(i -> {
+            Comment expected = myComments.get(i);
+            CommentListDto actual = dtos.get(i);
+            Assertions.assertEquals(expected.getId(), actual.getId());
+            if(expected instanceof ChildComment)Assertions.assertEquals(((ChildComment) expected).getParent().getId(), actual.getParentId());
+            Assertions.assertEquals(expected.getUserId(), actual.getCommenterId());
+            Assertions.assertEquals(expected.getContent().getLocation(), actual.getLocation());
+            Assertions.assertEquals(expected.getContent().getText(), actual.getText());
+            Assertions.assertEquals(expected.getContent().getImageSrc(), actual.getImageSrc());
+        });
+    }
+
+    private ChildComment randomChildComment(ParentComment parentComment, String commenterId) {
         CommentSaveResponseDto dto = commentSaveService.saveChild(commenterId, parentComment.getTownLife().getId(), parentComment.getId(), CommentSaveRequestDto.create(commenterId, randomString(), randomString()));
         return (ChildComment) commentRepository.findById(dto.getId()).get();
     }
 
-    private ParentComment randomParentComment(TownLife townLife) {
-        String commenterId = randomString();
+    private ChildComment randomChildComment(ParentComment parentComment) {
+        return randomChildComment(parentComment, randomString());
+    }
+
+    private ParentComment randomParentComment(TownLife townLife, String commenterId) {
         CommentSaveResponseDto dto = commentSaveService.saveParent(commenterId, townLife.getId(), CommentSaveRequestDto.create(commenterId, randomString(), randomString()));
         return (ParentComment) commentRepository.findById(dto.getId()).get();
+    }
+
+    private ParentComment randomParentComment(TownLife townLife) {
+        return randomParentComment(townLife, randomString());
     }
 
     TownLife randomTownLife(Category category) {
