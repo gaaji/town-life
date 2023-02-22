@@ -2,6 +2,7 @@ package com.gaaji.townlife.service.applicationservice.townlife;
 
 import com.gaaji.townlife.service.controller.townlife.dto.ReactionDoRequestDto;
 import com.gaaji.townlife.service.controller.townlife.dto.ReactionDoResponseDto;
+import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.reaction.Emoji;
@@ -22,6 +23,8 @@ class TownLifeReactionServiceImplTest {
     private TownLifeSaveServiceImpl townLifeSaveService;
     @Autowired
     private TownLifeReactionServiceImpl townLifeReactionService;
+    @Autowired
+    private TownLifeFindServiceImpl townLifeFindService;
 
     private static String postTownLifeId;
     private static String quesTownLifeId;
@@ -55,7 +58,17 @@ class TownLifeReactionServiceImplTest {
         init_post_town_life();
 
         ReactionDoResponseDto responseDto = townLifeReactionService.doReaction(testerId, postTownLifeId, new ReactionDoRequestDto(Emoji.HAPPY));
-        System.out.println(responseDto);
+
+        Assertions.assertNotNull(responseDto);
+        Assertions.assertEquals(postTownLifeId, responseDto.getTownLifeId());
+        Assertions.assertEquals(Emoji.HAPPY, responseDto.getEmoji());
+        Assertions.assertEquals(testerId, responseDto.getUserId());
+
+        TownLifeDetailDto detailDto = townLifeFindService.findById(postTownLifeId);
+        Assertions.assertNotNull(detailDto);
+        Assertions.assertNotNull(detailDto.getPostReactionDtos());
+        Assertions.assertEquals(1, detailDto.getPostReactionDtos().size());
+        Assertions.assertNull(detailDto.getQuestionReactionDtos());
     }
 
     @Test
@@ -65,7 +78,17 @@ class TownLifeReactionServiceImplTest {
         init_question_town_life();
 
         ReactionDoResponseDto responseDto = townLifeReactionService.doReaction(testerId, quesTownLifeId, new ReactionDoRequestDto());
-        System.out.println(responseDto);
+
+        Assertions.assertNotNull(responseDto);
+        Assertions.assertEquals(quesTownLifeId, responseDto.getTownLifeId());
+        Assertions.assertNull(responseDto.getEmoji());
+        Assertions.assertEquals(testerId, responseDto.getUserId());
+
+        TownLifeDetailDto detailDto = townLifeFindService.findById(quesTownLifeId);
+        Assertions.assertNotNull(detailDto);
+        Assertions.assertNotNull(detailDto.getQuestionReactionDtos());
+        Assertions.assertEquals(1, detailDto.getQuestionReactionDtos().size());
+        Assertions.assertNull(detailDto.getPostReactionDtos());
     }
 
     @Test
@@ -73,7 +96,12 @@ class TownLifeReactionServiceImplTest {
     @DisplayName("POST 동네생활 리액션 취소 테스트")
     void test_cancel_post_reaction() {
         townLifeReactionService.cancelReaction(testerId, postTownLifeId);
-        //TODO Assertion 추가
+
+        TownLifeDetailDto detailDto = townLifeFindService.findById(postTownLifeId);
+        Assertions.assertNotNull(detailDto);
+        Assertions.assertNotNull(detailDto.getPostReactionDtos());
+        Assertions.assertEquals(0, detailDto.getPostReactionDtos().size());
+        Assertions.assertNull(detailDto.getQuestionReactionDtos());
     }
 
 
@@ -82,6 +110,11 @@ class TownLifeReactionServiceImplTest {
     @DisplayName("QUESTION 동네생활 리액션 취소 테스트")
     void test_cancel_question_reaction() {
         townLifeReactionService.cancelReaction(testerId, quesTownLifeId);
-        //TODO Assertion 추가
+
+        TownLifeDetailDto detailDto = townLifeFindService.findById(quesTownLifeId);
+        Assertions.assertNotNull(detailDto);
+        Assertions.assertNotNull(detailDto.getQuestionReactionDtos());
+        Assertions.assertEquals(0, detailDto.getQuestionReactionDtos().size());
+        Assertions.assertNull(detailDto.getPostReactionDtos());
     }
 }
