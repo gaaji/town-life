@@ -1,6 +1,7 @@
 package com.gaaji.townlife.service.applicationservice.comment;
 
 import com.gaaji.townlife.global.exception.api.BadRequestException;
+import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
 import com.gaaji.townlife.service.applicationservice.admin.AdminCategorySaveService;
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeSaveService;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
@@ -21,7 +22,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -33,11 +33,6 @@ import java.util.stream.IntStream;
 
 @SpringBootTest
 @Transactional
-@EmbeddedKafka(
-        brokerProperties = {
-                "listeners=PLAINTEXT://localhost:9092"
-        }
-)
 public class CommentServiceTest {
     @Autowired
     AdminCategorySaveService adminCategorySaveService;
@@ -195,6 +190,29 @@ public class CommentServiceTest {
             Assertions.assertEquals(expected.getContent().getText(), actual.getText());
             Assertions.assertEquals(expected.getContent().getImageSrc(), actual.getImageSrc());
         });
+    }
+
+    @Autowired
+    CommentLikeService commentLikeService;
+
+    @Test
+    void 댓글에_좋아요_추가() {
+        Category category = randomCategory();
+        TownLife townLife = randomTownLife(category);
+        ParentComment parentComment = randomParentComment(townLife);
+        ChildComment childComment = randomChildComment(parentComment);
+        String userId = randomString();
+
+        CommentLikeRequestDto dto = CommentLikeRequestDto.create(userId);
+        commentLikeService.like(townLife.getId(), parentComment.getId(), dto);
+        Assertions.assertEquals(1, parentComment.getLikes().size());
+        Assertions.assertEquals(parentComment.getId(), parentComment.getLikes().get(0).getComment().getId());
+        commentLikeService.like(townLife.getId(), childComment.getId(), dto);
+        Assertions.assertEquals(1, childComment.getLikes().size());
+
+        Assertions.assertThrows(BadRequestException.class, () -> commentLikeService.like(townLife.getId(), childComment.getId(), dto));
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> commentLikeService.like("wrong id", parentComment.getId(), dto));
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> commentLikeService.like(townLife.getId(), "wrong id", dto));
     }
 
     private ChildComment randomChildComment(ParentComment parentComment, String commenterId) {

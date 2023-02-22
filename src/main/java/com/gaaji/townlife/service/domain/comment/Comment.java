@@ -33,4 +33,8 @@ public abstract class Comment extends BaseEntity {
     protected List<CommentLike> likes = new ArrayList<>();
 
     public abstract TownLife getTownLife();
+
+    public void addLike(CommentLike commentLike) {
+        this.likes.add(commentLike);
+    }
 }
