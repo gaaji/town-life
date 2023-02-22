@@ -5,6 +5,7 @@ import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundExcept
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceSaveException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
+import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.*;
 import com.gaaji.townlife.service.repository.CategoryRepository;
@@ -34,7 +35,8 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
                 category.getTownLifeType() == TownLifeType.POST ? PostTownLife.class : QuestionTownLife.class;
 
         TownLife townLife = saveTownLife(townLifeClazz, dto, category);
-        TownLifeDetailDto responseDto = TownLifeDetailDto.of(townLife);
+        TownLifeDetailDto responseDto = ResponseDtoBuilder.townLifeDetailDto(townLife);
+
         if(responseDto == null) throw new ResourceSaveException(ApiErrorCode.TOWN_LIFE_SAVE_ERROR);
 
         return responseDto;

@@ -3,6 +3,7 @@ package com.gaaji.townlife.service.applicationservice.townlife;
 import com.gaaji.townlife.global.utils.ulid.ULIDGenerator;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListResponseDto;
+import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeCounter;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
         TownLife townLife = entityService.findById(id);
         //TODO get auth profile
 
-        return TownLifeDetailDto.of(townLife);
+        return ResponseDtoBuilder.townLifeDetailDto(townLife);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
         //TODO get auth profile
         TownLifeCounter counter = countService.increaseViewCount(townLife.getTownLifeCounter().getId());
 
-        return TownLifeDetailDto.of(townLife, counter);
+        return ResponseDtoBuilder.townLifeDetailDto(townLife, counter);
     }
 
     @Override
@@ -48,7 +49,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
         String offsetId = ULIDGenerator.newULIDByRequestTime(requestTime);
         Slice<TownLife> townLives = entityService.findListByTownIdAndIdLessThan(userId, townId, offsetId, page, size);
 
-        return TownLifeListResponseDto.of(townLives);
+        return ResponseDtoBuilder.townLifeListResponseDto(townLives);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
         String offsetId = ULIDGenerator.newULIDByRequestTime(requestTime);
         Slice<TownLife> townLives = entityService.findListByUserIdAndIdLessThan(userId, offsetId, page, size);
 
-        return TownLifeListResponseDto.of(townLives);
+        return ResponseDtoBuilder.townLifeListResponseDto(townLives);
     }
 
 }

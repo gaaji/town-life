@@ -5,6 +5,7 @@ import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundExcept
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceSaveException;
 import com.gaaji.townlife.service.controller.townlife.dto.ReactionDoRequestDto;
 import com.gaaji.townlife.service.controller.townlife.dto.ReactionDoResponseDto;
+import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
 import com.gaaji.townlife.service.domain.reaction.PostReaction;
 import com.gaaji.townlife.service.domain.reaction.QuestionReaction;
 import com.gaaji.townlife.service.domain.townlife.PostTownLife;
@@ -33,11 +34,11 @@ public class TownLifeReactionServiceImpl implements TownLifeReactionService {
         ReactionDoResponseDto responseDto = null;
         if (townLife instanceof PostTownLife) {
             PostReaction reaction = townLife.addReaction(PostReaction.of(userId, dto.getEmoji()));
-            responseDto = ReactionDoResponseDto.of(townLife.getId(), reaction.getUserId(), reaction.getEmoji());
+            responseDto = ResponseDtoBuilder.reactionDoResponseDto(townLife.getId(), reaction.getUserId(), reaction.getEmoji());
 
         } else if (townLife instanceof QuestionTownLife){
             QuestionReaction reaction = townLife.addReaction(QuestionReaction.of(userId));
-            responseDto = ReactionDoResponseDto.of(townLife.getId(), reaction.getUserId());
+            responseDto = ResponseDtoBuilder.reactionDoResponseDto(townLife.getId(), reaction.getUserId());
         }
         if (responseDto == null) throw new ResourceSaveException(ApiErrorCode.REACTION_SAVE_ERROR);
 
