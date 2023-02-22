@@ -22,7 +22,6 @@ public class TownLifeSubscriptionServiceImpl implements TownLifeSubscriptionServ
         TownLife townLife = getTownLifeById(townLifeId);
 
         townLife.addSubscription(TownLifeSubscription.of(userId));
-
     }
 
     @Override
@@ -32,7 +31,6 @@ public class TownLifeSubscriptionServiceImpl implements TownLifeSubscriptionServ
         TownLife townLife = getTownLifeById(townLifeId);
 
         townLife.removeSubscriptionByUserId(userId);
-
     }
 
     private TownLife getTownLifeById(String id) {
