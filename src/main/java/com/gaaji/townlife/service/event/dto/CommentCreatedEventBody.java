@@ -13,7 +13,7 @@ public class CommentCreatedEventBody {
     private String text;
     private String location;
     private String commenterId;
-    private LocalDateTime createdAt;
+    private String createdAt;
 
     @Builder
     public CommentCreatedEventBody(String id, String townLifeId, String text, String location, String commenterId, LocalDateTime createdAt) {
@@ -22,7 +22,7 @@ public class CommentCreatedEventBody {
         this.text = text;
         this.location = location;
         this.commenterId = commenterId;
-        this.createdAt = createdAt;
+        this.createdAt = createdAt.toString();
     }
 
     public static CommentCreatedEventBody of(Comment savedComment) {

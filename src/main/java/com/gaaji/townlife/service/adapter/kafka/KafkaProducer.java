@@ -6,7 +6,6 @@ import com.gaaji.townlife.service.event.KafkaEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 public class KafkaProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    @Async
     public <T> void produceEvent(KafkaEvent<T> event) {
         kafkaTemplate.send(event.getTopic(), writeAsString(event.getBody()));
     }
@@ -24,7 +22,7 @@ public class KafkaProducer {
         try {
             return new ObjectMapper().writeValueAsString(body);
         } catch (JsonProcessingException e) {
-            log.error("JsonProcessingException from KafkaProducer.writeAsString(MyEvent)" + System.lineSeparator() + "{}", e.getStackTrace());
+            log.error("JsonProcessingException from KafkaProducer.writeAsString(MyEvent)");
             throw new RuntimeException(e);
         }
     }
