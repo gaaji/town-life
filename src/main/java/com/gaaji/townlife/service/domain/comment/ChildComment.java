@@ -15,14 +15,27 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-@ToString
 @OnDelete(action = OnDeleteAction.CASCADE)
 @DiscriminatorValue("child")
 public class ChildComment extends Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     private ParentComment parent;
+
+    public static ChildComment create(ParentComment parentComment, CommentContent commentContent, String commenterId) {
+        ChildComment childComment = new ChildComment();
+        childComment.parent = parentComment;
+        childComment.content = commentContent;
+        childComment.userId = commenterId;
+        return childComment;
+    }
+
     @Override
     public TownLife getTownLife() {
         return parent.getTownLife();
+    }
+
+    public void associate(ParentComment parent) {
+        this.parent = parent;
+        parent.addChild(this);
     }
 }

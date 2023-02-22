@@ -9,9 +9,15 @@ import javax.persistence.Embeddable;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-@ToString
 public class CommentContent {
     private String imageSrc;
     private String location;
     private String text;
+
+    public static CommentContent create(String text, String location) {
+        CommentContent commentContent = new CommentContent();
+        commentContent.text = text;
+        commentContent.location = location;
+        return commentContent;
+    }
 }

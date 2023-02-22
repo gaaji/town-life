@@ -137,4 +137,7 @@ public abstract class TownLife extends BaseEntity {
         return srcs;
     }
 
+    public void addComment(ParentComment parentComment) {
+        this.comments.add(parentComment);
+    }
 }

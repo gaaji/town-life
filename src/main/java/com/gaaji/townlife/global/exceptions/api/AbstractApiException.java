@@ -25,4 +25,9 @@ public class AbstractApiException extends RuntimeException implements ErrorCode{
         errorMessage = errorCode.getErrorMessage();
         this.cause = cause;
     }
+
+    public AbstractApiException (ErrorCode errorCode, String message) {
+        this(errorCode);
+        this.errorMessage = message;
+    }
 }

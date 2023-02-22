@@ -14,7 +14,6 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder(access = AccessLevel.PRIVATE)
-@ToString
 @DiscriminatorValue("question")
 public class QuestionReaction extends Reaction {
 

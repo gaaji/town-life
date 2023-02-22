@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CommentFindService {
 
-    List<ChildCommentListDto> findChildCommentListByParentCommentId(String parentCommentId, String lastChildCommentId, int size);
+    List<ChildCommentListDto> findChildCommentListByParentCommentId(String postId, String parentCommentId, String lastChildCommentId, Integer size);
     List<CommentListDto> findListByUserId(String userId);
     List<ParentCommentListDto> findParentCommentListByTownLifeId(String townLifeId);
 

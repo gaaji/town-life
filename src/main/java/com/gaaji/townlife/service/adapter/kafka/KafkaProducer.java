@@ -25,7 +25,7 @@ public class KafkaProducer {
         try {
             return new ObjectMapper().writeValueAsString(body);
         } catch (JsonProcessingException e) {
-            log.error("JsonProcessingException from KafkaProducer.writeAsString(MyEvent)" + System.lineSeparator() + "{}", Arrays.toString(e.getStackTrace()));
+            log.error("JsonProcessingException from KafkaProducer.writeAsString(MyEvent)");
             throw new RuntimeException(e);
         }
     }

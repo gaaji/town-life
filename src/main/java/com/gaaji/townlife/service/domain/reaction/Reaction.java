@@ -2,14 +2,12 @@ package com.gaaji.townlife.service.domain.reaction;
 
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import lombok.Getter;
-import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@ToString
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn
 @Table(indexes = {
