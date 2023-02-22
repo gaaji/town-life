@@ -4,10 +4,11 @@ import com.gaaji.townlife.service.adapter.kafka.KafkaProducer;
 import com.gaaji.townlife.service.domain.townlife.TownLifeSubscription;
 import com.gaaji.townlife.service.event.dto.NotificationEventBody;
 import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeInternalEvent;
+import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeReactionAddedEvent;
+import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeUpdatedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,21 +27,21 @@ import java.util.stream.Collectors;
 public class ApplicationEventHandler {
     private final KafkaProducer kafkaProducer;
 
-    @Async
+//    @Async
     @EventListener
     public void handleToKafkaEvent(KafkaEvent<?> event) {
         kafkaProducer.produceEvent(event);
     }
 
-    @Async
+//    @Async
     @EventListener
     public void handlePostEdited(PostEditedEvent event) {
         kafkaProducer.produceEvent(new NotificationEvent(this, NotificationEventBody.of(event)));
     }
 
-    @Async
+//    @Async
     @EventListener
-    public <T extends TownLifeInternalEvent> void handleTownLifeUpdated(T event) {
+    public void handleTownLifeUpdated(TownLifeUpdatedEvent event) {
         List<String> subscribedUserIds = getSubscribedUserIds(event);
 
         kafkaProducer.produceEvent(new NotificationEvent(
@@ -49,9 +50,9 @@ public class ApplicationEventHandler {
         ));
     }
 
-    @Async
+//    @Async
     @EventListener
-    public <T extends TownLifeInternalEvent> void handleTownLifeReactionAdded(T event) {
+    public void handleTownLifeReactionAdded(TownLifeReactionAddedEvent event) {
         List<String> subscribedUserIds = getSubscribedUserIds(event);
 
         kafkaProducer.produceEvent(new NotificationEvent(
