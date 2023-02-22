@@ -7,6 +7,7 @@ import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import com.gaaji.townlife.service.repository.CategoryRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ class TownLifeModifyServiceImplTest {
     @Autowired private TownLifeModifyServiceImpl townLifeModifyService;
 
     private Category category;
+    @Autowired
+    private TownLifeSubscriptionServiceImpl townLifeSubscriptionService;
+
     void init_category() {
         category = categoryRepository.save(
                 Category.create("테스트_카테고리_POST_수정", true, "테스트_카테고리입니다.", TownLifeType.POST));
@@ -47,10 +51,20 @@ class TownLifeModifyServiceImplTest {
     @DisplayName("POST 동네생활 수정")
     void test_for_modify_post_town_life() {
         init_post_town_life();
-        TownLifeModifyRequestDto dto = new TownLifeModifyRequestDto("수정 게시글", "수정 게시글 내용입니다.", "");
 
+        // 테스트 구독 유저 생성
+        for (int i = 1; i <= 5; i++) {
+            String userId = "user_"+i;
+            townLifeSubscriptionService.subscribe(townLifeId, userId);
+        }
+
+        TownLifeModifyRequestDto dto = new TownLifeModifyRequestDto("수정 게시글", "수정 게시글 내용입니다.", "");
         TownLifeDetailDto modify = townLifeModifyService.modify(townLifeId, authorId, dto);
-        System.out.println(modify);
+
+        Assertions.assertNotNull(modify);
+        Assertions.assertEquals("수정 게시글", modify.getTitle());
+        Assertions.assertEquals("수정 게시글 내용입니다.", modify.getText());
+        Assertions.assertEquals("", modify.getLocation());
     }
 
 }
