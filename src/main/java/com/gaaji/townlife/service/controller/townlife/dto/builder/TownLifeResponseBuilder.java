@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ResponseDtoBuilder {
+public class TownLifeResponseBuilder {
 
     /*
     TownLifeListResponseDto
@@ -107,7 +107,7 @@ public class ResponseDtoBuilder {
 
             private static List<PostReactionDto> postReactionDtoList(PostTownLife entity) {
                 return entity.getReactions().stream()
-                        .map(ResponseDtoBuilder::postReactionDto)
+                        .map(TownLifeResponseBuilder::postReactionDto)
                         .collect(Collectors.toList());
             }
 
@@ -127,7 +127,7 @@ public class ResponseDtoBuilder {
 
             private static List<QuestionReactionDto> questionReactionDtoList(QuestionTownLife entity) {
                 return entity.getReactions().stream()
-                        .map(ResponseDtoBuilder::questionReactionDto)
+                        .map(TownLifeResponseBuilder::questionReactionDto)
                         .collect(Collectors.toList());
             }
 

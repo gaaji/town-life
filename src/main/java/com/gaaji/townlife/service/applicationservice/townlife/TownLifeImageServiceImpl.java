@@ -10,7 +10,7 @@ import com.gaaji.townlife.global.exceptions.internalServer.exception.NullValueEx
 import com.gaaji.townlife.global.exceptions.internalServer.exception.TownLifeAwsS3Exception;
 import com.gaaji.townlife.service.adapter.aws.AwsS3Client;
 import com.gaaji.townlife.service.controller.townlife.dto.AttachedImageDto;
-import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
+import com.gaaji.townlife.service.controller.townlife.dto.builder.TownLifeResponseBuilder;
 import com.gaaji.townlife.service.domain.townlife.AttachedImage;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
@@ -38,7 +38,7 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
 
         upload(townLife, orderIndexes, multipartFiles);
 
-        return ResponseDtoBuilder.attachedImageDtoList(townLife);
+        return TownLifeResponseBuilder.attachedImageDtoList(townLife);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
 
         upload(townLife, orderIndexes, multipartFiles);
 
-        return ResponseDtoBuilder.attachedImageDtoList(townLife);
+        return TownLifeResponseBuilder.attachedImageDtoList(townLife);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
 
         deleteAll(townLife);
 
-        return ResponseDtoBuilder.attachedImageDtoList(townLife);
+        return TownLifeResponseBuilder.attachedImageDtoList(townLife);
     }
 
     private TownLife getTownLifeById(String id) {
