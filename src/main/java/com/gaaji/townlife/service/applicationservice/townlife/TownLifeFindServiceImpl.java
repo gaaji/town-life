@@ -24,8 +24,8 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
 
     @Override
     @Transactional
-    public TownLifeDetailDto findById(String id) {
-        TownLife townLife = entityService.findById(id);
+    public TownLifeDetailDto findById(String townLifeId) {
+        TownLife townLife = entityService.findById(townLifeId);
         //TODO get auth profile
 
         return TownLifeResponseBuilder.townLifeDetailDto(townLife);
@@ -33,9 +33,8 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
 
     @Override
     @Transactional
-    public TownLifeDetailDto visit(String id) {
-
-        TownLife townLife = entityService.findById(id);
+    public TownLifeDetailDto visit(String townLifeId) {
+        TownLife townLife = entityService.findById(townLifeId);
         //TODO get auth profile
         TownLifeCounter counter = countService.increaseViewCount(townLife.getTownLifeCounter().getId());
 
