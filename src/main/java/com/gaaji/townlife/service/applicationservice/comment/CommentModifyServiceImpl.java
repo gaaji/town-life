@@ -37,7 +37,6 @@ public class CommentModifyServiceImpl implements CommentModifyService {
     }
 
     private Comment findCommentById(String commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.COMMENT_NOT_FOUND));
-        return comment;
+        return  commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.COMMENT_NOT_FOUND));
     }
 }
