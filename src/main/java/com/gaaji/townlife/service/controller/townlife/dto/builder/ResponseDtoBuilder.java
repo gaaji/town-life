@@ -74,8 +74,7 @@ public class ResponseDtoBuilder {
         }
         return response;
     }
-
-        private static TownLifeDetailDto postTownLifeDetailDto(TownLife entity, int viewCount, int reactionCount, int commentCount, int interestCount) {
+        private static TownLifeDetailDto.TownLifeDetailDtoBuilder commonTownLifeDetailDto(TownLife entity, int viewCount, int reactionCount, int commentCount, int interestCount) {
             return TownLifeDetailDto.builder()
                     .id(entity.getId())
                     .authorId(entity.getAuthorId())
@@ -84,6 +83,7 @@ public class ResponseDtoBuilder {
                     )
                     .createdAt(entity.getCreatedAt())
                     .updatedAt(entity.getUpdatedAt())
+                    .isUpdated(entity.getUpdatedAt().isAfter(entity.getCreatedAt()))
                     .title(entity.getContent().getTitle())
                     .text(entity.getContent().getText())
                     .location(entity.getContent().getLocation())
@@ -93,7 +93,11 @@ public class ResponseDtoBuilder {
                     .interestCount(interestCount)
                     .attachedImages(
                             attachedImageDtoList(entity)
-                    )
+                    );
+        }
+
+        private static TownLifeDetailDto postTownLifeDetailDto(TownLife entity, int viewCount, int reactionCount, int commentCount, int interestCount) {
+            return commonTownLifeDetailDto(entity, viewCount, reactionCount, commentCount, interestCount)
                     .postReactionDtos(
                             postReactionDtoList((PostTownLife) entity)
                     )
@@ -113,24 +117,7 @@ public class ResponseDtoBuilder {
 
 
         private static TownLifeDetailDto questionTownLifeDetailDto(TownLife entity, int viewCount, int reactionCount, int commentCount, int interestCount) {
-            return TownLifeDetailDto.builder()
-                    .id(entity.getId())
-                    .authorId(entity.getAuthorId())
-                    .category(
-                            townLifeDetailCategoryDto(entity.getCategory())
-                    )
-                    .createdAt(entity.getCreatedAt())
-                    .updatedAt(entity.getUpdatedAt())
-                    .title(entity.getContent().getTitle())
-                    .text(entity.getContent().getText())
-                    .location(entity.getContent().getLocation())
-                    .viewCount(viewCount)
-                    .reactionCount(reactionCount)
-                    .commentCount(commentCount)
-                    .interestCount(interestCount)
-                    .attachedImages(
-                            attachedImageDtoList(entity)
-                    )
+            return commonTownLifeDetailDto(entity, viewCount, reactionCount, commentCount, interestCount)
                     .postReactionDtos(null)
                     .questionReactionDtos(
                             questionReactionDtoList((QuestionTownLife) entity)
