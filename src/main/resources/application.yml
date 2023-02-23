@@ -29,4 +29,9 @@ spring:
   application:
     name: town-life
 
-
+logging:
+  level:
+    com:
+      amazonaws:
+        util:
+          EC2MetadataUtils: error
