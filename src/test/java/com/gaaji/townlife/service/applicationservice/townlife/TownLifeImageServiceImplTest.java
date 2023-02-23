@@ -75,6 +75,7 @@ class TownLifeImageServiceImplTest {
         MockMultipartFile multipartFile = getOneMockImage();
         List<AttachedImageDto> dto = townLifeImageService.upload(townLifeId, authorId, orderIndexes, multipartFile);
 
+        System.out.println(dto);
         Assertions.assertNotNull(dto);
         Assertions.assertEquals(1, dto.size());
     }

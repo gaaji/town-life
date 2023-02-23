@@ -12,11 +12,12 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AttachedImageDto {
 
+    private String id;
     private int orderIndex;
     private String src;
 
     public static AttachedImageDto of(AttachedImage entity) {
-        return new AttachedImageDto(entity.getOrderIndex(), entity.getSrc());
+        return new AttachedImageDto(entity.getId(), entity.getOrderIndex(), entity.getSrc());
     }
 
 }

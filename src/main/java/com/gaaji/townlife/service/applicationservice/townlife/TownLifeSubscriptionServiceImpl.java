@@ -5,6 +5,7 @@ import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundExcept
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeSubscription;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
+import com.gaaji.townlife.service.repository.TownLifeSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TownLifeSubscriptionServiceImpl implements TownLifeSubscriptionService {
 
     private final TownLifeRepository townLifeRepository;
+    private final TownLifeSubscriptionRepository townLifeSubscriptionRepository;
 
     @Override
     @Transactional
@@ -21,7 +23,9 @@ public class TownLifeSubscriptionServiceImpl implements TownLifeSubscriptionServ
 
         TownLife townLife = getTownLifeById(townLifeId);
 
-        townLife.addSubscription(TownLifeSubscription.of(userId));
+        TownLifeSubscription subscription = townLifeSubscriptionRepository.save(TownLifeSubscription.of(userId));
+
+        townLife.addSubscription(subscription);
     }
 
     @Override

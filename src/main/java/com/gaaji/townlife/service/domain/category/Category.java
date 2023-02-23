@@ -30,7 +30,7 @@ public class Category {
     private String name;
     private boolean defaultCategory;
     private String description;
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", orphanRemoval = true)
     private List<CategoryUnsubscription> unsubscriptions = new ArrayList<>();
     @OneToMany(mappedBy = "category")
     private List<TownLife> townLives = new ArrayList<>();

@@ -13,7 +13,6 @@ import com.gaaji.townlife.service.controller.townlife.dto.AttachedImageDto;
 import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
 import com.gaaji.townlife.service.domain.townlife.AttachedImage;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
-import com.gaaji.townlife.service.repository.AttachedImageRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,6 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
 
     private final AwsS3Client awsS3Client;
     private final TownLifeRepository townLifeRepository;
-    private final AttachedImageRepository attachedImageRepository;
 
     @Override
     @Transactional
@@ -96,8 +94,8 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
             validateArraysLength(length, srcs.length, ApiErrorCode.IMAGE_UPLOAD_ERROR);
 
             for (int i = 0; i < length; i++) {
-                AttachedImage attachedImage = attachedImageRepository.save(AttachedImage.of(orderIndexes[i], srcs[i]));
-                townLife.addAttachedImage(attachedImage);
+                townLife.addAttachedImage(AttachedImage.of(orderIndexes[i], srcs[i]));
+                townLifeRepository.save(townLife);
             }
 
         } catch (TownLifeAwsS3Exception e) {
