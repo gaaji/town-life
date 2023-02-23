@@ -34,11 +34,11 @@ public class TownLifeReactionServiceImpl implements TownLifeReactionService {
         ReactionDoResponseDto responseDto = null;
         if (townLife instanceof PostTownLife) {
             PostReaction reaction = townLife.addReaction(PostReaction.of(userId, dto.getEmoji()));
-            responseDto = TownLifeResponseBuilder.reactionDoResponseDto(townLife.getId(), reaction.getUserId(), reaction.getEmoji());
+            responseDto = TownLifeResponseBuilder.postReactionDoResponseDto(townLife.getId(), reaction.getUserId(), reaction.getEmoji());
 
         } else if (townLife instanceof QuestionTownLife){
             QuestionReaction reaction = townLife.addReaction(QuestionReaction.of(userId));
-            responseDto = TownLifeResponseBuilder.reactionDoResponseDto(townLife.getId(), reaction.getUserId());
+            responseDto = TownLifeResponseBuilder.questionReactionDoResponseDto(townLife.getId(), reaction.getUserId());
         }
         if (responseDto == null) throw new ResourceSaveException(ApiErrorCode.REACTION_SAVE_ERROR);
 
