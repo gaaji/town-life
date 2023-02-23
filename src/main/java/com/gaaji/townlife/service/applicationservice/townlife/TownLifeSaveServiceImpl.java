@@ -3,6 +3,7 @@ package com.gaaji.townlife.service.applicationservice.townlife;
 import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceSaveException;
+import com.gaaji.townlife.global.utils.validation.ValidateResourceAccess;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
@@ -27,9 +28,12 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
 
     @Override
     @Transactional
-    public TownLifeDetailDto save(TownLifeSaveRequestDto dto) {
+    public TownLifeDetailDto save(String authId, String townId, TownLifeSaveRequestDto dto) {
         Category category = categoryRepository.findById(dto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.CATEGORY_NOT_FOUND));
+
+        ValidateResourceAccess.validateAuthorizationSaving(dto.getAuthorId(), authId);
+        ValidateResourceAccess.validateAuthorization(dto.getTownId(), townId, ApiErrorCode.TOWN_BAD_REQUEST);
 
         Class<? extends TownLife> townLifeClazz =
                 category.getTownLifeType() == TownLifeType.POST ? PostTownLife.class : QuestionTownLife.class;
@@ -37,7 +41,9 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
         TownLife townLife = saveTownLife(townLifeClazz, dto, category);
         TownLifeDetailDto responseDto = ResponseDtoBuilder.townLifeDetailDto(townLife);
 
-        if(responseDto == null) throw new ResourceSaveException(ApiErrorCode.TOWN_LIFE_SAVE_ERROR);
+        if(responseDto == null) {
+            throw new ResourceSaveException(ApiErrorCode.TOWN_LIFE_SAVE_ERROR);
+        }
 
         return responseDto;
     }
@@ -61,6 +67,7 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
 
     private <T extends TownLife> void saveCounter(T townLife) {
         TownLifeCounter counter = townLifeCounterRepository.save(TownLifeCounter.create());
+        counter.view();
         townLife.associateCounter(counter);
     }
 
