@@ -1,10 +1,10 @@
 package com.gaaji.townlife.service.applicationservice.comment;
 
+import com.gaaji.townlife.service.controller.comment.dto.CommentListDto;
 import com.gaaji.townlife.service.controller.comment.dto.CommentModifyRequestDto;
-import com.gaaji.townlife.service.controller.comment.dto.CommentModifyResponseDto;
 
 public interface CommentModifyService {
 
-    CommentModifyResponseDto modify(String townLifeId, String commentId, CommentModifyRequestDto dto);
+    CommentListDto modify(String authId, String townLifeId, String commentId, CommentModifyRequestDto dto);
 
 }
