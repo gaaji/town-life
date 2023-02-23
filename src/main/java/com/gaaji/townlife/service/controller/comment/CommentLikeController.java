@@ -1,8 +1,8 @@
 package com.gaaji.townlife.service.controller.comment;
 
 import com.gaaji.townlife.service.applicationservice.comment.CommentLikeService;
-import com.gaaji.townlife.service.controller.comment.dto.CommentLikeRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,10 +15,20 @@ public class CommentLikeController {
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void commentLikeSave(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authId,
             @PathVariable String postId,
-            @PathVariable String commentId,
-            @RequestBody CommentLikeRequestDto dto
+            @PathVariable String commentId)
+    {
+        commentLikeService.like(authId, postId, commentId);
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void commentLikeRemove(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authId,
+            @PathVariable String postId,
+            @PathVariable String commentId
     ) {
-        commentLikeService.like(postId, commentId, dto);
+        commentLikeService.unlike(authId,postId, commentId);
     }
 }

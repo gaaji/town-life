@@ -7,7 +7,8 @@ import com.gaaji.townlife.service.controller.comment.dto.CommentLikeRequestDto;
 import com.gaaji.townlife.service.domain.comment.Comment;
 import com.gaaji.townlife.service.domain.comment.CommentLike;
 import com.gaaji.townlife.service.event.CommentLikeCreatedEvent;
-import com.gaaji.townlife.service.event.dto.CommentLikeCreatedEventBody;
+import com.gaaji.townlife.service.event.CommentLikeDeletedEvent;
+import com.gaaji.townlife.service.event.dto.CommentLikeEventBody;
 import com.gaaji.townlife.service.repository.CommentLikeRepository;
 import com.gaaji.townlife.service.repository.CommentRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
@@ -15,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -26,22 +29,28 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     private final CommentLikeRepository commentLikeRepository;
 
     @Override
-    public void like(String townLifeId, String commentId, CommentLikeRequestDto dto) {
+    public void like(String authId, String townLifeId, String commentId) {
         checkTownLifeExists(townLifeId);
         Comment comment = findCommentById(commentId);
 
-        if(commentLikeRepository.existsByUserIdAndComment(dto.getUserId(), comment))
-            throw new BadRequestException("해당 사용자는 이미 해당 댓글에 좋아요를 표시한 상태입니다.");
+        if(commentLikeRepository.existsByUserIdAndComment(authId, comment)) return;
 
-        CommentLike savedLike = commentLikeRepository.save(CommentLike.create(dto.getUserId()));
+        CommentLike savedLike = commentLikeRepository.save(CommentLike.create(authId));
         savedLike.associate(comment);
 
-        eventPublisher.publishEvent(new CommentLikeCreatedEvent(this, CommentLikeCreatedEventBody.of(savedLike)));
+        eventPublisher.publishEvent(new CommentLikeCreatedEvent(this, CommentLikeEventBody.of(savedLike)));
     }
 
     @Override
-    public void unlike(String townLifeId, String commentId) {
-        // TODO IMPLEMENT
+    public void unlike(String authId, String townLifeId, String commentId) {
+        checkTownLifeExists(townLifeId);
+        Comment comment = findCommentById(commentId);
+        Optional<CommentLike> likeOptional = commentLikeRepository.findByUserIdAndComment(authId, comment);
+        if(likeOptional.isEmpty()) return;
+        CommentLike commentLike = likeOptional.get();
+        commentLikeRepository.delete(commentLike);
+        eventPublisher.publishEvent(new CommentLikeDeletedEvent(this, CommentLikeEventBody.of(commentLike)));
+        commentLike.unAssociate(comment);
     }
 
     private Comment findCommentById(String commentId) {

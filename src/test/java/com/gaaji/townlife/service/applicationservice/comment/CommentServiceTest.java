@@ -203,16 +203,34 @@ public class CommentServiceTest {
         ChildComment childComment = randomChildComment(parentComment);
         String userId = randomString();
 
-        CommentLikeRequestDto dto = CommentLikeRequestDto.create(userId);
-        commentLikeService.like(townLife.getId(), parentComment.getId(), dto);
+        commentLikeService.like(userId, townLife.getId(), parentComment.getId());
         Assertions.assertEquals(1, parentComment.getLikes().size());
         Assertions.assertEquals(parentComment.getId(), parentComment.getLikes().get(0).getComment().getId());
-        commentLikeService.like(townLife.getId(), childComment.getId(), dto);
+        commentLikeService.like(userId, townLife.getId(), childComment.getId());
+        Assertions.assertEquals(1, childComment.getLikes().size());
+        // 중복이면 무시
+        commentLikeService.like(userId, townLife.getId(), childComment.getId());
         Assertions.assertEquals(1, childComment.getLikes().size());
 
-        Assertions.assertThrows(BadRequestException.class, () -> commentLikeService.like(townLife.getId(), childComment.getId(), dto));
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> commentLikeService.like("wrong id", parentComment.getId(), dto));
-        Assertions.assertThrows(ResourceNotFoundException.class, () -> commentLikeService.like(townLife.getId(), "wrong id", dto));
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> commentLikeService.like(userId, "wrong id", parentComment.getId()));
+        Assertions.assertThrows(ResourceNotFoundException.class, () -> commentLikeService.like(userId, townLife.getId(), "wrong id"));
+    }
+
+    @Test
+    void 댓글_좋아요_취소() {
+        Category category = randomCategory();
+        TownLife townLife = randomTownLife(category);
+        ParentComment parentComment = randomParentComment(townLife);
+        ChildComment childComment = randomChildComment(parentComment);
+        String userId = randomString();
+
+        commentLikeService.like(userId, townLife.getId(), parentComment.getId());
+        Assertions.assertEquals(1, parentComment.getLikes().size());
+
+        commentLikeService.unlike(userId, townLife.getId(), parentComment.getId());
+        Assertions.assertEquals(0, parentComment.getLikes().size());
+
+        Assertions.assertDoesNotThrow(() -> Assertions.assertEquals(0, parentComment.getLikes().size()));
     }
 
     private ChildComment randomChildComment(ParentComment parentComment, String commenterId) {

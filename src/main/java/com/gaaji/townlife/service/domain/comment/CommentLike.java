@@ -36,4 +36,9 @@ public class CommentLike {
         this.comment = comment;
         comment.addLike(this);
     }
+
+    public void unAssociate(Comment comment) {
+        this.comment = null;
+        comment.removeLike(this);
+    }
 }

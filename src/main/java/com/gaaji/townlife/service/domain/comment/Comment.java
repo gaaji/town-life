@@ -37,4 +37,8 @@ public abstract class Comment extends BaseEntity {
     public void addLike(CommentLike commentLike) {
         this.likes.add(commentLike);
     }
+
+    public void removeLike(CommentLike like) {
+        this.likes.remove(like);
+    }
 }
