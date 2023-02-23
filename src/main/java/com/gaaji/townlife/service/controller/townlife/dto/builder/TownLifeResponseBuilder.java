@@ -5,10 +5,7 @@ import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.reaction.Emoji;
 import com.gaaji.townlife.service.domain.reaction.PostReaction;
 import com.gaaji.townlife.service.domain.reaction.QuestionReaction;
-import com.gaaji.townlife.service.domain.townlife.PostTownLife;
-import com.gaaji.townlife.service.domain.townlife.QuestionTownLife;
-import com.gaaji.townlife.service.domain.townlife.TownLife;
-import com.gaaji.townlife.service.domain.townlife.TownLifeCounter;
+import com.gaaji.townlife.service.domain.townlife.*;
 import org.springframework.data.domain.Slice;
 
 import java.util.Comparator;
@@ -144,22 +141,25 @@ public class TownLifeResponseBuilder {
      */
     public static List<AttachedImageDto> attachedImageDtoList(TownLife townLife) {
         return townLife.getAttachedImages().stream()
-                .map(AttachedImageDto::of)
+                .map(TownLifeResponseBuilder::attachedImageDto)
                 .sorted(Comparator.comparing(AttachedImageDto::getOrderIndex))
                 .collect(Collectors.toList());
     }
+        private static AttachedImageDto attachedImageDto(AttachedImage entity) {
+            return new AttachedImageDto(entity.getId(), entity.getOrderIndex(), entity.getSrc());
+        }
 
     /*
     ReactionDoResponseDto
      */
-    public static ReactionDoResponseDto reactionDoResponseDto(String townLifeId, String userId) {
+    public static ReactionDoResponseDto questionReactionDoResponseDto(String townLifeId, String userId) {
         return ReactionDoResponseDto.builder()
                 .townLifeId(townLifeId)
                 .userId(userId)
                 .build();
     }
 
-    public static ReactionDoResponseDto reactionDoResponseDto(String townLifeId, String userId, Emoji emoji) {
+    public static ReactionDoResponseDto postReactionDoResponseDto(String townLifeId, String userId, Emoji emoji) {
         return ReactionDoResponseDto.builder()
                 .townLifeId(townLifeId)
                 .userId(userId)
