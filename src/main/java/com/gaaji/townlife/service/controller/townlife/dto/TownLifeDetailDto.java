@@ -1,16 +1,15 @@
 package com.gaaji.townlife.service.controller.townlife.dto;
 
-import com.gaaji.townlife.service.domain.townlife.TownLife;
-import com.gaaji.townlife.service.domain.townlife.TownLifeCounter;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder(access = AccessLevel.PRIVATE)
+@Builder
 public class TownLifeDetailDto {
     private String id;
     private String authorId;
@@ -24,35 +23,8 @@ public class TownLifeDetailDto {
     private int reactionCount;
     private int commentCount;
     private int interestCount;
+    private List<AttachedImageDto> attachedImages;
+    private List<PostReactionDto> postReactionDtos;
+    private List<QuestionReactionDto> questionReactionDtos;
 
-    public static TownLifeDetailDto of(TownLife entity) {
-        return TownLifeDetailDto.builder()
-                .id(entity.getId())
-                .authorId(entity.getAuthorId())
-                .category(TownLifeDetailCategoryDto.of(entity.getCategory()))
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .title(entity.getContent().getTitle())
-                .text(entity.getContent().getText())
-                .location(entity.getContent().getLocation())
-                .build();
-    }
-
-    public static TownLifeDetailDto of(TownLife entity, TownLifeCounter counter) {
-        return TownLifeDetailDto.builder()
-                .id(entity.getId())
-                .authorId(entity.getAuthorId())
-                .category(TownLifeDetailCategoryDto.of(entity.getCategory()))
-                .createdAt(entity.getCreatedAt())
-                .updatedAt(entity.getUpdatedAt())
-                .title(entity.getContent().getTitle())
-                .text(entity.getContent().getText())
-                .location(entity.getContent().getLocation())
-                .viewCount(counter.getViewCount().getValue())
-                .reactionCount(counter.getReactionCount().getValue())
-                .commentCount(counter.getCommentCount().getValue())
-                .interestCount(counter.getInterestCount().getValue())
-                .build();
-    }
-    
 }

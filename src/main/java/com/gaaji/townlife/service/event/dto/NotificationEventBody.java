@@ -15,4 +15,12 @@ public class NotificationEventBody {
         body.users.addAll(List.of(users));
         return body;
     }
+
+    public static NotificationEventBody of(String message, List<String> users) {
+        NotificationEventBody body = new NotificationEventBody();
+        body.message = message;
+        body.users = List.copyOf(users);
+        return body;
+    }
+
 }

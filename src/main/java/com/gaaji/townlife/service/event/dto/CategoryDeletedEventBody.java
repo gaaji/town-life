@@ -1,5 +1,8 @@
 package com.gaaji.townlife.service.event.dto;
 
+import lombok.Getter;
+
+@Getter
 public class CategoryDeletedEventBody {
     private final String id;
     private final String name;

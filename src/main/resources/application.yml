@@ -24,8 +24,9 @@ spring:
       - classpath:kafka-config.yml
       - classpath:db-config.yml
       - classpath:eureka-config.yml
+      - classpath:secret-config.yml
       - classpath:kafka-topics.yml
   application:
-    name: chat-api
+    name: town-life
 
 

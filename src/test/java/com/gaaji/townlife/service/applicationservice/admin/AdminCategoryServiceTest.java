@@ -5,6 +5,7 @@ import com.gaaji.townlife.service.controller.admin.dto.AdminCategoryModifyDto;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveResponseDto;
 import com.gaaji.townlife.service.domain.category.Category;
+import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import com.gaaji.townlife.service.repository.CategoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -40,7 +41,7 @@ class AdminCategoryServiceTest {
         String description = "어쩌구 저쩌구";
 
         // when
-        AdminCategorySaveResponseDto dto = adminCategorySaveService.save(new AdminCategorySaveRequestDto(name, defaultCategory, description));
+        AdminCategorySaveResponseDto dto = adminCategorySaveService.save(new AdminCategorySaveRequestDto(name, defaultCategory, description, TownLifeType.POST));
         Category category = categoryRepository.findById(dto.getId()).get();
 
         // then
@@ -108,7 +109,7 @@ class AdminCategoryServiceTest {
     }
 
     Category createCategory(String name, boolean defaultCategory, String description) {
-        AdminCategorySaveResponseDto dto = adminCategorySaveService.save(new AdminCategorySaveRequestDto(name, defaultCategory, description));
+        AdminCategorySaveResponseDto dto = adminCategorySaveService.save(new AdminCategorySaveRequestDto(name, defaultCategory, description, TownLifeType.POST));
         return categoryRepository.findById(dto.getId()).get();
     }
 

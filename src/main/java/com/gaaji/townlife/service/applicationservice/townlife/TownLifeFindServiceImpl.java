@@ -1,14 +1,20 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
+import com.gaaji.townlife.global.utils.ulid.ULIDGenerator;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
-import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListDto;
+import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListResponseDto;
+import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeCounter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TownLifeFindServiceImpl implements TownLifeFindService {
@@ -17,27 +23,43 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
     private final TownLifeFindCountService countService;
 
     @Override
+    @Transactional
     public TownLifeDetailDto findById(String id) {
         TownLife townLife = entityService.findById(id);
+        //TODO get auth profile
 
-        return TownLifeDetailDto.of(townLife);
+        return ResponseDtoBuilder.townLifeDetailDto(townLife);
     }
 
     @Override
+    @Transactional
     public TownLifeDetailDto visit(String id) {
+
         TownLife townLife = entityService.findById(id);
-        TownLifeCounter townLifeCounter = countService.increaseViewCount(id);
+        //TODO get auth profile
+        TownLifeCounter counter = countService.increaseViewCount(townLife.getTownLifeCounter().getId());
 
-        return TownLifeDetailDto.of(townLife, townLifeCounter);
+        return ResponseDtoBuilder.townLifeDetailDto(townLife, counter);
     }
 
     @Override
-    public List<TownLifeListDto> findListByTownId(String townId, String lastTownLifeId, int size) {
-        return null;
+    @Transactional
+    public TownLifeListResponseDto findListByTownId(String userId, String townId, LocalDateTime requestTime, int page, int size) {
+
+        String offsetId = ULIDGenerator.newULIDByRequestTime(requestTime);
+        Slice<TownLife> townLives = entityService.findListByTownIdAndIdLessThan(userId, townId, offsetId, page, size);
+
+        return ResponseDtoBuilder.townLifeListResponseDto(townLives);
     }
 
     @Override
-    public List<TownLifeListDto> findListByUserId(String userId) {
-        return null;
+    @Transactional
+    public TownLifeListResponseDto findListByUserId(String userId, LocalDateTime requestTime, int page, int size) {
+
+        String offsetId = ULIDGenerator.newULIDByRequestTime(requestTime);
+        Slice<TownLife> townLives = entityService.findListByUserIdAndIdLessThan(userId, offsetId, page, size);
+
+        return ResponseDtoBuilder.townLifeListResponseDto(townLives);
     }
+
 }

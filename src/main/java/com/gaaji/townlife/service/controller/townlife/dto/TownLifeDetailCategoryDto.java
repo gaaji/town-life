@@ -1,18 +1,17 @@
 package com.gaaji.townlife.service.controller.townlife.dto;
 
-import com.gaaji.townlife.service.domain.category.Category;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
 @ToString
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class TownLifeDetailCategoryDto {
 
     private String categoryId;
     private String categoryName;
 
-    public static TownLifeDetailCategoryDto of(Category entity) {
-        return new TownLifeDetailCategoryDto(entity.getId(), entity.getName());
-    }
 }

@@ -1,7 +1,7 @@
 package com.gaaji.townlife.service.applicationservice.comment;
 
-import com.gaaji.townlife.global.exception.api.BadRequestException;
-import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
+import com.gaaji.townlife.global.exceptions.api.exception.BadRequestException;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
 import com.gaaji.townlife.service.applicationservice.admin.AdminCategorySaveService;
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeSaveService;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
@@ -264,7 +264,6 @@ public class CommentServiceTest {
 
     TownLife createTownLife(String categoryId, String authorId, String townId, String title, String text, String location) {
         TownLifeDetailDto dto = townLifeSaveService.save(
-                TownLifeType.POST,
                 TownLifeSaveRequestDto.builder()
                         .townId(categoryId)
                         .categoryId(categoryId)
@@ -283,7 +282,7 @@ public class CommentServiceTest {
     }
 
     Category createCategory(String name, boolean defaultCategory, String description) {
-        AdminCategorySaveResponseDto dto = adminCategorySaveService.save(new AdminCategorySaveRequestDto(name, defaultCategory, description));
+        AdminCategorySaveResponseDto dto = adminCategorySaveService.save(new AdminCategorySaveRequestDto(name, defaultCategory, description, TownLifeType.POST));
         return categoryRepository.findById(dto.getId()).get();
     }
 

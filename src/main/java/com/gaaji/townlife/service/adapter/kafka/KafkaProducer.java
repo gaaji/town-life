@@ -8,12 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class KafkaProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
+//    @Async
     public <T> void produceEvent(KafkaEvent<T> event) {
         kafkaTemplate.send(event.getTopic(), writeAsString(event.getBody()));
     }

@@ -1,60 +1,67 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
+import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceSaveException;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
+import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.*;
 import com.gaaji.townlife.service.repository.CategoryRepository;
+import com.gaaji.townlife.service.repository.TownLifeCounterRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
-import com.gaaji.townlife.service.repository.TownLifeSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TownLifeSaveServiceImpl implements TownLifeSaveService {
 
-    private final TownLifeRepository townLifeRepository;
-    private final TownLifeSubscriptionRepository townLifeSubscriptionRepository;
     private final CategoryRepository categoryRepository;
+    private final TownLifeRepository townLifeRepository;
+    private final TownLifeCounterRepository townLifeCounterRepository;
 
     @Override
     @Transactional
-    public TownLifeDetailDto save(TownLifeType type, TownLifeSaveRequestDto dto) {
-        Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow();
+    public TownLifeDetailDto save(TownLifeSaveRequestDto dto) {
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.CATEGORY_NOT_FOUND));
 
-//        if(dto.getAttachedImageRequestFiles() != null) {
-//            // save s3
-//            // return s3 url
-//            // set attached image src
-//        }
+        Class<? extends TownLife> townLifeClazz =
+                category.getTownLifeType() == TownLifeType.POST ? PostTownLife.class : QuestionTownLife.class;
 
-        TownLifeDetailDto townLifeDetailDto = null;
-        switch (type) {
-            case POST:
-                PostTownLife postTownLife = townLifeRepository.save(PostTownLife.create(dto));
-                postTownLife.associateCategory(category);
+        TownLife townLife = saveTownLife(townLifeClazz, dto, category);
+        TownLifeDetailDto responseDto = ResponseDtoBuilder.townLifeDetailDto(townLife);
 
-                saveSubscription(postTownLife, dto.getAuthorId());
-                townLifeDetailDto = TownLifeDetailDto.of(postTownLife);
-                break;
-            case QUESTION:
-                QuestionTownLife questionTownLife = townLifeRepository.save(QuestionTownLife.create(dto));
-                questionTownLife.associateCategory(category);
+        if(responseDto == null) throw new ResourceSaveException(ApiErrorCode.TOWN_LIFE_SAVE_ERROR);
 
-                saveSubscription(questionTownLife, dto.getAuthorId());
-                townLifeDetailDto = TownLifeDetailDto.of(questionTownLife);
-                break;
-        }
-        assert townLifeDetailDto != null;
-
-        return townLifeDetailDto;
+        return responseDto;
     }
 
-    private <T extends TownLife> void saveSubscription(T townLife, String authorId) {
-        TownLifeSubscription subscription = townLifeSubscriptionRepository.save(TownLifeSubscription.of(authorId));
-        subscription.associateTownLife(townLife);
+    private <T extends TownLife> T saveTownLife(Class<T> clazz, TownLifeSaveRequestDto dto, Category category) {
+        try {
+            T townLife = townLifeRepository.save(
+                    clazz.getConstructor(String.class, String.class, String.class, String.class, String.class)
+                            .newInstance(dto.getAuthorId(), dto.getTownId(), dto.getTitle(), dto.getText(), dto.getLocation()));
+
+            townLife.associateCategory(category);
+            townLife.addSubscription(TownLifeSubscription.of(dto.getAuthorId()));
+            saveCounter(townLife);
+
+            return townLife;
+
+        } catch (Exception e) {
+            throw new ResourceSaveException(ApiErrorCode.TOWN_LIFE_SAVE_ERROR, e);
+        }
+    }
+
+    private <T extends TownLife> void saveCounter(T townLife) {
+        TownLifeCounter counter = townLifeCounterRepository.save(TownLifeCounter.create());
+        townLife.associateCounter(counter);
     }
 
 }

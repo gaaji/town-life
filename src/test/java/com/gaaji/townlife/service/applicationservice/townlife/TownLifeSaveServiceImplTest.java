@@ -8,11 +8,13 @@ import com.gaaji.townlife.service.repository.CategoryRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
 import com.gaaji.townlife.service.repository.TownLifeSubscriptionRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
+@DisplayName("동네생활 저장 서비스 테스트")
 class TownLifeSaveServiceImplTest {
 
     @Autowired private TownLifeRepository townLifeRepository;
@@ -21,13 +23,15 @@ class TownLifeSaveServiceImplTest {
     @Autowired private TownLifeSaveServiceImpl townLifeSaveService;
 
     @Test
+    @DisplayName("POST 동네생활 저장")
     void create_new_post_town_life() {
-        Category category = categoryRepository.save(Category.create("테스트_카테고리", true, "테스트_카테고리입니다."));
+        Category category = categoryRepository.save(
+                Category.create("테스트_카테고리_POST_저장", true, "테스트_카테고리입니다.", TownLifeType.POST));
 
         TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                         .categoryId(category.getId()).authorId("1").townId("1").title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
 
-        TownLifeDetailDto saveDto = townLifeSaveService.save(TownLifeType.POST, dto);
+        TownLifeDetailDto saveDto = townLifeSaveService.save(dto);
 
         System.out.println("Save: " + saveDto);
 
@@ -41,13 +45,15 @@ class TownLifeSaveServiceImplTest {
     }
 
     @Test
+    @DisplayName("QUESTION 동네생활 저장")
     void create_new_question_town_life() {
-        Category category = categoryRepository.save(Category.create("테스트_카테고리", true, "테스트_카테고리입니다."));
+        Category category = categoryRepository.save(
+                Category.create("테스트_카테고리_QUES_저장", true, "테스트_카테고리입니다.", TownLifeType.QUESTION));
 
         TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                 .categoryId(category.getId()).authorId("1").townId("1").title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
 
-        TownLifeDetailDto saveDto = townLifeSaveService.save(TownLifeType.QUESTION, dto);
+        TownLifeDetailDto saveDto = townLifeSaveService.save(dto);
 
         System.out.println("Save: " + saveDto);
 

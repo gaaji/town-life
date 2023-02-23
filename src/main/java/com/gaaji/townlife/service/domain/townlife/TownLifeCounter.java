@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TownLifeCounter {
     @Id
-    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ULIDGenerator")
+    @GenericGenerator(name = "ulidGenerator", strategy = "com.gaaji.townlife.global.utils.ulid.ULIDGenerator")
     @GeneratedValue(generator = "ulidGenerator")
     private String id;
     @Embedded
@@ -26,8 +26,6 @@ public class TownLifeCounter {
     @Embedded
     @AttributeOverride(name = "value", column = @Column(name = "view_count"))
     private Counter viewCount;
-    @OneToOne(fetch = FetchType.LAZY)
-    private TownLife townLife;
 
     public static TownLifeCounter create() {
         return new TownLifeCounter().initCounter();
@@ -41,13 +39,23 @@ public class TownLifeCounter {
         return this;
     }
 
-    public void associateTownLife(TownLife townLife) {
-        this.townLife = townLife;
-    }
+    public int getCommentCount() { return commentCount.getValue(); }
+    public int getInterestCount() { return interestCount.getValue(); }
+    public int getReactionCount() { return reactionCount.getValue(); }
+    public int getViewCount() { return viewCount.getValue(); }
 
     public TownLifeCounter view() {
         this.viewCount = this.viewCount.increase();
         return this;
     }
 
+    public TownLifeCounter doReaction() {
+        this.reactionCount = this.reactionCount.increase();
+        return this;
+    }
+
+    public TownLifeCounter cancelReaction() {
+        this.reactionCount = this.reactionCount.decrease();
+        return this;
+    }
 }

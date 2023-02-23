@@ -19,8 +19,23 @@ public class PostReaction extends Reaction {
     @ManyToOne(fetch = FetchType.LAZY)
     private PostTownLife postTownLife;
 
+    private PostReaction(String userId, Emoji emoji) {
+        this.userId = userId;
+        this.emoji = emoji;
+    }
+
+    public static PostReaction of(String userId, Emoji emoji) {
+        return new PostReaction(userId, emoji);
+    }
+
     @Override
     public TownLife getTownLife() {
         return this.postTownLife;
     }
+
+    @Override
+    public <T extends TownLife> void associateTownLife(T townLife) {
+        this.postTownLife = (PostTownLife) townLife;
+    }
+
 }

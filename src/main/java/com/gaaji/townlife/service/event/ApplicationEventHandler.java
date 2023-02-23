@@ -1,16 +1,24 @@
 package com.gaaji.townlife.service.event;
 
-import com.gaaji.townlife.global.exception.api.ApiErrorCode;
-import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
+import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
 import com.gaaji.townlife.service.adapter.kafka.KafkaProducer;
 import com.gaaji.townlife.service.domain.comment.Comment;
+import com.gaaji.townlife.service.domain.townlife.TownLifeSubscription;
 import com.gaaji.townlife.service.event.dto.NotificationEventBody;
 import com.gaaji.townlife.service.event.dto.PostEditedEventBody;
+import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeInternalEvent;
+import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeReactionAddedEvent;
+import com.gaaji.townlife.service.event.nonkafka.townlife.TownLifeUpdatedEvent;
 import com.gaaji.townlife.service.repository.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -25,11 +33,13 @@ public class ApplicationEventHandler {
     private final KafkaProducer kafkaProducer;
     private final CommentRepository commentRepository;
 
+//    @Async
     @EventListener
     public void handleToKafkaEvent(KafkaEvent<?> event) {
         kafkaProducer.produceEvent(event);
     }
 
+//    @Async
     @EventListener
     public void handlePostEdited(PostEditedEvent event) {
         PostEditedEventBody editedEventBody = event.getBody();
@@ -46,4 +56,35 @@ public class ApplicationEventHandler {
         if(comment.getUserId().equals(event.getBody().getUserId())) return; // 본인 댓글에 좋아요 누르면 알림을 보내지 않는다.
         kafkaProducer.produceEvent(new NotificationEvent(event.getSource(), NotificationEventBody.of("다른 사용자가 회원님의 댓글을 좋아합니다.", comment.getUserId())));
     }
+
+//    @Async
+    @EventListener
+    public void handleTownLifeUpdated(TownLifeUpdatedEvent event) {
+        List<String> subscribedUserIds = getSubscribedUserIds(event);
+
+        kafkaProducer.produceEvent(new NotificationEvent(
+                event.getSource(),
+                NotificationEventBody.of("관심 가진 동네생활 게시글이 수정되었어요!", subscribedUserIds)
+        ));
+    }
+
+//    @Async
+    @EventListener
+    public void handleTownLifeReactionAdded(TownLifeReactionAddedEvent event) {
+        List<String> subscribedUserIds = getSubscribedUserIds(event);
+
+        kafkaProducer.produceEvent(new NotificationEvent(
+                event.getSource(),
+                NotificationEventBody.of("관심 가진 동네생활에 누군가 반응을 했어요!", subscribedUserIds)
+        ));
+    }
+
+    private <T extends TownLifeInternalEvent> List<String> getSubscribedUserIds(T event) {
+        return event.getBody().getSubscriptions().stream()
+                .map(TownLifeSubscription::getUserId)
+                .filter(subscribedUserId -> !Objects.equals(event.getBody().getIssuedUserId(), subscribedUserId))
+                .collect(Collectors.toList());
+    }
+
+
 }

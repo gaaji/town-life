@@ -1,8 +1,8 @@
 package com.gaaji.townlife.service.applicationservice.comment;
 
-import com.gaaji.townlife.global.exception.api.ApiErrorCode;
-import com.gaaji.townlife.global.exception.api.BadRequestException;
-import com.gaaji.townlife.global.exception.api.ResourceNotFoundException;
+import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
+import com.gaaji.townlife.global.exceptions.api.exception.BadRequestException;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
 import com.gaaji.townlife.service.controller.comment.dto.ChildCommentListDto;
 import com.gaaji.townlife.service.controller.comment.dto.CommentListDto;
 import com.gaaji.townlife.service.controller.comment.dto.ParentCommentListDto;

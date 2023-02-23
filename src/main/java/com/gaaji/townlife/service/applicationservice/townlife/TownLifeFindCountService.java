@@ -4,6 +4,6 @@ import com.gaaji.townlife.service.domain.townlife.TownLifeCounter;
 
 public interface TownLifeFindCountService {
 
-    TownLifeCounter increaseViewCount(String id);
+    TownLifeCounter increaseViewCount(String townLifeCounterId);
 
 }
