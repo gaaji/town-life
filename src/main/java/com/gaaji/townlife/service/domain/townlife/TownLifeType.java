@@ -22,8 +22,9 @@ public enum TownLifeType {
 
     @JsonCreator
     public static TownLifeType from(String value) {
+        String v = value.toLowerCase();
         for (TownLifeType type : TownLifeType.values()) {
-            if (type.getValue().equals(value)) {
+            if (type.getValue().equals(v)) {
                 return type;
             }
         }
