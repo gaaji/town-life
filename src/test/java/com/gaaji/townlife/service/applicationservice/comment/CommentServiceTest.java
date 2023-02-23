@@ -1,6 +1,7 @@
 package com.gaaji.townlife.service.applicationservice.comment;
 
 import com.gaaji.townlife.global.exceptions.api.exception.BadRequestException;
+import com.gaaji.townlife.global.exceptions.api.exception.NotYourResourceException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
 import com.gaaji.townlife.service.applicationservice.admin.AdminCategorySaveService;
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeSaveService;
@@ -190,6 +191,28 @@ public class CommentServiceTest {
             Assertions.assertEquals(expected.getContent().getText(), actual.getText());
             Assertions.assertEquals(expected.getContent().getImageSrc(), actual.getImageSrc());
         });
+    }
+
+    @Autowired
+    CommentModifyService commentModifyService;
+
+    @Test
+    void 댓글_수정() {
+        Category category = randomCategory();
+        TownLife townLife = randomTownLife(category);
+        String commenterId = randomString();
+        ParentComment parentComment = randomParentComment(townLife, commenterId);
+        String toBeText = randomString();
+        String toBeLocation = randomString();
+        CommentModifyRequestDto toBeDto = CommentModifyRequestDto.create(toBeText, toBeLocation);
+
+        CommentListDto actual = commentModifyService.modify(commenterId, townLife.getId(), parentComment.getId(), toBeDto);
+
+        Assertions.assertEquals(toBeText, actual.getText());
+        Assertions.assertEquals(toBeLocation, actual.getLocation());
+
+        String otherId = randomString();
+        Assertions.assertThrows(NotYourResourceException.class, () -> commentModifyService.modify(otherId, townLife.getId(), parentComment.getId(), toBeDto));
     }
 
     @Autowired

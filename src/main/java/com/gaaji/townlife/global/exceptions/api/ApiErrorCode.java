@@ -25,7 +25,10 @@ public enum ApiErrorCode implements ErrorCode {
     IMAGE_CONTENT_TYPE_ERROR(HttpStatus.BAD_REQUEST, "TL-0016", "업로드하실 파일은 이미지 파일만 가능합니다."),
     IMAGE_NOT_FOUND(HttpStatus.BAD_REQUEST, "TL-0017", "업로드한 이미지가 없습니다."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "TL-0018", "잘못된 요청입니다."),
-    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0019", "Comment 리소스를 찾을 수 없습니다.");
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0019", "Comment 리소스를 찾을 수 없습니다."),
+    NOT_YOUR_RESOURCE(HttpStatus.FORBIDDEN, "TL-0020", "요청자가 접근할 수 없는 리소스입니다."),
+
+    ;
 
 
     ;
