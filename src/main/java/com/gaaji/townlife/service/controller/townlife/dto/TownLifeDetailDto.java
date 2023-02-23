@@ -16,6 +16,7 @@ public class TownLifeDetailDto {
     private TownLifeDetailCategoryDto category;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Boolean isUpdated;
     private String title;
     private String text;
     private String location;
