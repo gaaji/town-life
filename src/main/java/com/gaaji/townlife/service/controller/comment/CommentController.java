@@ -2,6 +2,7 @@ package com.gaaji.townlife.service.controller.comment;
 
 import com.gaaji.townlife.service.applicationservice.comment.CommentFindService;
 import com.gaaji.townlife.service.applicationservice.comment.CommentModifyService;
+import com.gaaji.townlife.service.applicationservice.comment.CommentRemoveService;
 import com.gaaji.townlife.service.applicationservice.comment.CommentSaveService;
 import com.gaaji.townlife.service.controller.comment.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ public class CommentController {
     private final CommentSaveService commentSaveService;
     private final CommentFindService commentFindService;
     private final CommentModifyService commentModifyService;
+    private final CommentRemoveService commentRemoveService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -65,6 +67,16 @@ public class CommentController {
             @PathVariable String commentId,
             @RequestBody CommentModifyRequestDto dto) {
         return commentModifyService.modify(authId, postId, commentId, dto);
+    }
+
+    @DeleteMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void commentRemove(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authId,
+            @PathVariable String postId,
+            @PathVariable String commentId
+    ) {
+        commentRemoveService.remove(authId, postId, commentId);
     }
 }
 

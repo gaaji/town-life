@@ -216,7 +216,24 @@ public class CommentServiceTest {
     }
 
     @Autowired
+    CommentRemoveService commentRemoveService;
+    @Test
+    void 댓글_삭제() {
+        Category category = randomCategory();
+        TownLife townLife = randomTownLife(category);
+        String commenterId = randomString();
+        ParentComment parentComment = randomParentComment(townLife, commenterId);
+
+        commentLikeService.like(commenterId, townLife.getId(), parentComment.getId());
+        commentRemoveService.remove(commenterId, townLife.getId(), parentComment.getId());
+        Comment comment = commentRepository.findByIdAndDeletedAtIsNotNull(parentComment.getId()).get();
+
+        Assertions.assertNotNull(comment.getDeletedAt());
+        Assertions.assertEquals(0, comment.getLikes().size());
+    }
+    @Autowired
     CommentLikeService commentLikeService;
+
 
     @Test
     void 댓글에_좋아요_추가() {
