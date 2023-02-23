@@ -41,4 +41,11 @@ public abstract class Comment extends BaseEntity {
     public void removeLike(CommentLike like) {
         this.likes.remove(like);
     }
+
+    public void modify(CommentContent content) {
+        if(content.getText().equals(this.content.getText()))
+            if(content.getLocation().equals(this.content.getLocation()))
+                return;
+        this.content = content;
+    }
 }

@@ -1,9 +1,7 @@
 package com.gaaji.townlife.service.applicationservice.comment;
 
 import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
-import com.gaaji.townlife.global.exceptions.api.exception.BadRequestException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
-import com.gaaji.townlife.service.controller.comment.dto.CommentLikeRequestDto;
 import com.gaaji.townlife.service.domain.comment.Comment;
 import com.gaaji.townlife.service.domain.comment.CommentLike;
 import com.gaaji.townlife.service.event.CommentLikeCreatedEvent;
@@ -54,8 +52,7 @@ public class CommentLikeServiceImpl implements CommentLikeService {
     }
 
     private Comment findCommentById(String commentId) {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.COMMENT_NOT_FOUND));
-        return comment;
+        return commentRepository.findById(commentId).orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.COMMENT_NOT_FOUND));
     }
 
     private void checkTownLifeExists(String townLifeId) {
