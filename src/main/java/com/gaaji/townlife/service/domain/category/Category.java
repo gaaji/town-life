@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Entity
-@Getter @ToString(exclude = {"unsubscriptions", "townLives"})
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(indexes = {

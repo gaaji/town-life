@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Entity
-@Getter @ToString(exclude = { "category", "townLifeCounter", "subscriptions", "comments", "attachedImages" })
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @SQLDelete(sql = "update town_life set deleted_at = current_timestamp where id = ?")

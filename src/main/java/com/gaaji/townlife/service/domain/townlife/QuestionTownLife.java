@@ -19,7 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Entity
-@Getter @ToString(callSuper = true)
+@Getter
 @OnDelete(action = OnDeleteAction.CASCADE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
