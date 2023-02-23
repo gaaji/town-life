@@ -5,6 +5,6 @@ import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto
 
 public interface TownLifeSaveService {
 
-    TownLifeDetailDto save(TownLifeSaveRequestDto dto);
+    TownLifeDetailDto save(String authId, String townId, TownLifeSaveRequestDto dto);
 
 }
