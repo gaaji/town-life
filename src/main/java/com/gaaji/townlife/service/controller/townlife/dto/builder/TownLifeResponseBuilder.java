@@ -8,6 +8,8 @@ import com.gaaji.townlife.service.domain.reaction.QuestionReaction;
 import com.gaaji.townlife.service.domain.townlife.*;
 import org.springframework.data.domain.Slice;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,16 +73,27 @@ public class TownLifeResponseBuilder {
         }
         return response;
     }
+
         private static TownLifeDetailDto.TownLifeDetailDtoBuilder commonTownLifeDetailDto(TownLife entity, int viewCount, int reactionCount, int commentCount, int interestCount) {
+            /*
+            TownLife 조회 로직에 따라 ViewCount가 증가하면 entity의 updatedAt이 변경되는 것을 확인하였다...
+            다만, 변경된 시간이 밀리세컨드 단위임을 확인하였으므로
+            아래와 같이 밀리세컨드 시간을 제외한 초 단위로 LocalDateTime을 자르고
+            updatedAt과 createdAt을 비교하도록 하였다.
+             */
+            LocalDateTime createdAt = entity.getCreatedAt().truncatedTo(ChronoUnit.SECONDS);
+            LocalDateTime updatedAt = entity.getUpdatedAt().truncatedTo(ChronoUnit.SECONDS);
+            boolean isUpdated = updatedAt.isAfter(createdAt);
+
             return TownLifeDetailDto.builder()
                     .id(entity.getId())
                     .authorId(entity.getAuthorId())
                     .category(
                             townLifeDetailCategoryDto(entity.getCategory())
                     )
-                    .createdAt(entity.getCreatedAt())
-                    .updatedAt(entity.getUpdatedAt())
-                    .isUpdated(entity.getUpdatedAt().isAfter(entity.getCreatedAt()))
+                    .createdAt(createdAt)
+                    .updatedAt(updatedAt)
+                    .isUpdated(isUpdated)
                     .title(entity.getContent().getTitle())
                     .text(entity.getContent().getText())
                     .location(entity.getContent().getLocation())
