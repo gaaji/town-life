@@ -10,5 +10,4 @@ import java.util.stream.Stream;
 public interface CommentRepository extends JpaRepository<Comment, String> {
     Stream<Comment> findByUserIdOrderByIdDesc(@NonNull String userId);
 
-    Optional<Comment> findByIdAndDeletedAtIsNotNull(String id);
 }
