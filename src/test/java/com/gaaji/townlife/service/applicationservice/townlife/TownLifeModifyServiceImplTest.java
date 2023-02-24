@@ -55,7 +55,7 @@ class TownLifeModifyServiceImplTest {
         // 테스트 구독 유저 생성
         for (int i = 1; i <= 5; i++) {
             String userId = "user_"+i;
-            townLifeSubscriptionService.subscribe(townLifeId, userId);
+            townLifeSubscriptionService.subscribe(userId, townLifeId);
         }
 
         TownLifeModifyRequestDto dto = new TownLifeModifyRequestDto("수정 게시글", "수정 게시글 내용입니다.", "");
