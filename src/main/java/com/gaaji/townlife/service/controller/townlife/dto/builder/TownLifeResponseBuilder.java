@@ -21,8 +21,8 @@ public class TownLifeResponseBuilder {
      */
     public static TownLifeListResponseDto townLifeListResponseDto(Slice<TownLife> townLives) {
         return new TownLifeListResponseDto(
-                convertContentFromEntityList(townLives.getContent()),
-                townLives.hasNext()
+                townLives.hasNext(),
+                convertContentFromEntityList(townLives.getContent())
         );
     }
         private static List<TownLifeListDto> convertContentFromEntityList(List<TownLife> townLives) {
