@@ -36,7 +36,7 @@ class TownLifeReactionServiceImplTest {
         TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                 .categoryId(category.getId()).authorId("1").townId("1").title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
 
-        postTownLifeId = townLifeSaveService.save(dto).getId();
+        postTownLifeId = townLifeSaveService.save("1","1",dto).getId();
     }
 
     void init_question_town_life() {
@@ -46,7 +46,7 @@ class TownLifeReactionServiceImplTest {
         TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                 .categoryId(category.getId()).authorId("1").townId("1").title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
 
-        quesTownLifeId = townLifeSaveService.save(dto).getId();
+        quesTownLifeId = townLifeSaveService.save("1","1",dto).getId();
     }
 
     private final String testerId = "tester01";

@@ -5,6 +5,6 @@ import com.gaaji.townlife.service.controller.townlife.dto.TownLifeModifyRequestD
 
 public interface TownLifeModifyService {
 
-    TownLifeDetailDto modify(String townLifeId, String authorId, TownLifeModifyRequestDto dto);
+    TownLifeDetailDto modify(String authId, String townLifeId, TownLifeModifyRequestDto dto);
 
 }

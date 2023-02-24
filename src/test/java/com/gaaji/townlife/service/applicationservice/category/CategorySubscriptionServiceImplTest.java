@@ -77,7 +77,7 @@ class CategorySubscriptionServiceImplTest {
                     .title("테스트 게시글 "+ i).text("테스트 게시글 내용입니다.").location("테스트 장소").build();
             testerId = (testerId+1) % 4;
 
-            townLifeSaveService.save(dto);
+            townLifeSaveService.save(authorId, townId, dto);
         }
     }
 

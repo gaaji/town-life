@@ -302,6 +302,7 @@ public class CommentServiceTest {
 
     TownLife createTownLife(String categoryId, String authorId, String townId, String title, String text, String location) {
         TownLifeDetailDto dto = townLifeSaveService.save(
+                authorId, townId,
                 TownLifeSaveRequestDto.builder()
                         .townId(categoryId)
                         .categoryId(categoryId)

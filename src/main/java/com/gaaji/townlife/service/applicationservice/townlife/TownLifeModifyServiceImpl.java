@@ -27,11 +27,11 @@ public class TownLifeModifyServiceImpl implements TownLifeModifyService {
 
     @Override
     @Transactional
-    public TownLifeDetailDto modify(String townLifeId, String authorId, TownLifeModifyRequestDto dto) {
+    public TownLifeDetailDto modify(String authId, String townLifeId, TownLifeModifyRequestDto dto) {
         TownLife townLife = townLifeRepository.findById(townLifeId)
                 .orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND));
 
-        validateAuthorizationModifying(authorId, townLife.getAuthorId());
+        validateAuthorizationModifying(authId, townLife.getAuthorId());
 
         townLife.updateContent(dto.getTitle(), dto.getText(), dto.getLocation());
 

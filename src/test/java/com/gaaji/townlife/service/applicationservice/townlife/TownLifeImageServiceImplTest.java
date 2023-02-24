@@ -62,7 +62,7 @@ class TownLifeImageServiceImplTest {
         TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                 .categoryId(category.getId()).authorId(authorId).townId(townId)
                 .title(title).text(text).location(location).build();
-        townLifeId = townLifeSaveService.save(dto).getId();
+        townLifeId = townLifeSaveService.save(authorId, townId, dto).getId();
     }
 
     @Test

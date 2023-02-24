@@ -31,7 +31,7 @@ class TownLifeSaveServiceImplTest {
         TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                         .categoryId(category.getId()).authorId("1").townId("1").title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
 
-        TownLifeDetailDto saveDto = townLifeSaveService.save(dto);
+        TownLifeDetailDto saveDto = townLifeSaveService.save("1", "1", dto);
 
         System.out.println("Save: " + saveDto);
 
@@ -53,7 +53,7 @@ class TownLifeSaveServiceImplTest {
         TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                 .categoryId(category.getId()).authorId("1").townId("1").title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
 
-        TownLifeDetailDto saveDto = townLifeSaveService.save(dto);
+        TownLifeDetailDto saveDto = townLifeSaveService.save("1", "1", dto);
 
         System.out.println("Save: " + saveDto);
 

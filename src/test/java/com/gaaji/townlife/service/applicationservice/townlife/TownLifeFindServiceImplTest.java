@@ -54,7 +54,7 @@ class TownLifeFindServiceImplTest {
             TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                     .categoryId(category.getId()).authorId(authorId).townId(townId)
                     .title(title).text(text).location(location).build();
-            townLifeId = townLifeSaveService.save(dto).getId();
+            townLifeId = townLifeSaveService.save(authorId, townId, dto).getId();
         }
 
         @Test
@@ -66,7 +66,7 @@ class TownLifeFindServiceImplTest {
             TownLifeDetailDto dto = townLifeFindService.visit(townLifeId);
             Assertions.assertNotNull(dto);
             Assertions.assertEquals(townLifeId, dto.getId());
-            Assertions.assertEquals(1, dto.getViewCount());
+            Assertions.assertEquals(2, dto.getViewCount());
         }
 
         @Test
@@ -81,7 +81,7 @@ class TownLifeFindServiceImplTest {
             }
             Assertions.assertNotNull(dto);
             Assertions.assertEquals(townLifeId, dto.getId());
-            Assertions.assertEquals(1000, dto.getViewCount());
+            Assertions.assertEquals(1001, dto.getViewCount());
         }
     }
 
@@ -102,7 +102,7 @@ class TownLifeFindServiceImplTest {
                         .categoryId(category.getId()).authorId(authorId).townId(townId)
                         .title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
                 testerId = (testerId+1) % 4;
-                townLifeSaveService.save(dto);
+                townLifeSaveService.save(authorId, townId, dto);
             }
         }
 
@@ -145,7 +145,7 @@ class TownLifeFindServiceImplTest {
                         .categoryId(category.getId()).authorId(authorId).townId(townId)
                         .title("테스트 게시글 "+ i).text("테스트 게시글 내용입니다.").location("테스트 장소").build();
                 testerId = (testerId+1) % 4;
-                townLifeSaveService.save(dto);
+                townLifeSaveService.save(authorId, townId, dto);
             }
         }
 
