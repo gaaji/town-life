@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -136,5 +137,11 @@ public abstract class TownLife extends BaseEntity {
 
     public void addComment(ParentComment parentComment) {
         this.comments.add(parentComment);
+    }
+
+    public List<TownLifeSubscription> getAuthorAmongSubscription() {
+        return this.subscriptions.stream()
+                .filter(subscriptions -> Objects.equals(this.authorId, subscriptions.getUserId()))
+                .collect(Collectors.toList());
     }
 }
