@@ -50,7 +50,7 @@ public class AwsS3ClientImpl implements AwsS3Client {
         }
     }
 
-    private String uploadFile(MultipartFile multipartFile) throws TownLifeAwsS3Exception, NullValueException {
+    public String uploadFile(MultipartFile multipartFile) throws TownLifeAwsS3Exception, NullValueException {
         try {
             validateRequireNonNull(multipartFile);
 

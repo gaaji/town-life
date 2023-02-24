@@ -1,14 +1,12 @@
 package com.gaaji.townlife.service.controller.comment;
 
-import com.gaaji.townlife.service.applicationservice.comment.CommentFindService;
-import com.gaaji.townlife.service.applicationservice.comment.CommentModifyService;
-import com.gaaji.townlife.service.applicationservice.comment.CommentRemoveService;
-import com.gaaji.townlife.service.applicationservice.comment.CommentSaveService;
+import com.gaaji.townlife.service.applicationservice.comment.*;
 import com.gaaji.townlife.service.controller.comment.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,6 +18,7 @@ public class CommentController {
     private final CommentFindService commentFindService;
     private final CommentModifyService commentModifyService;
     private final CommentRemoveService commentRemoveService;
+    private final CommentImageService commentImageService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -40,6 +39,27 @@ public class CommentController {
             @RequestBody CommentSaveRequestDto dto
     ) {
         return commentSaveService.saveChild(authId, postId, parentCommentId, dto);
+    }
+
+    @PostMapping("/{commentId}/images")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentImageSaveResponseDto commentImageSave(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authId,
+            @PathVariable String postId,
+            @PathVariable String commentId,
+            @RequestPart MultipartFile imageFile
+    ) {
+        return commentImageService.save(authId, postId, commentId, imageFile);
+    }
+
+    @DeleteMapping("/{commentId}/images")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void commentImageRemove(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authId,
+            @PathVariable String postId,
+            @PathVariable String commentId
+    ) {
+        commentImageService.remove(authId, postId, commentId);
     }
 
     @GetMapping

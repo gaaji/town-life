@@ -48,4 +48,18 @@ public abstract class Comment extends BaseEntity {
                 return;
         this.content = content;
     }
+
+    public void replaceImageSrc(String newSrc) {
+        if(!this.content.getImageSrc().isEmpty())
+            if(this.content.getImageSrc().equals(newSrc)) return;
+        this.content = CommentContent.create(this.content.getText(), this.content.getLocation(), newSrc);
+    }
+
+    public boolean hasImageSrc() {
+        return !content.getImageSrc().isEmpty();
+    }
+
+    public void clearImageSrc() {
+        this.content = CommentContent.create(content.getText(), content.getLocation());
+    }
 }
