@@ -20,11 +20,11 @@ public class TownLifeRemoveServiceImpl implements TownLifeRemoveService {
 
     @Override
     @Transactional
-    public void remove(String townLifeId, String authorId) {
+    public void remove(String authId, String townLifeId) {
         TownLife townLife = townLifeRepository.findById(townLifeId)
                 .orElseThrow(() -> new ResourceNotFoundException(ApiErrorCode.TOWN_LIFE_NOT_FOUND));
 
-        validateAuthorizationRemoving(authorId, townLife.getAuthorId());
+        validateAuthorizationRemoving(authId, townLife.getAuthorId());
 
         townLifeCounterRepository.delete(townLife.getTownLifeCounter());
         townLifeRepository.delete(townLife);
