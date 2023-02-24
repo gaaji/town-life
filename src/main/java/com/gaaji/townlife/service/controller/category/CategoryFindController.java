@@ -16,8 +16,6 @@ public class CategoryFindController {
 
     private final CategoryFindService service;
 
-//    List<CategoryListDto> findList(String userId);
-
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<CategoryListDto> findList(@RequestHeader(HttpHeaders.AUTHORIZATION) String authId) {
