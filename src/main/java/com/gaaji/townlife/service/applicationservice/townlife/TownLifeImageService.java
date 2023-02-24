@@ -7,8 +7,8 @@ import java.util.List;
 
 public interface TownLifeImageService {
 
-    List<AttachedImageDto> upload(String townLifeId, String authId, int[] orderIndexes, MultipartFile... multipartFiles);
-    List<AttachedImageDto> update(String townLifeId, String authId, int[] orderIndexes, MultipartFile... multipartFiles);
-    List<AttachedImageDto> deleteAll(String townLifeId, String authId);
+    List<AttachedImageDto> upload(String authId, String townLifeId, int[] orderIndexes, MultipartFile... multipartFiles);
+    List<AttachedImageDto> update(String authId, String townLifeId, int[] orderIndexes, MultipartFile... multipartFiles);
+    List<AttachedImageDto> deleteAll(String authId, String townLifeId);
 
 }
