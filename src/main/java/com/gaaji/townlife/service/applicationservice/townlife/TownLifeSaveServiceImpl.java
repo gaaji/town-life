@@ -12,6 +12,7 @@ import com.gaaji.townlife.service.domain.townlife.*;
 import com.gaaji.townlife.service.repository.CategoryRepository;
 import com.gaaji.townlife.service.repository.TownLifeCounterRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
+import com.gaaji.townlife.service.repository.TownLifeSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
     private final CategoryRepository categoryRepository;
     private final TownLifeRepository townLifeRepository;
     private final TownLifeCounterRepository townLifeCounterRepository;
+    private final TownLifeSubscriptionRepository townLifeSubscriptionRepository;
 
     @Override
     @Transactional
@@ -53,9 +55,9 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
             T townLife = townLifeRepository.save(
                     clazz.getConstructor(String.class, String.class, String.class, String.class, String.class)
                             .newInstance(dto.getAuthorId(), dto.getTownId(), dto.getTitle(), dto.getText(), dto.getLocation()));
-
             townLife.associateCategory(category);
-            townLife.addSubscription(TownLifeSubscription.of(dto.getAuthorId()));
+
+            saveSubscription(townLife);
             saveCounter(townLife);
 
             return townLife;
@@ -63,6 +65,11 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
         } catch (Exception e) {
             throw new ResourceSaveException(ApiErrorCode.TOWN_LIFE_SAVE_ERROR, e);
         }
+    }
+
+    private <T extends TownLife> void saveSubscription(T townLife) {
+        TownLifeSubscription subscription = townLifeSubscriptionRepository.save(TownLifeSubscription.of(townLife.getAuthorId()));
+        townLife.addSubscription(subscription);
     }
 
     private <T extends TownLife> void saveCounter(T townLife) {
