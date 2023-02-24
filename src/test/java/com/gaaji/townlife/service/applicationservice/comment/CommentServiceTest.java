@@ -25,10 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -216,7 +213,25 @@ public class CommentServiceTest {
     }
 
     @Autowired
+    CommentRemoveService commentRemoveService;
+    @Test
+    void 댓글_삭제() {
+        Category category = randomCategory();
+        TownLife townLife = randomTownLife(category);
+        String commenterId = randomString();
+        ParentComment parentComment = randomParentComment(townLife, commenterId);
+
+        commentLikeService.like(commenterId, townLife.getId(), parentComment.getId());
+        commentRemoveService.remove(commenterId, townLife.getId(), parentComment.getId());
+        Assertions.assertTrue(commentRepository.findById(parentComment.getId()).isEmpty());
+        Comment comment = commentRepository.findAllById(Collections.singleton(parentComment.getId())).get(0);
+
+        Assertions.assertNotNull(comment.getDeletedAt());
+        Assertions.assertEquals(0, comment.getLikes().size());
+    }
+    @Autowired
     CommentLikeService commentLikeService;
+
 
     @Test
     void 댓글에_좋아요_추가() {

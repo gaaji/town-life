@@ -29,7 +29,7 @@ public abstract class Comment extends BaseEntity {
     @Embedded
     protected CommentContent content;
     protected LocalDateTime deletedAt;
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "comment", orphanRemoval = true)
     protected List<CommentLike> likes = new ArrayList<>();
 
     public abstract TownLife getTownLife();
