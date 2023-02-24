@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface AwsS3Client {
 
     String[] uploadFile(MultipartFile... multipartFiles) throws TownLifeAwsS3Exception, NullValueException;
+    String uploadFile(MultipartFile multipartFile) throws TownLifeAwsS3Exception, NullValueException;
     void deleteFile(String... originFileSrcs) throws TownLifeAwsS3Exception, NullValueException;
 
 }

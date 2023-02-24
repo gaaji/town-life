@@ -3,6 +3,9 @@ package com.gaaji.townlife.service.applicationservice.comment;
 import com.gaaji.townlife.global.exceptions.api.exception.BadRequestException;
 import com.gaaji.townlife.global.exceptions.api.exception.NotYourResourceException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
+import com.gaaji.townlife.global.exceptions.internalServer.exception.NullValueException;
+import com.gaaji.townlife.global.exceptions.internalServer.exception.TownLifeAwsS3Exception;
+import com.gaaji.townlife.service.adapter.aws.AwsS3Client;
 import com.gaaji.townlife.service.applicationservice.admin.AdminCategorySaveService;
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeSaveService;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
@@ -19,12 +22,14 @@ import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import com.gaaji.townlife.service.repository.CategoryRepository;
 import com.gaaji.townlife.service.repository.CommentRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -271,6 +276,69 @@ public class CommentServiceTest {
         Assertions.assertDoesNotThrow(() -> Assertions.assertEquals(0, parentComment.getLikes().size()));
     }
 
+    @Autowired
+    AwsS3Client awsS3Client;
+    @Autowired
+    CommentImageService commentImageService;
+
+    @Nested
+    @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+    @DisplayName("댓글 이미지 업로드 테스트")
+    class CommentImageSaveTest {
+        String townLifeAuthorId;
+        String parentCommentCommenterId;
+        String childCommentCommenterId;
+        Category category;
+        TownLife townLife;
+        ParentComment parentComment;
+        ChildComment childComment;
+        List<String> shouldBeDeleted = new ArrayList<>();
+
+        @BeforeEach
+        void beforeEach() {
+            townLifeAuthorId = randomString();
+            parentCommentCommenterId = randomString();
+            childCommentCommenterId = randomString();
+            category = randomCategory();
+            townLife = randomTownLife(category, townLifeAuthorId);
+            parentComment = randomParentComment(townLife, parentCommentCommenterId);
+            childComment = randomChildComment(parentComment, childCommentCommenterId);
+        }
+
+        @AfterEach
+        void afterEach() {
+            shouldBeDeleted.forEach(s -> {
+                try {
+                    awsS3Client.deleteFile(s);
+                } catch (TownLifeAwsS3Exception | NullValueException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
+        @Test
+        void 댓글_이미지_추가() throws IOException {
+            CommentImageSaveResponseDto dto = commentImageService.save(parentCommentCommenterId, townLife.getId(), parentComment.getId(), getMockMultipartFile());
+            shouldBeDeleted.add(dto.getSrc());
+            Assertions.assertNotNull(dto);
+            Assertions.assertNotNull(dto.getCommentId());
+            Assertions.assertNotNull(dto.getSrc());
+            Assertions.assertEquals(parentComment.getId(), dto.getCommentId());
+        }
+
+        @Test
+        void 댓글_이미지_삭제() throws IOException {
+            CommentImageSaveResponseDto dto = commentImageService.save(parentCommentCommenterId, townLife.getId(), parentComment.getId(), getMockMultipartFile());
+            commentImageService.remove(parentCommentCommenterId, townLife.getId(), parentComment.getId());
+
+            Assertions.assertThrows(TownLifeAwsS3Exception.class, () -> awsS3Client.deleteFile(dto.getSrc()));
+        }
+
+        private MockMultipartFile getMockMultipartFile() throws IOException {
+            return new MockMultipartFile("image_test", "image_test_1.jpg", "image", new FileInputStream("src/test/resources/image/" + "image_test_1.jpg"));
+        }
+    }
+
     private ChildComment randomChildComment(ParentComment parentComment, String commenterId) {
         CommentSaveResponseDto dto = commentSaveService.saveChild(commenterId, parentComment.getTownLife().getId(), parentComment.getId(), CommentSaveRequestDto.create(commenterId, randomString(), randomString()));
         return (ChildComment) commentRepository.findById(dto.getId()).get();
@@ -290,9 +358,13 @@ public class CommentServiceTest {
     }
 
     TownLife randomTownLife(Category category) {
+        return randomTownLife(category, randomString());
+    }
+
+    private TownLife randomTownLife(Category category, String townLifeAuthor) {
         return createTownLife(
                 category.getId(),
-                randomString(),
+                townLifeAuthor,
                 randomString(),
                 randomString(),
                 randomString(),
