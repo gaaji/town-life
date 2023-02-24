@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TownLifeListResponseDto {
 
-    private List<TownLifeListDto> content;
     private Boolean hasNext;
+    private List<TownLifeListDto> content;
 
 }
