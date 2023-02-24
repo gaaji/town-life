@@ -35,7 +35,7 @@ class TownLifeSubscriptionServiceImplTest {
                 .categoryId(category.getId()).authorId("author01").townId("1")
                 .title("테스트 게시글").text("테스트 게시글 내용입니다.").location("테스트 장소").build();
 
-        postTownLifeId = townLifeSaveService.save(dto).getId();
+        postTownLifeId = townLifeSaveService.save("author01", "1", dto).getId();
     }
 
     @Test

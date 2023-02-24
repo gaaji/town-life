@@ -44,7 +44,7 @@ class TownLifeModifyServiceImplTest {
         TownLifeSaveRequestDto dto = TownLifeSaveRequestDto.builder()
                 .categoryId(category.getId()).authorId(authorId).townId(townId)
                 .title(title).text(text).location(location).build();
-        townLifeId = townLifeSaveService.save(dto).getId();
+        townLifeId = townLifeSaveService.save(authorId, townId, dto).getId();
     }
 
     @Test
@@ -59,7 +59,7 @@ class TownLifeModifyServiceImplTest {
         }
 
         TownLifeModifyRequestDto dto = new TownLifeModifyRequestDto("수정 게시글", "수정 게시글 내용입니다.", "");
-        TownLifeDetailDto modify = townLifeModifyService.modify(townLifeId, authorId, dto);
+        TownLifeDetailDto modify = townLifeModifyService.modify(authorId, townLifeId, dto);
 
         Assertions.assertNotNull(modify);
         Assertions.assertEquals("수정 게시글", modify.getTitle());
