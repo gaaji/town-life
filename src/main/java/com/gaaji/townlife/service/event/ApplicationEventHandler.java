@@ -75,7 +75,7 @@ public class ApplicationEventHandler {
 
         kafkaProducer.produceEvent(new NotificationEvent(
                 event.getSource(),
-                NotificationEventBody.of("관심 가진 동네생활에 누군가 반응을 했어요!", subscribedUserIds)
+                NotificationEventBody.of("다른 사용자가 회원님의 게시글에 반응했어요!", subscribedUserIds)
         ));
     }
 
@@ -85,6 +85,5 @@ public class ApplicationEventHandler {
                 .filter(subscribedUserId -> !Objects.equals(event.getBody().getIssuedUserId(), subscribedUserId))
                 .collect(Collectors.toList());
     }
-
 
 }

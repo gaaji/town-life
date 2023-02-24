@@ -44,7 +44,7 @@ public class TownLifeReactionServiceImpl implements TownLifeReactionService {
 
         eventPublisher.publishEvent(new TownLifeReactionAddedEvent(
                 TownLifeReactionService.class,
-                TownLifeEventBody.of(responseDto.getUserId(), townLife.getSubscriptions())
+                TownLifeEventBody.of(responseDto.getUserId(), townLife.getAuthorAmongSubscription())
         ));
 
         return responseDto;
