@@ -57,9 +57,9 @@ class TownLifeRemoveServiceImplTest {
         init_post_town_life_for_visit();
 
         Assertions.assertAll(
-                () -> Assertions.assertThrows(ResourceAuthorizationException.class, () -> townLifeRemoveService.remove(townLifeId, "mock_author")),
-                () -> townLifeRemoveService.remove(townLifeId, authorId),
-                () -> Assertions.assertThrows(ResourceNotFoundException.class, () -> townLifeRemoveService.remove(townLifeId, authorId))
+                () -> Assertions.assertThrows(ResourceAuthorizationException.class, () -> townLifeRemoveService.remove("mock_authorId", townLifeId)),
+                () -> townLifeRemoveService.remove(authorId, townLifeId),
+                () -> Assertions.assertThrows(ResourceNotFoundException.class, () -> townLifeRemoveService.remove(authorId, townLifeId))
         );
     }
 
