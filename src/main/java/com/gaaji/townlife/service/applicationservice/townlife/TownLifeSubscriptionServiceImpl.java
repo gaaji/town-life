@@ -19,7 +19,7 @@ public class TownLifeSubscriptionServiceImpl implements TownLifeSubscriptionServ
 
     @Override
     @Transactional
-    public void subscribe(String townLifeId, String userId) {
+    public void subscribe(String userId, String townLifeId) {
 
         TownLife townLife = getTownLifeById(townLifeId);
 
@@ -30,7 +30,7 @@ public class TownLifeSubscriptionServiceImpl implements TownLifeSubscriptionServ
 
     @Override
     @Transactional
-    public void unsubscribe(String townLifeId, String userId) {
+    public void unsubscribe(String userId, String townLifeId) {
 
         TownLife townLife = getTownLifeById(townLifeId);
 

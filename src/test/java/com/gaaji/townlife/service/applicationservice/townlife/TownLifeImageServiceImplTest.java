@@ -73,7 +73,7 @@ class TownLifeImageServiceImplTest {
 
         int[] orderIndexes = { 1 };
         MockMultipartFile multipartFile = getOneMockImage();
-        List<AttachedImageDto> dto = townLifeImageService.upload(townLifeId, authorId, orderIndexes, multipartFile);
+        List<AttachedImageDto> dto = townLifeImageService.upload(authorId, townLifeId, orderIndexes, multipartFile);
 
         System.out.println(dto);
         Assertions.assertNotNull(dto);
@@ -84,7 +84,7 @@ class TownLifeImageServiceImplTest {
     @Order(200)
     @DisplayName("이미지 파일 1개 정상 삭제")
     void test_delete_one_image_file() {
-        List<AttachedImageDto> dto = townLifeImageService.deleteAll(townLifeId, authorId);
+        List<AttachedImageDto> dto = townLifeImageService.deleteAll(authorId, townLifeId);
 
         Assertions.assertNotNull(dto);
         Assertions.assertEquals(0, dto.size());
@@ -98,7 +98,7 @@ class TownLifeImageServiceImplTest {
 
         int[] orderIndexes = { 1, 2, 3, 4 };
         MultipartFile[] multipartFiles = getFourMockImages();
-        List<AttachedImageDto> dto = townLifeImageService.upload(townLifeId, authorId, orderIndexes, multipartFiles);
+        List<AttachedImageDto> dto = townLifeImageService.upload(authorId, townLifeId, orderIndexes, multipartFiles);
 
         Assertions.assertNotNull(dto);
         Assertions.assertEquals(4, dto.size());
@@ -110,7 +110,7 @@ class TownLifeImageServiceImplTest {
     void test_update_four_image_files() throws Exception {
         int[] orderIndexes = {1, 2, 3, 4};
         MultipartFile[] fourMockImages = getFourMockImages();
-        List<AttachedImageDto> dto = townLifeImageService.update(townLifeId, authorId, orderIndexes, fourMockImages);
+        List<AttachedImageDto> dto = townLifeImageService.update(authorId, townLifeId, orderIndexes, fourMockImages);
 
         Assertions.assertNotNull(dto);
         Assertions.assertEquals(4, dto.size());
@@ -130,7 +130,7 @@ class TownLifeImageServiceImplTest {
     @Order(400)
     @DisplayName("이미지 파일 4개 정상 삭제")
     void test_delete_four_image_files() {
-        List<AttachedImageDto> dto = townLifeImageService.deleteAll(townLifeId, authorId);
+        List<AttachedImageDto> dto = townLifeImageService.deleteAll(authorId, townLifeId);
 
         Assertions.assertNotNull(dto);
         Assertions.assertEquals(0, dto.size());
@@ -144,7 +144,7 @@ class TownLifeImageServiceImplTest {
         MockMultipartFile multipartFile = getOneMockImageWrongContentType();
 
         ResourceSaveException ex = Assertions.assertThrows(ResourceSaveException.class,
-                () -> townLifeImageService.upload(townLifeId, authorId, orderIndexes, multipartFile));
+                () -> townLifeImageService.upload(authorId, townLifeId, orderIndexes, multipartFile));
         Assertions.assertEquals(ApiErrorCode.IMAGE_CONTENT_TYPE_ERROR.getErrorCode(), ex.getErrorCode());
     }
 
@@ -156,7 +156,7 @@ class TownLifeImageServiceImplTest {
         MultipartFile[] multipartFiles = getFourMockImages();
 
         ResourceSaveException ex = Assertions.assertThrows(ResourceSaveException.class,
-                () -> townLifeImageService.upload(townLifeId, authorId, orderIndexes, multipartFiles));
+                () -> townLifeImageService.upload(authorId, townLifeId, orderIndexes, multipartFiles));
         Assertions.assertEquals(ApiErrorCode.IMAGE_REQUIRE_VALUE_BAD_REQUEST.getErrorCode(), ex.getErrorCode());
     }
 
@@ -169,7 +169,7 @@ class TownLifeImageServiceImplTest {
 
         String authId = "wrong_author";
         ResourceAuthorizationException ex = Assertions.assertThrows(ResourceAuthorizationException.class,
-                () -> townLifeImageService.upload(townLifeId, authId, orderIndexes, multipartFile));
+                () -> townLifeImageService.upload(authId, townLifeId, orderIndexes, multipartFile));
         Assertions.assertEquals(ApiErrorCode.AUTHORIZATION_MODIFY_ERROR.getErrorCode(), ex.getErrorCode());
     }
 
@@ -180,7 +180,7 @@ class TownLifeImageServiceImplTest {
         int[] orderIndexes = {1,2,3,4};
 
         ResourceSaveException ex = Assertions.assertThrows(ResourceSaveException.class,
-                () -> townLifeImageService.upload(townLifeId, authorId, orderIndexes, (MultipartFile) null));
+                () -> townLifeImageService.upload(authorId, townLifeId, orderIndexes, (MultipartFile) null));
         Assertions.assertEquals(ApiErrorCode.IMAGE_REQUIRE_VALUE_BAD_REQUEST.getErrorCode(), ex.getErrorCode());
     }
 
@@ -191,7 +191,7 @@ class TownLifeImageServiceImplTest {
         init_post_town_life();
 
         ResourceRemoveException ex = Assertions.assertThrows(ResourceRemoveException.class,
-                () -> townLifeImageService.deleteAll(townLifeId, authorId));
+                () -> townLifeImageService.deleteAll(authorId, townLifeId));
         Assertions.assertEquals(ApiErrorCode.IMAGE_NOT_FOUND.getErrorCode(), ex.getErrorCode());
     }
 

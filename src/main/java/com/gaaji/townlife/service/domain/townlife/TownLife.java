@@ -126,10 +126,7 @@ public abstract class TownLife extends BaseEntity {
             throw new ResourceRemoveException(ApiErrorCode.IMAGE_NOT_FOUND);
 
         String[] srcs = this.attachedImages.stream()
-                .map(i -> {
-                    i.associateTownLife(null);
-                    return i.getSrc();
-                })
+                .map(AttachedImage::getSrc)
                 .toArray(String[]::new);
 
         this.attachedImages.clear();

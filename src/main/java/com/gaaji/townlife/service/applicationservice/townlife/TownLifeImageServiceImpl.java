@@ -33,7 +33,7 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
 
     @Override
     @Transactional
-    public List<AttachedImageDto> upload(String townLifeId, String authId, int[] orderIndexes, MultipartFile... multipartFiles) {
+    public List<AttachedImageDto> upload(String authId, String townLifeId, int[] orderIndexes, MultipartFile... multipartFiles) {
         TownLife townLife = prepareUpload(townLifeId, authId, orderIndexes, multipartFiles);
 
         upload(townLife, orderIndexes, multipartFiles);
@@ -43,7 +43,7 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
 
     @Override
     @Transactional
-    public List<AttachedImageDto> update(String townLifeId, String authId, int[] orderIndexes, MultipartFile... multipartFiles) {
+    public List<AttachedImageDto> update(String authId, String townLifeId, int[] orderIndexes, MultipartFile... multipartFiles) {
         TownLife townLife = prepareUpload(townLifeId, authId, orderIndexes, multipartFiles);
 
         deleteAll(townLife);
@@ -55,7 +55,7 @@ public class TownLifeImageServiceImpl implements TownLifeImageService {
 
     @Override
     @Transactional
-    public List<AttachedImageDto> deleteAll(String townLifeId, String authId) {
+    public List<AttachedImageDto> deleteAll(String authId, String townLifeId) {
         TownLife townLife = prepare(townLifeId, authId);
 
         deleteAll(townLife);

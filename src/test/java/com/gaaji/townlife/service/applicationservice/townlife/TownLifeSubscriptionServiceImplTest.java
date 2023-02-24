@@ -44,17 +44,17 @@ class TownLifeSubscriptionServiceImplTest {
     void test_about_town_life_subscribe() {
         init_town_life();
 
-        townLifeSubscriptionService.subscribe(postTownLifeId, userId);
+        townLifeSubscriptionService.subscribe(userId, postTownLifeId);
 
-        Assertions.assertThrows(ResourceAlreadyExistException.class, () -> townLifeSubscriptionService.subscribe(postTownLifeId, userId));
+        Assertions.assertThrows(ResourceAlreadyExistException.class, () -> townLifeSubscriptionService.subscribe(userId, postTownLifeId));
     }
 
     @Test
     @Order(200)
     @DisplayName("동네생활 게시글 알림 요청 취소")
     void test_about_town_life_unsubscribe() {
-        townLifeSubscriptionService.unsubscribe(postTownLifeId, userId);
+        townLifeSubscriptionService.unsubscribe(userId, postTownLifeId);
 
-        Assertions.assertThrows(ResourceRemoveException.class, () -> townLifeSubscriptionService.unsubscribe(postTownLifeId, userId));
+        Assertions.assertThrows(ResourceRemoveException.class, () -> townLifeSubscriptionService.unsubscribe(userId, postTownLifeId));
     }
 }
