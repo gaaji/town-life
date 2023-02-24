@@ -33,5 +33,5 @@ public class TownLifeReactionController {
     ) {
         service.cancelReaction(authId, townLifeId);
     }
-    
+
 }
