@@ -3,7 +3,7 @@ package com.gaaji.townlife.service.applicationservice.townlife;
 import com.gaaji.townlife.global.utils.ulid.ULIDGenerator;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListResponseDto;
-import com.gaaji.townlife.service.controller.townlife.dto.builder.ResponseDtoBuilder;
+import com.gaaji.townlife.service.controller.townlife.dto.builder.TownLifeResponseBuilder;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeCounter;
 import lombok.RequiredArgsConstructor;
@@ -24,22 +24,21 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
 
     @Override
     @Transactional
-    public TownLifeDetailDto findById(String id) {
-        TownLife townLife = entityService.findById(id);
+    public TownLifeDetailDto findById(String townLifeId) {
+        TownLife townLife = entityService.findById(townLifeId);
         //TODO get auth profile
 
-        return ResponseDtoBuilder.townLifeDetailDto(townLife);
+        return TownLifeResponseBuilder.townLifeDetailDto(townLife);
     }
 
     @Override
     @Transactional
-    public TownLifeDetailDto visit(String id) {
-
-        TownLife townLife = entityService.findById(id);
+    public TownLifeDetailDto visit(String townLifeId) {
+        TownLife townLife = entityService.findById(townLifeId);
         //TODO get auth profile
         TownLifeCounter counter = countService.increaseViewCount(townLife.getTownLifeCounter().getId());
 
-        return ResponseDtoBuilder.townLifeDetailDto(townLife, counter);
+        return TownLifeResponseBuilder.townLifeDetailDto(townLife, counter);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
         String offsetId = ULIDGenerator.newULIDByRequestTime(requestTime);
         Slice<TownLife> townLives = entityService.findListByTownIdAndIdLessThan(userId, townId, offsetId, page, size);
 
-        return ResponseDtoBuilder.townLifeListResponseDto(townLives);
+        return TownLifeResponseBuilder.townLifeListResponseDto(townLives);
     }
 
     @Override
@@ -59,7 +58,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
         String offsetId = ULIDGenerator.newULIDByRequestTime(requestTime);
         Slice<TownLife> townLives = entityService.findListByUserIdAndIdLessThan(userId, offsetId, page, size);
 
-        return ResponseDtoBuilder.townLifeListResponseDto(townLives);
+        return TownLifeResponseBuilder.townLifeListResponseDto(townLives);
     }
 
 }

@@ -27,6 +27,10 @@ public enum ApiErrorCode implements ErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "TL-0018", "잘못된 요청입니다."),
     COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0019", "Comment 리소스를 찾을 수 없습니다."),
     NOT_YOUR_RESOURCE(HttpStatus.FORBIDDEN, "TL-0020", "요청자가 접근할 수 없는 리소스입니다."),
+    AUTHORIZATION_SAVING_ERROR(HttpStatus.UNAUTHORIZED, "TL-0021", "생성에 대한 권한이 없습니다."),
+    AUTHORIZATION_TOWN_ERROR(HttpStatus.UNAUTHORIZED, "TL-0022", "동네가 인증되지 않았습니다."),
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "TL-0023", "죄송힙니다. 시스템 내부에서 오류가 발생하였습니다."),
+    TOWN_BAD_REQUEST(HttpStatus.BAD_REQUEST, "TL-0024", "인증 동네와 요청 동네가 일치하지 않습니다."),
 
     ;
 
