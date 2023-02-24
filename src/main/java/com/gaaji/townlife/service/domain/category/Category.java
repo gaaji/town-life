@@ -2,6 +2,7 @@ package com.gaaji.townlife.service.domain.category;
 
 import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceAlreadyExistException;
+import com.gaaji.townlife.global.exceptions.api.exception.ResourceRemoveException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceUnmodifiableException;
 import com.gaaji.townlife.service.domain.townlife.TownLife;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
@@ -82,6 +83,22 @@ public class Category {
 
         if (unsubscriptionOpt.isPresent()) {
             throw new ResourceAlreadyExistException(ApiErrorCode.CATEGORY_UNSUBSCRIPTION_ALREADY_EXIST_ERROR);
+        }
+    }
+
+    public void removeUnsubscriptionByUserId(String userId) {
+        Optional<CategoryUnsubscription> unsubscriptionOptional = this.unsubscriptions.stream()
+                .filter(us -> Objects.equals(us.getUserId(), userId))
+                .findFirst();
+
+        if(unsubscriptionOptional.isPresent()) {
+
+            CategoryUnsubscription unsubscription = unsubscriptionOptional.get();
+            this.unsubscriptions.remove(unsubscription);
+            unsubscription.associateCategory(null);
+
+        } else {
+            throw new ResourceRemoveException(ApiErrorCode.CATEGORY_UNSUBSCRIPTION_NOT_FOUND);
         }
     }
 
