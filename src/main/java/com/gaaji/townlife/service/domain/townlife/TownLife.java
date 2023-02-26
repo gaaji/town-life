@@ -84,7 +84,7 @@ public abstract class TownLife extends BaseEntity {
         }
     }
 
-    public void removeSubscriptionByUserId(String userId) {
+    public TownLifeSubscription removeSubscriptionByUserId(String userId) {
         Optional<TownLifeSubscription> subscriptionOpt = this.subscriptions.stream()
                 .filter(s -> Objects.equals(s.getUserId(), userId))
                 .findFirst();
@@ -94,6 +94,8 @@ public abstract class TownLife extends BaseEntity {
             TownLifeSubscription subscription = subscriptionOpt.get();
             this.subscriptions.remove(subscription);
             subscription.associateTownLife(null);
+
+            return subscription;
 
         } else {
             throw new ResourceRemoveException(ApiErrorCode.TOWN_LIFE_SUBSCRIPTION_NOT_FOUND);
