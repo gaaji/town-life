@@ -7,17 +7,18 @@ import org.hibernate.id.IdentifierGenerator;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.ZoneId;
 
 public class ULIDGenerator implements IdentifierGenerator {
-    private final ULID ulid = new ULID();
+    private static final ULID ulid = new ULID();
 
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
         return ulid.nextULID();
     }
 
-    public static String newULIDByRequestTime(LocalDateTime requestTime) {
-        return new ULID().nextULID(requestTime.toInstant(ZoneOffset.UTC).toEpochMilli());
+    public static String offsetId(LocalDateTime requestTime) {
+        long timestamp = requestTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+        return ulid.nextULID(timestamp);
     }
 }
