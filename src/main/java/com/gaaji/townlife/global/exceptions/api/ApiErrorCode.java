@@ -31,6 +31,8 @@ public enum ApiErrorCode implements ErrorCode {
     AUTHORIZATION_TOWN_ERROR(HttpStatus.UNAUTHORIZED, "TL-0022", "동네가 인증되지 않았습니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "TL-0023", "죄송힙니다. 시스템 내부에서 오류가 발생하였습니다."),
     TOWN_BAD_REQUEST(HttpStatus.BAD_REQUEST, "TL-0024", "인증 동네와 요청 동네가 일치하지 않습니다."),
+    CATEGORY_UNSUBSCRIPTION_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0025", "해당 카테고리를 이미 구독하고 있습니다."),
+    CATEGORY_ENTIRE_NOT_FOUND(HttpStatus.NOT_FOUND, "TL-0026", "모든 카테고리를 찾을 수 없습니다."),
 
     ;
 
