@@ -86,7 +86,7 @@ public class Category {
         }
     }
 
-    public void removeUnsubscriptionByUserId(String userId) {
+    public CategoryUnsubscription removeUnsubscriptionByUserId(String userId) {
         Optional<CategoryUnsubscription> unsubscriptionOptional = this.unsubscriptions.stream()
                 .filter(us -> Objects.equals(us.getUserId(), userId))
                 .findFirst();
@@ -96,6 +96,8 @@ public class Category {
             CategoryUnsubscription unsubscription = unsubscriptionOptional.get();
             this.unsubscriptions.remove(unsubscription);
             unsubscription.associateCategory(null);
+
+            return unsubscription;
 
         } else {
             throw new ResourceRemoveException(ApiErrorCode.CATEGORY_UNSUBSCRIPTION_NOT_FOUND);

@@ -45,7 +45,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
     @Transactional
     public TownLifeListResponseDto findListByTownId(String userId, String townId, LocalDateTime requestTime, int page, int size) {
 
-        String offsetId = ULIDGenerator.newULIDByRequestTime(requestTime);
+        String offsetId = ULIDGenerator.offsetId(requestTime);
         Slice<TownLife> townLives = entityService.findListByTownIdAndIdLessThan(userId, townId, offsetId, page, size);
 
         return TownLifeResponseBuilder.townLifeListResponseDto(townLives);
@@ -55,7 +55,7 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
     @Transactional
     public TownLifeListResponseDto findListByUserId(String userId, LocalDateTime requestTime, int page, int size) {
 
-        String offsetId = ULIDGenerator.newULIDByRequestTime(requestTime);
+        String offsetId = ULIDGenerator.offsetId(requestTime);
         Slice<TownLife> townLives = entityService.findListByUserIdAndIdLessThan(userId, offsetId, page, size);
 
         return TownLifeResponseBuilder.townLifeListResponseDto(townLives);

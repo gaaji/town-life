@@ -24,7 +24,6 @@ public class TownLifeSubscriptionServiceImpl implements TownLifeSubscriptionServ
         TownLife townLife = getTownLifeById(townLifeId);
 
         TownLifeSubscription subscription = townLifeSubscriptionRepository.save(TownLifeSubscription.of(userId));
-
         townLife.addSubscription(subscription);
     }
 
@@ -34,7 +33,8 @@ public class TownLifeSubscriptionServiceImpl implements TownLifeSubscriptionServ
 
         TownLife townLife = getTownLifeById(townLifeId);
 
-        townLife.removeSubscriptionByUserId(userId);
+        TownLifeSubscription subscription = townLife.removeSubscriptionByUserId(userId);
+        townLifeSubscriptionRepository.delete(subscription);
     }
 
     private TownLife getTownLifeById(String id) {

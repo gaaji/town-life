@@ -22,7 +22,8 @@ public class CategorySubscriptionServiceImpl implements CategorySubscriptionServ
     public void subscribe(String userId, String categoryId) {
         Category category = getCategoryById(categoryId);
 
-        category.removeUnsubscriptionByUserId(userId);
+        CategoryUnsubscription unsubscription = category.removeUnsubscriptionByUserId(userId);
+        categoryUnsubscriptionRepository.delete(unsubscription);
     }
 
     @Override
