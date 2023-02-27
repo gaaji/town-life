@@ -1,7 +1,6 @@
 package com.gaaji.townlife.service.applicationservice.category;
 
 import com.gaaji.townlife.service.controller.category.dto.CategoryListDto;
-import com.gaaji.townlife.service.controller.category.dto.CategoryUnsubscribeDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import com.gaaji.townlife.service.repository.CategoryRepository;
@@ -49,7 +48,7 @@ class CategoryFindServiceImplTest {
 
         // 비구독 요청 카테고리 리스트의 카테고리들을 비구독 요청
         String userId = tester+testerId;
-        excludedCategories.forEach(categoryId -> categorySubscriptionService.unsubscribe(categoryId, new CategoryUnsubscribeDto(userId)));
+        excludedCategories.forEach(categoryId -> categorySubscriptionService.unsubscribe(userId, categoryId));
     }
 
     @Test

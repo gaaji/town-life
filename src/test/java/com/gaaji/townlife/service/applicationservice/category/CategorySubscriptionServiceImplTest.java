@@ -2,7 +2,6 @@ package com.gaaji.townlife.service.applicationservice.category;
 
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeFindServiceImpl;
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeSaveServiceImpl;
-import com.gaaji.townlife.service.controller.category.dto.CategoryUnsubscribeDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListResponseDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
@@ -57,7 +56,7 @@ class CategorySubscriptionServiceImplTest {
 
         // 비구독 요청 카테고리 리스트의 카테고리들을 비구독 요청
         String userId = tester+testerId;
-        excludedCategories.forEach(categoryId -> categorySubscriptionService.unsubscribe(categoryId, new CategoryUnsubscribeDto(userId)));
+        excludedCategories.forEach(categoryId -> categorySubscriptionService.unsubscribe(userId, categoryId));
     }
 
     void init_post_town_lives() {
