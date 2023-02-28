@@ -4,6 +4,10 @@ import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceSaveException;
 import com.gaaji.townlife.global.utils.validation.ValidateResourceAccess;
+import com.gaaji.townlife.service.adapter.gaaji.AuthServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.TownServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.dto.AuthProfileDto;
+import com.gaaji.townlife.service.adapter.gaaji.dto.TownAddressDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.controller.townlife.dto.builder.TownLifeResponseBuilder;
@@ -27,6 +31,8 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
     private final TownLifeRepository townLifeRepository;
     private final TownLifeCounterRepository townLifeCounterRepository;
     private final TownLifeSubscriptionRepository townLifeSubscriptionRepository;
+    private final AuthServiceClient authServiceClient;
+    private final TownServiceClient townServiceClient;
 
     @Override
     @Transactional
@@ -40,8 +46,11 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
         Class<? extends TownLife> townLifeClazz =
                 category.getTownLifeType() == TownLifeType.POST ? PostTownLife.class : QuestionTownLife.class;
 
-        TownLife townLife = saveTownLife(townLifeClazz, dto, category);
-        TownLifeDetailDto responseDto = TownLifeResponseBuilder.townLifeDetailDto(townLife);
+        TownAddressDto townAddressDto = townServiceClient.getTownAddress(townId);
+        TownLife townLife = saveTownLife(townLifeClazz, dto, townAddressDto, category);
+
+        AuthProfileDto authProfileDto = authServiceClient.getAuthProfile(townLife.getAuthorId());
+        TownLifeDetailDto responseDto = TownLifeResponseBuilder.townLifeDetailDto(townLife, authProfileDto);
 
         if(responseDto == null) {
             throw new ResourceSaveException(ApiErrorCode.TOWN_LIFE_SAVE_ERROR);
@@ -50,11 +59,12 @@ public class TownLifeSaveServiceImpl implements TownLifeSaveService {
         return responseDto;
     }
 
-    private <T extends TownLife> T saveTownLife(Class<T> clazz, TownLifeSaveRequestDto dto, Category category) {
+    private <T extends TownLife> T saveTownLife(Class<T> clazz, TownLifeSaveRequestDto dto, TownAddressDto townAddressDto, Category category) {
         try {
             T townLife = townLifeRepository.save(
-                    clazz.getConstructor(String.class, String.class, String.class, String.class, String.class)
-                            .newInstance(dto.getAuthorId(), dto.getTownId(), dto.getTitle(), dto.getText(), dto.getLocation()));
+                    clazz.getConstructor(String.class, String.class, String.class, String.class, String.class, String.class)
+                            .newInstance(dto.getAuthorId(), dto.getTownId(), townAddressDto.getAddress(), dto.getTitle(), dto.getText(), dto.getLocation()));
+
             townLife.associateCategory(category);
 
             saveSubscription(townLife);

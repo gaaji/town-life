@@ -40,6 +40,7 @@ public abstract class TownLife extends BaseEntity {
     protected Category category;
     protected String authorId;
     protected String townId;
+    protected String townAddress;
     protected LocalDateTime deletedAt;
     @Embedded
     protected TownLifeContent content;
@@ -52,9 +53,10 @@ public abstract class TownLife extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     protected TownLifeCounter townLifeCounter;
 
-    protected TownLife(String authorId, String townId, String title, String text, String location) {
+    protected TownLife(String authorId, String townId, String townAddress, String title, String text, String location) {
         this.authorId = authorId;
         this.townId = townId;
+        this.townAddress = townAddress;
         this.content = TownLifeContent.of(title, text, location);
     }
 

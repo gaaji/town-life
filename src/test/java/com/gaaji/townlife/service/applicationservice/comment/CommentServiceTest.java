@@ -1,11 +1,14 @@
 package com.gaaji.townlife.service.applicationservice.comment;
 
+import com.gaaji.townlife.config.TestBeanConfig;
 import com.gaaji.townlife.global.exceptions.api.exception.BadRequestException;
 import com.gaaji.townlife.global.exceptions.api.exception.NotYourResourceException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
 import com.gaaji.townlife.global.exceptions.internalServer.exception.NullValueException;
 import com.gaaji.townlife.global.exceptions.internalServer.exception.TownLifeAwsS3Exception;
 import com.gaaji.townlife.service.adapter.aws.AwsS3Client;
+import com.gaaji.townlife.service.adapter.gaaji.AuthServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.TownServiceClient;
 import com.gaaji.townlife.service.applicationservice.admin.AdminCategorySaveService;
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeSaveService;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
@@ -25,6 +28,7 @@ import com.gaaji.townlife.service.repository.TownLifeRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,10 +39,15 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SpringBootTest
+@Import(TestBeanConfig.class)
 @Transactional
 public class CommentServiceTest {
     @Autowired
     AdminCategorySaveService adminCategorySaveService;
+    @Autowired
+    AuthServiceClient authServiceClient;
+    @Autowired
+    TownServiceClient townServiceClient;
     @Autowired
     TownLifeSaveService townLifeSaveService;
     @Autowired

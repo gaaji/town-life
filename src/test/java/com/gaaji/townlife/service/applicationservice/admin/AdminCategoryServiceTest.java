@@ -1,5 +1,6 @@
 package com.gaaji.townlife.service.applicationservice.admin;
 
+import com.gaaji.townlife.config.TestBeanConfig;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategoryListDto;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategoryModifyDto;
 import com.gaaji.townlife.service.controller.admin.dto.AdminCategorySaveRequestDto;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @SpringBootTest
+@Import(TestBeanConfig.class)
 @Transactional
 class AdminCategoryServiceTest {
     @Autowired

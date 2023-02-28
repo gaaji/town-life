@@ -1,7 +1,10 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
+import com.gaaji.townlife.config.TestBeanConfig;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceAuthorizationException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceNotFoundException;
+import com.gaaji.townlife.service.adapter.gaaji.AuthServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.TownServiceClient;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
@@ -13,11 +16,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
 @SpringBootTest
+@Import(TestBeanConfig.class)
 @DisplayName("동네생활 삭제 서비스 테스트")
 class TownLifeRemoveServiceImplTest {
-
+    @Autowired
+    private TownServiceClient townServiceClient;
+    @Autowired
+    private AuthServiceClient authServiceClient;
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired

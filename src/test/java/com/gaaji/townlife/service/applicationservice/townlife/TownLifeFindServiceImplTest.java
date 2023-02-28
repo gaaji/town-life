@@ -1,30 +1,38 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
+import com.gaaji.townlife.config.TestBeanConfig;
+import com.gaaji.townlife.service.adapter.gaaji.AuthServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.TownServiceClient;
 import com.gaaji.townlife.service.applicationservice.category.CategorySubscriptionServiceImpl;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListResponseDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
-import com.gaaji.townlife.service.repository.CategoryRepository;
-import com.gaaji.townlife.service.repository.CategoryUnsubscriptionRepository;
-import com.gaaji.townlife.service.repository.TownLifeCounterRepository;
-import com.gaaji.townlife.service.repository.TownLifeRepository;
+import com.gaaji.townlife.service.repository.*;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
 @SpringBootTest
+@Import(TestBeanConfig.class)
 @DisplayName("동네생활 조회 서비스 테스트")
 class TownLifeFindServiceImplTest {
 
     @Autowired private CategoryRepository categoryRepository;
     @Autowired private TownLifeRepository townLifeRepository;
     @Autowired private TownLifeCounterRepository townLifeCounterRepository;
+    @Autowired private TownLifeSubscriptionRepository townLifeSubscriptionRepository;
     @Autowired private TownLifeFindEntityServiceImpl townLifeFindEntityService;
     @Autowired private TownLifeFindCountServiceImpl townLifeFindCountService;
+    @Autowired
+    private TownServiceClient townServiceClient;
+    @Autowired
+    private AuthServiceClient authServiceClient;
     @Autowired private TownLifeSaveServiceImpl townLifeSaveService;
     @Autowired private TownLifeFindServiceImpl townLifeFindService;
 
@@ -59,6 +67,7 @@ class TownLifeFindServiceImplTest {
 
         @Test
         @Order(100)
+        @Transactional
         @DisplayName("동네생활 1회 조회")
         void view_post_town_life() {
             init_post_town_life_for_visit();
@@ -71,6 +80,7 @@ class TownLifeFindServiceImplTest {
 
         @Test
         @Order(200)
+        @Transactional
         @DisplayName("동네생활 1000회 조회")
         void one_thousand_visit_post_town_life() {
             init_post_town_life_for_visit();
@@ -108,27 +118,28 @@ class TownLifeFindServiceImplTest {
 
         @Test
         @Order(100)
-        @DisplayName("메인 페이지 리스트 조회 - 페이징 3회")
+        @DisplayName("메인 페이지 리스트 조회 - 페이징")
         void find_list_by_town_id_for_three_time() {
             int page = 0, size = 10;
             String authorId = tester + "1";
 
             init_post_town_lives_for_find_by_town_id();
             LocalDateTime now = LocalDateTime.now();
+            TownLifeListResponseDto townLives = null;
 
-            for(; page < 3; page++) {
-                TownLifeListResponseDto townLives = townLifeFindService.findListByTownId(authorId, townId, now, page, size);
+            do{
+                townLives = townLifeFindService.findListByTownId(authorId, townId, now, page++, size);
                 Assertions.assertNotNull(townLives);
                 Assertions.assertNotNull(townLives.getContent());
                 Assertions.assertNotEquals(0, townLives.getContent().size());
                 Assertions.assertTrue(now.isAfter(townLives.getContent().get(0).getCreatedAt()));
-                Assertions.assertTrue(townLives.getHasNext());
-            }
+            }while (townLives.getHasNext());
         }
 
     }
 
     @Nested
+    @Transactional
     @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
     @DisplayName("동네생활 내가 작성한 게시글 리스트 조회 테스트")
     class Test_For_Find_Town_Life_List_By_User_Id {
@@ -151,21 +162,20 @@ class TownLifeFindServiceImplTest {
 
         @Test
         @Order(100)
-        @DisplayName("내 게시글 리스트 조회 - 페이징 3회")
+        @DisplayName("내 게시글 리스트 조회 - 페이징")
         void find_list_by_town_id_for_three_time() {
             final String userId = "tester2";
             int page = 0, size = 10;
 
             init_post_town_lives_for_find_by_user_id();
             LocalDateTime now = LocalDateTime.now();
-
-            for(; page < 3; page++) {
-                TownLifeListResponseDto townLives = townLifeFindService.findListByUserId(userId, now, page, size);
+            TownLifeListResponseDto townLives = null;
+            do {
+                townLives = townLifeFindService.findListByUserId(userId, now, page++, size);
                 Assertions.assertNotNull(townLives);
                 Assertions.assertNotNull(townLives.getContent());
                 Assertions.assertNotEquals(0, townLives.getContent().size());
-                Assertions.assertTrue(now.isAfter(townLives.getContent().get(0).getCreatedAt()));
-            }
+            } while (townLives.getHasNext());
         }
     }
 

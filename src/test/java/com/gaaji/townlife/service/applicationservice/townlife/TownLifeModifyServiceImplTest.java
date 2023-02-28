@@ -1,5 +1,8 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
+import com.gaaji.townlife.config.TestBeanConfig;
+import com.gaaji.townlife.service.adapter.gaaji.AuthServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.TownServiceClient;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeModifyRequestDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
@@ -12,13 +15,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
 @SpringBootTest
+@Import(TestBeanConfig.class)
 @DisplayName("동네생활 수정 서비스 테스트")
 class TownLifeModifyServiceImplTest {
 
     @Autowired private CategoryRepository categoryRepository;
     @Autowired private TownLifeRepository townLifeRepository;
+    @Autowired
+    private TownServiceClient townServiceClient;
+    @Autowired
+    private AuthServiceClient authServiceClient;
     @Autowired private TownLifeSaveServiceImpl townLifeSaveService;
     @Autowired private TownLifeModifyServiceImpl townLifeModifyService;
 

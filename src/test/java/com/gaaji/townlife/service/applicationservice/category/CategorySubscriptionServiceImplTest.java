@@ -1,5 +1,8 @@
 package com.gaaji.townlife.service.applicationservice.category;
 
+import com.gaaji.townlife.config.TestBeanConfig;
+import com.gaaji.townlife.service.adapter.gaaji.AuthServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.TownServiceClient;
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeFindServiceImpl;
 import com.gaaji.townlife.service.applicationservice.townlife.TownLifeSaveServiceImpl;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListDto;
@@ -17,17 +20,24 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @SpringBootTest
+@Import(TestBeanConfig.class)
+@Transactional
 @DisplayName("동네생활 리스트 비구독 카테고리 제외 조회 테스트")
 class CategorySubscriptionServiceImplTest {
 
     @Autowired private CategoryRepository categoryRepository;
     @Autowired private TownLifeRepository townLifeRepository;
+    @Autowired private AuthServiceClient authServiceClient;
+    @Autowired private TownServiceClient townServiceClient;
     @Autowired private TownLifeSaveServiceImpl townLifeSaveService;
     @Autowired private TownLifeFindServiceImpl townLifeFindService;
     @Autowired private CategorySubscriptionServiceImpl categorySubscriptionService;
@@ -37,11 +47,9 @@ class CategorySubscriptionServiceImplTest {
     private final String tester = "tester";
     private int testerId = 1;
 
-    private static int i = 1;
-
     void init_category() {
         categoryRepository.save(
-                Category.create("테스트_카테고리"+ i++, false, "테스트_카테고리입니다.", TownLifeType.POST));
+                Category.create(UUID.randomUUID().toString(), false, "테스트_카테고리입니다.", TownLifeType.POST));
     }
 
     void init_category_unsubscription() {
