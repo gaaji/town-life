@@ -12,8 +12,13 @@ import java.util.List;
 @Builder
 public class TownLifeDetailDto {
     private String id;
-    private String authorId;
     private TownLifeDetailCategoryDto category;
+    private String authorId;
+    private String authorNickName;
+    private String authorProfilePictureUrl;
+    private double authorMannerTemperature;
+    private String townId;
+    private String townAddress;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Boolean isUpdated;
