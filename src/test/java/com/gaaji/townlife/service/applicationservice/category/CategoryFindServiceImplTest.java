@@ -1,5 +1,6 @@
 package com.gaaji.townlife.service.applicationservice.category;
 
+import com.gaaji.townlife.config.TestBeanConfig;
 import com.gaaji.townlife.service.controller.category.dto.CategoryListDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
@@ -10,11 +11,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @SpringBootTest
+@Import(TestBeanConfig.class)
+@Transactional
 @DisplayName("카테고리 조회 테스트")
 class CategoryFindServiceImplTest {
 

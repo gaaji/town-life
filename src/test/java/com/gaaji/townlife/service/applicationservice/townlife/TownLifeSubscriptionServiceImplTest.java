@@ -1,7 +1,10 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
+import com.gaaji.townlife.config.TestBeanConfig;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceAlreadyExistException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceRemoveException;
+import com.gaaji.townlife.service.adapter.gaaji.AuthServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.TownServiceClient;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
@@ -10,12 +13,17 @@ import com.gaaji.townlife.service.repository.TownLifeRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
 @SpringBootTest
+@Import(TestBeanConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("동네생활 게시글 알림구독 서비스 테스트")
 class TownLifeSubscriptionServiceImplTest {
-
+    @Autowired
+    private TownServiceClient townServiceClient;
+    @Autowired
+    private AuthServiceClient authServiceClient;
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired

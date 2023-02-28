@@ -1,20 +1,26 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
+import com.gaaji.townlife.config.TestBeanConfig;
 import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceAuthorizationException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceRemoveException;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceSaveException;
 import com.gaaji.townlife.service.adapter.aws.AwsS3Client;
+import com.gaaji.townlife.service.adapter.gaaji.AuthServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.TownServiceClient;
 import com.gaaji.townlife.service.controller.townlife.dto.AttachedImageDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.category.Category;
 import com.gaaji.townlife.service.domain.townlife.TownLifeType;
 import com.gaaji.townlife.service.repository.CategoryRepository;
+import com.gaaji.townlife.service.repository.TownLifeCounterRepository;
 import com.gaaji.townlife.service.repository.TownLifeRepository;
+import com.gaaji.townlife.service.repository.TownLifeSubscriptionRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +30,7 @@ import java.util.List;
 import java.util.UUID;
 
 @SpringBootTest
+@Import(TestBeanConfig.class)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("동네생활 게시글 이미지 서비스 테스트")
 class TownLifeImageServiceImplTest {
@@ -34,14 +41,24 @@ class TownLifeImageServiceImplTest {
     private TownLifeRepository townLifeRepository;
     @Autowired
     private TownLifeImageServiceImpl townLifeImageService;
-
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private TownLifeCounterRepository townLifeCounterRepository;
+    @Autowired
+    private TownLifeSubscriptionRepository townLifeSubscriptionRepository;
+    @Autowired
+    private TownLifeFindEntityServiceImpl townLifeFindEntityService;
+    @Autowired
+    private TownLifeFindCountServiceImpl townLifeFindCountService;
+    @Autowired
+    private TownServiceClient townServiceClient;
+    @Autowired
+    private AuthServiceClient authServiceClient;
     @Autowired
     private TownLifeSaveServiceImpl townLifeSaveService;
     @Autowired
     private TownLifeFindServiceImpl townLifeFindService;
-
     private Category category;
 
     void init_category() {
@@ -75,7 +92,6 @@ class TownLifeImageServiceImplTest {
         MockMultipartFile multipartFile = getOneMockImage();
         List<AttachedImageDto> dto = townLifeImageService.upload(authorId, townLifeId, orderIndexes, multipartFile);
 
-        System.out.println(dto);
         Assertions.assertNotNull(dto);
         Assertions.assertEquals(1, dto.size());
     }
