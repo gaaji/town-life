@@ -2,10 +2,12 @@ package com.gaaji.townlife.service.domain.townlife;
 
 import com.gaaji.townlife.global.exceptions.api.ApiErrorCode;
 import com.gaaji.townlife.global.exceptions.api.exception.ResourceRemoveException;
-import com.gaaji.townlife.service.controller.townlife.dto.TownLifeSaveRequestDto;
 import com.gaaji.townlife.service.domain.reaction.QuestionReaction;
 import com.gaaji.townlife.service.domain.reaction.Reaction;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -28,16 +30,8 @@ public class QuestionTownLife extends TownLife {
     @OneToMany(mappedBy = "questionTownLife", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionReaction> reactions = new ArrayList<>();
 
-    public QuestionTownLife(String authorId, String townId, String title, String text, String location) {
-        super(authorId, townId, title, text, location);
-    }
-
-    public static QuestionTownLife create(TownLifeSaveRequestDto dto) {
-        return new QuestionTownLife(
-                dto.getAuthorId(),
-                dto.getTownId(),
-                dto.getTitle(), dto.getText(), dto.getLocation()
-        );
+    public QuestionTownLife(String authorId, String townId, String townAddress, String title, String text, String location) {
+        super(authorId, townId, townAddress, title, text, location);
     }
 
     @Override
