@@ -1,6 +1,8 @@
 package com.gaaji.townlife.service.applicationservice.townlife;
 
 import com.gaaji.townlife.global.utils.ulid.ULIDGenerator;
+import com.gaaji.townlife.service.adapter.gaaji.AuthServiceClient;
+import com.gaaji.townlife.service.adapter.gaaji.dto.AuthProfileDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeDetailDto;
 import com.gaaji.townlife.service.controller.townlife.dto.TownLifeListResponseDto;
 import com.gaaji.townlife.service.controller.townlife.dto.builder.TownLifeResponseBuilder;
@@ -21,24 +23,25 @@ public class TownLifeFindServiceImpl implements TownLifeFindService {
 
     private final TownLifeFindEntityService entityService;
     private final TownLifeFindCountService countService;
+    private final AuthServiceClient authServiceClient;
 
     @Override
     @Transactional
     public TownLifeDetailDto findById(String townLifeId) {
         TownLife townLife = entityService.findById(townLifeId);
-        //TODO get auth profile
+        AuthProfileDto authProfileDto = authServiceClient.getAuthProfile(townLife.getAuthorId());
 
-        return TownLifeResponseBuilder.townLifeDetailDto(townLife);
+        return TownLifeResponseBuilder.townLifeDetailDto(townLife, authProfileDto);
     }
 
     @Override
     @Transactional
     public TownLifeDetailDto visit(String townLifeId) {
         TownLife townLife = entityService.findById(townLifeId);
-        //TODO get auth profile
         TownLifeCounter counter = countService.increaseViewCount(townLife.getTownLifeCounter().getId());
+        AuthProfileDto authProfileDto = authServiceClient.getAuthProfile(townLife.getAuthorId());
 
-        return TownLifeResponseBuilder.townLifeDetailDto(townLife, counter);
+        return TownLifeResponseBuilder.townLifeDetailDto(townLife, authProfileDto, counter);
     }
 
     @Override
